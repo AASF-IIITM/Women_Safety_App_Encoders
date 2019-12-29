@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedInInitialize(String username) {
         mUserPhoneNumber = username;
-        Intent intent = new Intent(this,NavigationActivity.class);
-        intent.putExtra("phone",mUserPhoneNumber);
-        startActivity(intent);
+      //  Intent intent = new Intent(this,NavigationActivity.class);
+      //  intent.putExtra("phone",mUserPhoneNumber);
+     //   startActivity(intent);
         this.finish();
     }
 
