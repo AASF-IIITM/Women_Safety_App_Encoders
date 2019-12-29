@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -27,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedInInitialize(String username) {
         mUserPhoneNumber = username;
-      //  Intent intent = new Intent(this,NavigationActivity.class);
-      //  intent.putExtra("phone",mUserPhoneNumber);
-     //   startActivity(intent);
+        Intent intent = new Intent(this,BottomNavigationActivity.class);
+        intent.putExtra("phone",mUserPhoneNumber);
+        startActivity(intent);
         this.finish();
     }
 

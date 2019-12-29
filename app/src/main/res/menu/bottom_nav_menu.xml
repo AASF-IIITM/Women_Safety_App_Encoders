@@ -7,13 +7,13 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_allphotos"
+        android:id="@+id/navigation_trackOther"
         android:icon="@drawable/ic_public_black_24dp"
-        android:title="@string/title_checkOther" />
+        android:title="@string/title_trackOther" />
 
     <item
-        android:id="@+id/navigation_aboutme"
+        android:id="@+id/navigation_trackMe"
         android:icon="@drawable/ic_person_pin_circle_black_24dp"
-        android:title="@string/title_checkMe" />
+        android:title="@string/title_trackMe" />
 
 </menu>
