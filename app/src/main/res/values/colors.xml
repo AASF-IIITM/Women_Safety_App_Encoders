@@ -4,11 +4,4 @@
     <color name="colorPrimaryDark">#2F3D70</color>
     <color name="colorAccent">#3a5ab3</color>
 
-    //login screen theme color
-    <color name="material_green_50">#B8F8B8</color>
-    <color name="material_green_500">#5778F5</color>
-    <color name="material_green_700">#388E3C</color>
-    <color name="material_green_a200">#32D384</color>
-    <color name="material_lime_a700">#02237E</color>
-    <color name="material_purple_a700">#AA00FF</color>
 </resources>
