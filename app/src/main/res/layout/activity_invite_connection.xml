@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif-medium"
             android:paddingTop="6dp"
-            android:text="Sorry... No Connection are Invited"
+            android:text="@string/inviteConnectionEmptyListTitle"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="#133241"/>
 
@@ -42,7 +42,7 @@
             android:textAlignment="center"
             android:fontFamily="sans-serif"
             android:paddingTop="15dp"
-            android:text="Get Started By Adding a Connection by pressing on that plus button"
+            android:text="@string/inviteConnectionEmptyListText"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#235877"/>
     </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.aasfencoders.womensafety.ui_fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.aasfencoders.womensafety.ContactActivity;
 import com.aasfencoders.womensafety.R;
+import com.aasfencoders.womensafety.inviteConnection;
 
 public class HomeFragment extends Fragment {
 
@@ -28,7 +31,8 @@ public class HomeFragment extends Fragment {
         inviteNewConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), inviteConnection.class);
+                startActivity(intent);
             }
         });
 

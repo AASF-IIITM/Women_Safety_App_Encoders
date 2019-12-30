@@ -1,12 +1,26 @@
 <resources>
     <string name="app_name">Women Safety</string>
+
+    //main activity and its fragments related
+    <string name="loadingUser">Loading User &#8230;</string>
     <string name="title_home">Home</string>
     <string name="title_trackOther">Track Others</string>
     <string name="title_trackMe">Track Me</string>
+    <string name="ANONYMOUS">ANONYMOUS</string>
+    <string name="phone">phone</string>
+    <string name="signIn">Signed in!</string>
+    <string name="signOut">Sign in canceled</string>
+
+
 
     //Home Fragment string resource
     <string name="inviteConnection">Invite New Connection</string>
     <string name="showConnection">Show Connection</string>
     <string name="homeDisplay">Welcome to Women Safety App</string>
+
+    //Invite Connection Page
+    <string name="inviteConnectionHeading">Invite Connection Page</string>
+    <string name="inviteConnectionEmptyListTitle">Sorry, No Connection are Invited</string>
+    <string name="inviteConnectionEmptyListText">Get Started By Adding a Connection by pressing on that plus button</string>
 
 </resources>

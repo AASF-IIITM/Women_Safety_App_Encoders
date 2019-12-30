@@ -16,10 +16,9 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     public static final int RC_SIGN_IN = 1;
-    SharedPreferences sharedPreferences;
 
     private String mUserPhoneNumber;
-    public static final String ANONYMOUS = "anonymous";
+    public static String ANONYMOUS;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private void onSignedInInitialize(String username) {
         mUserPhoneNumber = username;
         Intent intent = new Intent(this,BottomNavigationActivity.class);
-        intent.putExtra("phone",mUserPhoneNumber);
+        intent.putExtra(getString(R.string.phone),mUserPhoneNumber);
         startActivity(intent);
         this.finish();
     }
@@ -44,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.signIn), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.signOut), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ANONYMOUS = getString(R.string.ANONYMOUS);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
