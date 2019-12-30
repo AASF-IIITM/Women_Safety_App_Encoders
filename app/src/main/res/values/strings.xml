@@ -23,4 +23,7 @@
     <string name="inviteConnectionEmptyListTitle">Sorry, No Connection are Invited</string>
     <string name="inviteConnectionEmptyListText">Get Started By Adding a Connection by pressing on that plus button</string>
 
+    //contacts fetch
+    <string name="loadingContacts">Loading Contacts &#8230;</string>
+
 </resources>
