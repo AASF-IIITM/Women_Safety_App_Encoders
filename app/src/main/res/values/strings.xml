@@ -4,4 +4,9 @@
     <string name="title_trackOther">Track Others</string>
     <string name="title_trackMe">Track Me</string>
 
+    //Home Fragment string resource
+    <string name="inviteConnection">Invite New Connection</string>
+    <string name="showConnection">Show Connection</string>
+    <string name="homeDisplay">Welcome to Women Safety App</string>
+
 </resources>
