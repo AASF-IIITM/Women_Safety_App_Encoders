@@ -25,5 +25,9 @@
 
     //contacts fetch
     <string name="loadingContacts">Loading Contacts &#8230;</string>
+    <string name="noContactSelected">No Contact Selected</string>
+    <string name="noPhoneNumberPresent">No Phone Number Present</string>
+    <string name="confirm">Confirm Selection</string>
+
 
 </resources>
