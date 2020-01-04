@@ -2,12 +2,19 @@ package com.aasfencoders.womensafety;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
+import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -23,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    SharedPreferences sharedPreferences;
+
     private void onSignedInInitialize(String username) {
-        mUserPhoneNumber = username;
         Intent intent = new Intent(this,BottomNavigationActivity.class);
-        intent.putExtra(getString(R.string.phone),mUserPhoneNumber);
+        intent.putExtra(getString(R.string.phone),username);
         startActivity(intent);
         this.finish();
     }
@@ -56,14 +64,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ANONYMOUS = getString(R.string.ANONYMOUS);
-
+        sharedPreferences = MainActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    onSignedInInitialize(user.getPhoneNumber());
+                    TelephonyManager tm = (TelephonyManager)MainActivity.this.getSystemService(MainActivity.this.TELEPHONY_SERVICE);
+                    String countryCodeValue = tm.getNetworkCountryIso();
+                    mUserPhoneNumber = "+" + PhoneNumberUtils.getCountryCode(countryCodeValue) + user.getPhoneNumber();
+                    onSignedInInitialize(mUserPhoneNumber);
+
+                    int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
+                    if (firstTime == 0) {
+                        checkConnection();
+                    }else{
+                        onSignedInInitialize(mUserPhoneNumber);
+                    }
+
+
                 } else {
                     onSignedOutCleanup();
                     startActivityForResult(
@@ -92,5 +113,20 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+    }
+
+    private void checkConnection(){
+        boolean state = CheckNetworkConnection.checkNetwork(MainActivity.this);
+        if (state) {
+            showForm();
+        } else {
+            if(NetworkDialog.showNetworkDialog(MainActivity.this)){
+                checkConnection();
+            }
+        }
+    }
+
+    private void showForm(){
+        
     }
 }
