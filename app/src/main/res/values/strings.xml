@@ -12,8 +12,6 @@
     <string name="signIn">Signed in!</string>
     <string name="signOut">Sign in canceled</string>
 
-
-
     //Home Fragment string resource
     <string name="inviteConnection">Invite New Connection</string>
     <string name="showConnection">Show Connection</string>
@@ -38,6 +36,17 @@
     <string name="upload">UPLOAD</string>
     <string name="users">Users</string>
     <string name="profile">Profile</string>
+
+    //in general
     <string name="name">Name</string>
+    <string name="number">Number</string>
+    <string name="error">ERROR</string>
+    <string name="errormessage">Some error occcured</string>
+
+    //invite sent strings
+    <string name="status">Status</string>
+    <string name="invited">invited</string>
+    <string name="sent">sent</string>
+    <string name="connecting_to_server">sent</string>
 
 </resources>

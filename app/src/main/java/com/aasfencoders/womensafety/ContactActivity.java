@@ -2,9 +2,13 @@ package com.aasfencoders.womensafety;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,12 +24,20 @@ import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.adapter.ContactAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
+import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static java.security.AccessController.getContext;
 
@@ -35,6 +47,10 @@ public class ContactActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView loadingtextview;
 
+    SharedPreferences sharedPreferences;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mFirebaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +59,9 @@ public class ContactActivity extends AppCompatActivity {
         contactListView = findViewById(R.id.contactNameListView);
         progressBar = findViewById(R.id.progress);
         loadingtextview = findViewById(R.id.progressTextViewContacts);
-
+        sharedPreferences = ContactActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseReference = mFirebaseDatabase.getReference();
         progressBar.setVisibility(View.VISIBLE);
         loadingtextview.setVisibility(View.VISIBLE);
         FetchContactAsyncTask task = new FetchContactAsyncTask();
@@ -71,9 +89,9 @@ public class ContactActivity extends AppCompatActivity {
                             cur.getColumnIndex(ContactsContract.Contacts._ID));
                     String name = cur.getString(cur.getColumnIndex(
                             ContactsContract.Contacts.DISPLAY_NAME));
-                    contactList.add( new ContactNameClass(id,name));
+                    contactList.add(new ContactNameClass(id, name));
                 }
-                Collections.sort(contactList, new Comparator<ContactNameClass>(){
+                Collections.sort(contactList, new Comparator<ContactNameClass>() {
                     @Override
                     public int compare(ContactNameClass obj1, ContactNameClass obj2) {
                         return obj1.getName().compareToIgnoreCase(obj2.getName());
@@ -103,14 +121,14 @@ public class ContactActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> a, View v, int position,
                                         long id) {
-                    phone_number_display(contactList.get(position).getId() , contactList.get(position).getName());
+                    phone_number_display(contactList.get(position).getId(), contactList.get(position).getName());
                 }
             });
         }
 
     }
 
-    private void phone_number_display(String id, String name){
+    private void phone_number_display(String id, final String name) {
 
         ArrayList<String> items = new ArrayList<>();
 
@@ -129,16 +147,15 @@ public class ContactActivity extends AppCompatActivity {
             while (pCur.moveToNext()) {
                 String phoneNo = pCur.getString(pCur.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
-                phoneNo.replaceAll(" ","");
+                phoneNo.replaceAll(" ", "");
 
                 boolean flagCommon = false;
 
-                for (String item : items)
-                {
+                for (String item : items) {
                     if (item.contains(phoneNo))
                         flagCommon = true;
                 }
-                if(!flagCommon){
+                if (!flagCommon) {
                     items.add(phoneNo);
                 }
 
@@ -153,10 +170,10 @@ public class ContactActivity extends AppCompatActivity {
                     .setItemsMultiChoice(items, new LovelyChoiceDialog.OnItemsSelectedListener<String>() {
                         @Override
                         public void onItemsSelected(List<Integer> positions, List<String> items) {
-                            if(items.isEmpty()){
-                                Toast.makeText(getBaseContext(),R.string.noContactSelected , Toast.LENGTH_SHORT).show();
-                            }else{
-                                // update database choosing from list
+                            if (items.isEmpty()) {
+                                Toast.makeText(getBaseContext(), R.string.noContactSelected, Toast.LENGTH_SHORT).show();
+                            } else {
+                                updateDatabase(items, name);
                             }
                         }
                     })
@@ -164,11 +181,43 @@ public class ContactActivity extends AppCompatActivity {
                     .show();
 
 
-
-        }else {
-            Toast.makeText(getBaseContext(),R.string.noPhoneNumberPresent , Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getBaseContext(), R.string.noPhoneNumberPresent, Toast.LENGTH_SHORT).show();
             cur.close();
         }
     }
+
+    private void updateDatabase(List<String> items, String name) {
+
+        String user_number = sharedPreferences.getString(getString(R.string.number), getString(R.string.error));
+        if (user_number.equals(R.string.error)) {
+            Toast.makeText(ContactActivity.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
+        } else {
+            SweetAlertDialog loadingDialog;
+
+            loadingDialog = new SweetAlertDialog(ContactActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
+            loadingDialog.setTitleText("Loading ...");
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
+            Iterator iterator = items.iterator();
+            while (iterator.hasNext()) {
+                String sent_phone_number = iterator.next().toString();
+                DatabaseReference rootRef = mFirebaseReference.child(getString(R.string.users)).child(user_number).child(getString(R.string.sent));
+                String key = mFirebaseReference.push().getKey();
+                Map<String, Object> value = new HashMap<>();
+                value.put(getString(R.string.name), name);
+                value.put(getString(R.string.number), sent_phone_number);
+                value.put(getString(R.string.status), getString(R.string.invited));
+                rootRef.child(key).setValue(value);
+            }
+
+            loadingDialog.dismissWithAnimation();
+
+        }
+
+    }
+
 
 }
