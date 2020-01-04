@@ -21,6 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/loadingUser"
         android:text="@string/loadingUser"
         android:textSize="25sp"
         android:textStyle="bold"

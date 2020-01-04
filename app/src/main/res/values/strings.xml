@@ -32,5 +32,12 @@
 
     //initial form
     <string name="firstform">FirstForm</string>
+    <string name="text_input_title">User Registration</string>
+    <string name="text_input_message">Enter Your Name</string>
+    <string name="text_input_error_message">Name shouldn\'t be blank</string>
+    <string name="upload">UPLOAD</string>
+    <string name="users">Users</string>
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
 
 </resources>
