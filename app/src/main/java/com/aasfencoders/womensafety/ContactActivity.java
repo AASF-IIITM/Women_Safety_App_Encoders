@@ -196,7 +196,7 @@ public class ContactActivity extends AppCompatActivity {
 
     private void updateDatabase(List<String> items, String name) {
 
-        final String current_user_number = sharedPreferences.getString(getString(R.string.number), getString(R.string.error));
+        final String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
         final String current_user_name = sharedPreferences.getString(getString(R.string.username), getString(R.string.error));
         if (current_user_number.equals(R.string.error) || current_user_name.equals(getString(R.string.error))) {
             Toast.makeText(ContactActivity.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();

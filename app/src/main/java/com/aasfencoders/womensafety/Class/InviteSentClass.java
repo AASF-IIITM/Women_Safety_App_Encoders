@@ -2,30 +2,30 @@ package com.aasfencoders.womensafety.Class;
 
 public class InviteSentClass {
 
-    private String Name;
-    private String Number;
-    private String Status;
+    private String name;
+    private String number;
+    private String status;
 
     public InviteSentClass(){
 
     }
 
-    public InviteSentClass(String Name , String Number,  String Status){
-        this.Name = Name;
-        this.Number = Number;
-        this.Status = Status;
+    public InviteSentClass(String name , String number,  String status){
+        this.name = name;
+        this.number = number;
+        this.status = status;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public String getNumber() {
-        return Number;
+        return number;
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
 

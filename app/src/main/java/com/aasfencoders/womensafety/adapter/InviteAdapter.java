@@ -35,7 +35,7 @@ public class InviteAdapter extends ArrayAdapter<InviteSentClass> {
 
         }
 
-        final InviteSentClass currentCall = getItem(position);
+        InviteSentClass currentCall = getItem(position);
 
         TextView name = listItemView.findViewById(R.id.person_name);
         TextView number = listItemView.findViewById(R.id.person_number);

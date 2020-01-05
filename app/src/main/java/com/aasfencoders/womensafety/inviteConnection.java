@@ -71,12 +71,12 @@ public class inviteConnection extends AppCompatActivity {
 
     private void fetchInvitedContacts() {
 
-        String current_user_number = sharedPreferences.getString(getString(R.string.number), getString(R.string.error));
+        String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(inviteConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number);
+            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -86,13 +86,6 @@ public class inviteConnection extends AppCompatActivity {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
                         inviteList.add(callClassObj);
-                        Log.i("DS",ds.child("Name").toString());
-                        Log.i("DS",ds.child("Number").toString());
-                        Log.i("DS",ds.child("Status").toString());
-
-                        Log.i("LIST",callClassObj.getName());
-                        Log.i("LIST",callClassObj.getNumber());
-                        Log.i("LIST",callClassObj.getStatus());
                     }
 
                     InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);

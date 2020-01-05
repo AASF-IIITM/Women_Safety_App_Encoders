@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     mUserPhoneNumber = user.getPhoneNumber();
-                    sharedPreferences.edit().putString(getString(R.string.number),mUserPhoneNumber).apply();
+                    sharedPreferences.edit().putString(getString(R.string.userNumber),mUserPhoneNumber).apply();
                     int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
                     if (firstTime == 0) {
                         checkConnection();

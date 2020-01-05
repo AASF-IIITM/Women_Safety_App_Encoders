@@ -38,18 +38,19 @@
     <string name="profile">Profile</string>
 
     //in general
-    <string name="name">Name</string>
-    <string name="number">Number</string>
+    <string name="name">name</string>
+    <string name="number">number</string>
     <string name="error">ERROR</string>
     <string name="errormessage">Some error occcured</string>
 
     //invite sent strings
-    <string name="status">Status</string>
+    <string name="status">status</string>
     <string name="invited">invited</string>
     <string name="sent">sent</string>
     <string name="connecting_to_server">sent</string>
     <string name="received">received</string>
     <string name="username">username</string>
+    <string name="userNumber">Number</string>
     <string name="invitation">invitation</string>
 
 </resources>
