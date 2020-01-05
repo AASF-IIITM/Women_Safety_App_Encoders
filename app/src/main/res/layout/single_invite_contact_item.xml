@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:id="@+id/person_linear_layout"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_marginTop="7dp"
+    android:layout_marginStart="7dp"
+    android:padding="7dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/person_name"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:text="Person Name"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:id="@+id/person_number"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:text="Person Phone Number"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:id="@+id/person_status"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:text="Person Status"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        />
+
+</LinearLayout>
