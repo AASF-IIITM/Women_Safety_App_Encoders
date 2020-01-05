@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment;
 import com.aasfencoders.womensafety.ContactActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.inviteConnection;
+import com.aasfencoders.womensafety.receivedConnection;
 
 public class HomeFragment extends Fragment {
 
     private Button inviteNewConnection;
+    private Button receivedConnectionButton;
     private Button showConnection;
 
     @Nullable
@@ -26,12 +28,21 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
         inviteNewConnection = view.findViewById(R.id.inviteConnection);
         showConnection = view.findViewById(R.id.showConnection);
+        receivedConnectionButton = view.findViewById(R.id.receiveConnection);
 
-        // action triggered when the Invite New Connection button is tpressed
+        // action triggered when the Invite New Connection button is pressed
         inviteNewConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), inviteConnection.class);
+                startActivity(intent);
+            }
+        });
+
+        receivedConnectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), receivedConnection.class);
                 startActivity(intent);
             }
         });

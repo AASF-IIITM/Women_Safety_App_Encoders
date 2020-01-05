@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aasfencoders.womensafety">
 
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".ContactActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".inviteConnection"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".receivedConnection"></activity>
+        <activity
+            android:name=".ContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".inviteConnection"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".BottomNavigationActivity"
             android:screenOrientation="portrait" />

@@ -9,7 +9,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
-        android:id="@+id/person_invite_name"
+        android:id="@+id/person_receive_name"
         android:layout_height="wrap_content"
         android:layout_width="200dp"
         android:text="Person Name"
@@ -17,18 +17,10 @@
         android:textSize="16sp"
         />
     <TextView
-        android:id="@+id/person_invite_number"
+        android:id="@+id/person_receive_number"
         android:layout_height="wrap_content"
         android:layout_width="200dp"
         android:text="Person Phone Number"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        />
-    <TextView
-        android:id="@+id/person_invite_status"
-        android:layout_height="wrap_content"
-        android:layout_width="200dp"
-        android:text="Person Status"
         android:textStyle="bold"
         android:textSize="16sp"
         />

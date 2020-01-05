@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_alignParentBottom="true">
 
         <Button
@@ -35,6 +35,25 @@
             android:paddingRight="32dp"
             android:paddingBottom="16dp"
             android:text="@string/inviteConnection"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/receiveConnection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:elevation="18dp"
+            android:paddingLeft="32dp"
+            android:paddingTop="16dp"
+            android:paddingRight="32dp"
+            android:paddingBottom="16dp"
+            android:text="@string/receiveConnection"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="16dp"

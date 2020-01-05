@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class inviteConnection extends AppCompatActivity {
 
@@ -87,7 +88,7 @@ public class inviteConnection extends AppCompatActivity {
                         InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
                         inviteList.add(callClassObj);
                     }
-
+                    Collections.reverse(inviteList);
                     InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);
                     listView.setAdapter(inviteAdapter);
 

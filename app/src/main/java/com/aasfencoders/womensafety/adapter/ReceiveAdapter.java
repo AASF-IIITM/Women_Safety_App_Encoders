@@ -1,7 +1,6 @@
 package com.aasfencoders.womensafety.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.aasfencoders.womensafety.Class.InviteSentClass;
+import com.aasfencoders.womensafety.Class.ReceiveClass;
 import com.aasfencoders.womensafety.R;
-import com.aasfencoders.womensafety.inviteConnection;
 
 import java.util.ArrayList;
 
-public class InviteAdapter extends ArrayAdapter<InviteSentClass> {
+public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
+
     private Context mContext;
 
 
-    public InviteAdapter(@NonNull Context context, ArrayList<InviteSentClass> inviteList) {
+    public ReceiveAdapter(@NonNull Context context, ArrayList<ReceiveClass> inviteList) {
         super(context, 0, inviteList);
         mContext = context;
     }
@@ -31,19 +31,17 @@ public class InviteAdapter extends ArrayAdapter<InviteSentClass> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if (listItemView == null) {
-            listItemView = LayoutInflater.from(mContext).inflate(R.layout.single_invite_contact_item, parent, false);
+            listItemView = LayoutInflater.from(mContext).inflate(R.layout.single_receive_contact_item, parent, false);
 
         }
 
-        InviteSentClass currentCall = getItem(position);
+        ReceiveClass currentCall = getItem(position);
 
-        TextView name = listItemView.findViewById(R.id.person_invite_name);
-        TextView number = listItemView.findViewById(R.id.person_invite_number);
-        TextView status = listItemView.findViewById(R.id.person_invite_status);
+        TextView name = listItemView.findViewById(R.id.person_receive_name);
+        TextView number = listItemView.findViewById(R.id.person_receive_number);
 
         name.setText(currentCall.getName());
         number.setText(currentCall.getNumber());
-        status.setText(currentCall.getStatus());
 
         return listItemView;
     }
