@@ -48,5 +48,8 @@
     <string name="invited">invited</string>
     <string name="sent">sent</string>
     <string name="connecting_to_server">sent</string>
+    <string name="received">received</string>
+    <string name="username">username</string>
+    <string name="invitation">invitation</string>
 
 </resources>

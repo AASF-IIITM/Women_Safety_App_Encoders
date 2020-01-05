@@ -24,8 +24,11 @@ import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.adapter.ContactAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -89,7 +92,11 @@ public class ContactActivity extends AppCompatActivity {
                             cur.getColumnIndex(ContactsContract.Contacts._ID));
                     String name = cur.getString(cur.getColumnIndex(
                             ContactsContract.Contacts.DISPLAY_NAME));
-                    contactList.add(new ContactNameClass(id, name));
+
+                    if(id!= null && name!= null){
+                        contactList.add(new ContactNameClass(id, name));
+                    }
+
                 }
                 Collections.sort(contactList, new Comparator<ContactNameClass>() {
                     @Override
@@ -189,35 +196,58 @@ public class ContactActivity extends AppCompatActivity {
 
     private void updateDatabase(List<String> items, String name) {
 
-        String user_number = sharedPreferences.getString(getString(R.string.number), getString(R.string.error));
-        if (user_number.equals(R.string.error)) {
+        final String current_user_number = sharedPreferences.getString(getString(R.string.number), getString(R.string.error));
+        final String current_user_name = sharedPreferences.getString(getString(R.string.username), getString(R.string.error));
+        if (current_user_number.equals(R.string.error) || current_user_name.equals(getString(R.string.error))) {
             Toast.makeText(ContactActivity.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            SweetAlertDialog loadingDialog;
+            final SweetAlertDialog loadingDialog;
 
             loadingDialog = new SweetAlertDialog(ContactActivity.this, SweetAlertDialog.PROGRESS_TYPE);
             loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText("Loading ...");
+            loadingDialog.setTitleText("Creating Coonection Links ...");
             loadingDialog.setCancelable(false);
-            loadingDialog.show();
 
             Iterator iterator = items.iterator();
             while (iterator.hasNext()) {
-                String sent_phone_number = iterator.next().toString();
-                DatabaseReference rootRef = mFirebaseReference.child(getString(R.string.users)).child(user_number).child(getString(R.string.sent));
+                loadingDialog.show();
+                final String sent_phone_number = iterator.next().toString();
+                DatabaseReference rootRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
                 String key = mFirebaseReference.push().getKey();
                 Map<String, Object> value = new HashMap<>();
                 value.put(getString(R.string.name), name);
                 value.put(getString(R.string.number), sent_phone_number);
                 value.put(getString(R.string.status), getString(R.string.invited));
                 rootRef.child(key).setValue(value);
-            }
 
-            loadingDialog.dismissWithAnimation();
+                final DatabaseReference receiverPresentRef = mFirebaseReference.child(getString(R.string.users));
+                receiverPresentRef.addListenerForSingleValueEvent(  new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String key = mFirebaseReference.push().getKey();
+                        Map<String, Object> value = new HashMap<>();
+                        value.put(getString(R.string.name), current_user_name);
+                        value.put(getString(R.string.number),current_user_number);
+
+                        if (dataSnapshot.hasChild(sent_phone_number)) {
+                            receiverPresentRef.child(sent_phone_number).child(getString(R.string.received)).child(key).setValue(value);
+                        } else {
+                            mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value);
+                        }
+                        loadingDialog.dismissWithAnimation();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        loadingDialog.dismissWithAnimation();
+                    }
+                });
+
+
+            }
 
         }
 
     }
-
 
 }
