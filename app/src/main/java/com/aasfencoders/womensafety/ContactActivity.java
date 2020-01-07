@@ -107,6 +107,9 @@ public class ContactActivity extends AppCompatActivity {
             public void onSeeking(SeekParams seekParams) {
                 String cur_pos = Integer.toString(seekParams.progress);
                 Toast.makeText(getBaseContext(),cur_pos,Toast.LENGTH_SHORT).show();
+
+                //TODO : seekbar pos change
+
             }
 
             @Override
@@ -164,6 +167,8 @@ public class ContactActivity extends AppCompatActivity {
                         return obj1.getName().compareToIgnoreCase(obj2.getName());
                     }
                 });
+
+                //TODO : Add ID and name of LETTERS (sample ID WORD1 to WORD26 and names to A..Z)
             }
             if (cur != null) {
                 cur.close();
