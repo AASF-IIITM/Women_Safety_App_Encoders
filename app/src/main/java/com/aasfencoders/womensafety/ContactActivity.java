@@ -29,6 +29,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.warkiz.widget.ColorCollector;
+import com.warkiz.widget.IndicatorSeekBar;
+import com.warkiz.widget.OnSeekChangeListener;
+import com.warkiz.widget.SeekParams;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -51,7 +55,6 @@ public class ContactActivity extends AppCompatActivity {
     private TextView loadingtextview;
 
     SharedPreferences sharedPreferences;
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mFirebaseReference;
 
 
@@ -59,12 +62,69 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+        getSupportActionBar().setTitle(getString(R.string.selectContact));
+
+        IndicatorSeekBar seekBar = findViewById(R.id.seekbar);
+        seekBar.setIndicatorTextFormat("${TICK_TEXT}");
+
+        seekBar.customSectionTrackColor(new ColorCollector() {
+            @Override
+            public boolean collectSectionTrackColor(int[] colorIntArr) {
+                //the length of colorIntArray equals section count
+                colorIntArr[0] = getResources().getColor(R.color.color_blue, null);
+                colorIntArr[1] = getResources().getColor(R.color.color_gray, null);
+                colorIntArr[2] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[3] = getResources().getColor(R.color.color_red, null);
+                colorIntArr[4] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[5] = getResources().getColor(R.color.color_yellow, null);
+                colorIntArr[6] = getResources().getColor(R.color.color_blue, null);
+                colorIntArr[7] = getResources().getColor(R.color.color_gray, null);
+                colorIntArr[8] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[9] = getResources().getColor(R.color.color_red, null);
+                colorIntArr[10] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[11] = getResources().getColor(R.color.color_yellow, null);
+                colorIntArr[12] = getResources().getColor(R.color.color_blue, null);
+                colorIntArr[13] = getResources().getColor(R.color.color_gray, null);
+                colorIntArr[14] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[15] = getResources().getColor(R.color.color_red, null);
+                colorIntArr[16] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[17] = getResources().getColor(R.color.color_yellow, null);
+                colorIntArr[18] = getResources().getColor(R.color.color_blue, null);
+                colorIntArr[19] = getResources().getColor(R.color.color_gray, null);
+                colorIntArr[20] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[21] = getResources().getColor(R.color.color_red, null);
+                colorIntArr[22] = getResources().getColor(R.color.color_green, null);
+                colorIntArr[23] = getResources().getColor(R.color.color_yellow, null);
+                colorIntArr[24] = getResources().getColor(R.color.color_blue, null);
+
+
+                return true; //True if apply color , otherwise no change
+            }
+        });
+
+        seekBar.setOnSeekChangeListener(new OnSeekChangeListener() {
+            @Override
+            public void onSeeking(SeekParams seekParams) {
+                String cur_pos = Integer.toString(seekParams.progress);
+                Toast.makeText(getBaseContext(),cur_pos,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+
+            }
+        });
+
         contactListView = findViewById(R.id.contactNameListView);
         progressBar = findViewById(R.id.progress);
         loadingtextview = findViewById(R.id.progressTextViewContacts);
         sharedPreferences = ContactActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseReference = mFirebaseDatabase.getReference();
+        mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         progressBar.setVisibility(View.VISIBLE);
         loadingtextview.setVisibility(View.VISIBLE);
         FetchContactAsyncTask task = new FetchContactAsyncTask();

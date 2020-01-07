@@ -17,6 +17,7 @@
     <string name="receiveConnection">Show Received Connection</string>
     <string name="showConnection">Show Connection</string>
     <string name="homeDisplay">Welcome to Women Safety App</string>
+    <string name="selectContact">Select Contact</string>
 
     //Invite Connection Page
     <string name="inviteConnectionHeading">Invite Connection Page</string>

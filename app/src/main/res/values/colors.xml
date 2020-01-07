@@ -6,4 +6,14 @@
 
     <color name="dialogColour">#E61858</color>
 
+    // seekbar color
+    <color name="color_greendark">#224D0D</color>
+    <color name="color_blue">#1B1ED8</color>
+    <color name="color_gray">#A0A1A7</color>
+    <color name="color_green">#377915</color>
+    <color name="color_red">#FF0000</color>
+    <color name="color_yellow">#FAEA07</color>
+    <color name="color_white">#FFFFFF</color>
+
+
 </resources>
