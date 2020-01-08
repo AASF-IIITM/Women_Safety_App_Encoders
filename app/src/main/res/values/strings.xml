@@ -55,4 +55,7 @@
     <string name="userNumber">Number</string>
     <string name="invitation">invitation</string>
 
+    //contact list string
+    <string name="CID">CONT::</string>
+
 </resources>
