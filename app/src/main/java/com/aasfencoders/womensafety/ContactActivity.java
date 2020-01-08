@@ -104,10 +104,8 @@ public class ContactActivity extends AppCompatActivity {
         seekBar.setOnSeekChangeListener(new OnSeekChangeListener() {
             @Override
             public void onSeeking(SeekParams seekParams) {
-                String cur_pos = Integer.toString(contactPosArray[seekParams.progress]);
-
-                contactListView.smoothScrollToPosition(contactPosArray[seekParams.progress - 1]);
-
+                int cur_pos = contactPosArray[seekParams.progress - 1];
+                contactListView.smoothScrollToPosition(cur_pos);
             }
 
             @Override
@@ -161,8 +159,8 @@ public class ContactActivity extends AppCompatActivity {
                 }
                 for(int i=0;i<26;i++)
                 {
-                    String id2 = getString(R.string.CID ) + Integer.toString(i+1);
-                    String name = Character.toString((char)(65+i));
+                    String id2 = getID(i);
+                    String name = getName(i);
                     contactList.add(new ContactNameClass(id2,name));
                 }
 
@@ -173,17 +171,7 @@ public class ContactActivity extends AppCompatActivity {
                     }
                 });
 
-                int i = -1;
-                int j=0;
-                contactPosArray = new int[27];
-                for(ContactNameClass contact : contactList) {
-                    if(contact.getId().length()>5&&contact.getId().substring(0,4).equals("CONT")){
-                        contactPosArray[++i]=j;
-                    }
-                    if(i==25)
-                        break;
-                    j++;
-                }
+                findPosContactGroup(contactList);
 
             }
             if (cur != null) {
@@ -218,6 +206,12 @@ public class ContactActivity extends AppCompatActivity {
 
     private void phone_number_display(String id, final String name) {
 
+
+        if(id.length()>6 && id.substring(0,4).equals("CONT"))
+        {
+            return;
+        }
+
         ArrayList<String> items = new ArrayList<>();
 
         ContentResolver cr = getContentResolver();
@@ -235,6 +229,8 @@ public class ContactActivity extends AppCompatActivity {
             while (pCur.moveToNext()) {
                 String phoneNo = pCur.getString(pCur.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                phoneNo = phoneNo.replaceAll("\\s","");
 
 
                 boolean flagCommon = false;
@@ -334,15 +330,25 @@ public class ContactActivity extends AppCompatActivity {
 
 
     private void findPosContactGroup(ArrayList<ContactNameClass>Contact){
-
+        int i = -1;
+        int j=0;
+        contactPosArray = new int[27];
+        for(ContactNameClass contact : Contact) {
+            if(contact.getId().length()>5&&contact.getId().substring(0,4).equals("CONT")){
+                contactPosArray[++i]=j;
+            }
+            if(i==25)
+                break;
+            j++;
+        }
 
     }
 
-//    private String getID(int no){
-//        return ;
-//    }
-//    private String getName(int no){
-//        return ;
-//    }
+    private String getID(int no){
+        return getString(R.string.CID ) + Integer.toString(no+1);
+    }
+    private String getName(int no){
+        return Character.toString((char)(65+no));
+    }
 
 }
