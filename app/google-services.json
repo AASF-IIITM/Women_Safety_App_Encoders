@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "766579792034-aup0o7qf6svm9uet3t0o62fmlblvl21n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aasfencoders.womensafety",
+            "certificate_hash": "3064f8e442f8be1796174fee7fddfd180d32aa2d"
+          }
+        },
+        {
           "client_id": "766579792034-n5a2g5ih6s3o3gfvpfjlhte3vtv7r1rg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

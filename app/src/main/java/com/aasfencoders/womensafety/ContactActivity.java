@@ -14,7 +14,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -56,7 +55,7 @@ public class ContactActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
-
+    int contactPosArray[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,11 +104,8 @@ public class ContactActivity extends AppCompatActivity {
         seekBar.setOnSeekChangeListener(new OnSeekChangeListener() {
             @Override
             public void onSeeking(SeekParams seekParams) {
-                String cur_pos = Integer.toString(seekParams.progress);
-                Toast.makeText(getBaseContext(),cur_pos,Toast.LENGTH_SHORT).show();
-
-                //TODO : seekbar pos change
-
+                int cur_pos = contactPosArray[seekParams.progress - 1];
+                contactListView.smoothScrollToPosition(cur_pos);
             }
 
             @Override
@@ -161,6 +157,13 @@ public class ContactActivity extends AppCompatActivity {
                     }
 
                 }
+                for(int i=0;i<26;i++)
+                {
+                    String id2 = getID(i);
+                    String name = getName(i);
+                    contactList.add(new ContactNameClass(id2,name));
+                }
+
                 Collections.sort(contactList, new Comparator<ContactNameClass>() {
                     @Override
                     public int compare(ContactNameClass obj1, ContactNameClass obj2) {
@@ -168,7 +171,8 @@ public class ContactActivity extends AppCompatActivity {
                     }
                 });
 
-                //TODO : Add ID and name of LETTERS (sample ID WORD1 to WORD26 and names to A..Z)
+                findPosContactGroup(contactList);
+
             }
             if (cur != null) {
                 cur.close();
@@ -202,6 +206,12 @@ public class ContactActivity extends AppCompatActivity {
 
     private void phone_number_display(String id, final String name) {
 
+
+        if(id.length()>6 && id.substring(0,4).equals("CONT"))
+        {
+            return;
+        }
+
         ArrayList<String> items = new ArrayList<>();
 
         ContentResolver cr = getContentResolver();
@@ -219,7 +229,9 @@ public class ContactActivity extends AppCompatActivity {
             while (pCur.moveToNext()) {
                 String phoneNo = pCur.getString(pCur.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
-                phoneNo.replaceAll(" ", "");
+
+                phoneNo = phoneNo.replaceAll("\\s","");
+
 
                 boolean flagCommon = false;
 
@@ -313,6 +325,30 @@ public class ContactActivity extends AppCompatActivity {
 
         }
 
+    }
+
+
+
+    private void findPosContactGroup(ArrayList<ContactNameClass>Contact){
+        int i = -1;
+        int j=0;
+        contactPosArray = new int[27];
+        for(ContactNameClass contact : Contact) {
+            if(contact.getId().length()>5&&contact.getId().substring(0,4).equals("CONT")){
+                contactPosArray[++i]=j;
+            }
+            if(i==25)
+                break;
+            j++;
+        }
+
+    }
+
+    private String getID(int no){
+        return getString(R.string.CID ) + Integer.toString(no+1);
+    }
+    private String getName(int no){
+        return Character.toString((char)(65+no));
     }
 
 }
