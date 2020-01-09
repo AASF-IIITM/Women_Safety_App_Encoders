@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     mUserPhoneNumber = user.getPhoneNumber();
-                    sharedPreferences.edit().putString(getString(R.string.number),mUserPhoneNumber).apply();
+                    sharedPreferences.edit().putString(getString(R.string.userNumber),mUserPhoneNumber).apply();
                     int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
                     if (firstTime == 0) {
                         checkConnection();
@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onTextInputConfirmed(String text) {
                         mFirebaseReference.child(getString(R.string.users)).child(mUserPhoneNumber).child(getString(R.string.profile)).child(getString(R.string.name)).setValue(text.trim());
                         sharedPreferences.edit().putInt(getString(R.string.firstform),1).apply();
+                        sharedPreferences.edit().putString(getString(R.string.username),text.trim()).apply();
                         Toast.makeText(MainActivity.this, "Data Stored in Server", Toast.LENGTH_SHORT).show();
                         onSignedInInitialize(mUserPhoneNumber);
                     }

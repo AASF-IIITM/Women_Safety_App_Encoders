@@ -14,8 +14,10 @@
 
     //Home Fragment string resource
     <string name="inviteConnection">Invite New Connection</string>
+    <string name="receiveConnection">Show Received Connection</string>
     <string name="showConnection">Show Connection</string>
     <string name="homeDisplay">Welcome to Women Safety App</string>
+    <string name="selectContact">Select Contact</string>
 
     //Invite Connection Page
     <string name="inviteConnectionHeading">Invite Connection Page</string>
@@ -38,15 +40,23 @@
     <string name="profile">Profile</string>
 
     //in general
-    <string name="name">Name</string>
-    <string name="number">Number</string>
+    <string name="name">name</string>
+    <string name="number">number</string>
     <string name="error">ERROR</string>
     <string name="errormessage">Some error occcured</string>
 
     //invite sent strings
-    <string name="status">Status</string>
+    <string name="status">status</string>
     <string name="invited">invited</string>
     <string name="sent">sent</string>
     <string name="connecting_to_server">sent</string>
+    <string name="received">received</string>
+    <string name="username">username</string>
+    <string name="userNumber">Number</string>
+    <string name="invitation">invitation</string>
+
+    //contact list string
+    <string name="CID">CONT::</string>
+    <string name="permissionDenied">Permission Denied to Read Contacts. Please Grant it.</string>
 
 </resources>
