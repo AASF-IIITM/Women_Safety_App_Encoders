@@ -41,6 +41,6 @@ public class DataContract {
         public static final String COLUMN_SOURCE_LONG = "sourcelong";
         public static final String COLUMN_DEST_LAT = "destlat";
         public static final String COLUMN_DEST_LONG = "destlong";
-        
+
     }
 }
