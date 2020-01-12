@@ -103,6 +103,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                             Log.d("*********","ERROR WITH INSERTING DATA");
                         }else{
                             Log.d("*********","DONE");
+                            ds.getRef().removeValue();
                         }
 
                     }
