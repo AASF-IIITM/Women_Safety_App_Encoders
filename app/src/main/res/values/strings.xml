@@ -59,4 +59,9 @@
     <string name="CID">CONT::</string>
     <string name="permissionDenied">Permission Denied to Read Contacts. Please Grant it.</string>
 
+    //receive list
+    <string name="accept">accept</string>
+    <string name="reject">reject</string>
+
+
 </resources>

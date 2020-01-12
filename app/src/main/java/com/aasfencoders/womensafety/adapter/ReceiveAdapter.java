@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,9 +42,30 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         TextView name = listItemView.findViewById(R.id.person_receive_name);
         TextView number = listItemView.findViewById(R.id.person_receive_number);
 
+        final Button accept = listItemView.findViewById(R.id.acceptButton);
+        Button reject = listItemView.findViewById(R.id.rejectButton);
+
         name.setText(currentCall.getName());
         number.setText(currentCall.getNumber());
 
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callFunction(mContext.getString(R.string.accept));
+            }
+        });
+
+        reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callFunction(mContext.getString(R.string.reject));
+            }
+        });
+
         return listItemView;
+    }
+
+    private void callFunction(String status){
+        Toast.makeText(mContext , status , Toast.LENGTH_SHORT).show();
     }
 }
