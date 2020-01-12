@@ -21,6 +21,7 @@
 
     //Invite Connection Page
     <string name="inviteConnectionHeading">Invite Connection Page</string>
+    <string name="inviteDialogString">Fetching Connections those you have Invited &#8230;</string>
     <string name="inviteConnectionEmptyListTitle">Sorry, No Connection are Invited</string>
     <string name="inviteConnectionEmptyListText">Get Started By Adding a Connection by pressing on that plus button</string>
 
@@ -57,6 +58,7 @@
 
     //contact list string
     <string name="CID">CONT::</string>
+    <string name="contactDialogString">Creating Connection Link &#8230;</string>
     <string name="permissionDenied">Permission Denied to Read Contacts. Please Grant it.</string>
 
     //receive list
@@ -65,11 +67,13 @@
 
     //Received Connection Page
     <string name="receivedHeading">Received Connection Page</string>
+    <string name="receivedDialogString">Fetching if any Contacts sent you connection &#8230;</string>
     <string name="receivedEmptyListTitle">Sorry, No Pending Received Connection</string>
     <string name="receivedEmptyListText">Connections will show here once they send you an invitation.</string>
 
     //Matched Connection Page
     <string name="matched">matched</string>
+    <string name="matchedDialogString">Fetching Matched Contacts &#8230;</string>
     <string name="matchedConnectionHeading">Matched Connection Page</string>
     <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
     <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Add Connection Page</string>

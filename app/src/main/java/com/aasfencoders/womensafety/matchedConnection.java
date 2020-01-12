@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class matchedConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -85,6 +88,13 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(matchedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
+            final SweetAlertDialog loadingDialog;
+            loadingDialog = new SweetAlertDialog(matchedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
+            loadingDialog.setTitleText(getString(R.string.matchedDialogString));
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matched));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
@@ -107,6 +117,8 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         }
 
                     }
+
+                    loadingDialog.dismissWithAnimation();
                     getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
                 }
 

@@ -279,10 +279,9 @@ public class ContactActivity extends AppCompatActivity {
             Toast.makeText(ContactActivity.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
             final SweetAlertDialog loadingDialog;
-
             loadingDialog = new SweetAlertDialog(ContactActivity.this, SweetAlertDialog.PROGRESS_TYPE);
             loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText("Creating Coonection Links ...");
+            loadingDialog.setTitleText(getString(R.string.contactDialogString));
             loadingDialog.setCancelable(false);
 
             Iterator iterator = items.iterator();

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -24,12 +25,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class receivedConnection extends AppCompatActivity {
 
     View view;
     ListView listView;
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
+    private SweetAlertDialog loadingDialog;
 
     private ArrayList<ReceiveClass> receivedList;
 
@@ -61,6 +65,12 @@ public class receivedConnection extends AppCompatActivity {
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(receivedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
+            loadingDialog = new SweetAlertDialog(receivedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
+            loadingDialog.setTitleText(getString(R.string.receivedDialogString));
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.received));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
@@ -72,6 +82,9 @@ public class receivedConnection extends AppCompatActivity {
                         ReceiveClass callClassObj = ds.getValue(ReceiveClass.class);
                         receivedList.add(callClassObj);
                     }
+
+                    loadingDialog.dismissWithAnimation();
+
                     Collections.reverse(receivedList);
                     ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
                     listView.setAdapter(receiveAdapter);
