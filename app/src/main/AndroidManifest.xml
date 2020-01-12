@@ -13,7 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".receivedConnection"></activity>
+        <activity android:name=".matchedConnection"></activity>
+        <activity
+            android:name=".receivedConnection"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ContactActivity"
             android:screenOrientation="portrait" />
@@ -32,8 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>

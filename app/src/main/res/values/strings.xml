@@ -63,5 +63,15 @@
     <string name="accept">accept</string>
     <string name="reject">reject</string>
 
+    //Received Connection Page
+    <string name="receivedHeading">Received Connection Page</string>
+    <string name="receivedEmptyListTitle">Sorry, No Pending Received Connection</string>
+    <string name="receivedEmptyListText">Connections will show here once they send you an invitation.</string>
+
+    //Matched Connection Page
+    <string name="matchedConnectionHeading">Matched Connection Page</string>
+    <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
+    <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Add Connection Page</string>
+
 
 </resources>

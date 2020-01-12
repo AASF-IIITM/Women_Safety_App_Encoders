@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.aasfencoders.womensafety.ContactActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.inviteConnection;
+import com.aasfencoders.womensafety.matchedConnection;
 import com.aasfencoders.womensafety.receivedConnection;
 
 public class HomeFragment extends Fragment {
@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // action triggered when the show Received Connection button is pressed
         receivedConnectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +53,8 @@ public class HomeFragment extends Fragment {
         showConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), matchedConnection.class);
+                startActivity(intent);
             }
         });
 

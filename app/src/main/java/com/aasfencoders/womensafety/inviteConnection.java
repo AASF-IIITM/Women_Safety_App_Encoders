@@ -80,7 +80,7 @@ public class inviteConnection extends AppCompatActivity {
         sharedPreferences = inviteConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
-        view = (View) findViewById(R.id.empty_view);
+        view = (View) findViewById(R.id.empty_invite_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
         listView.setEmptyView(view);
 
