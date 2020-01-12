@@ -69,9 +69,15 @@
     <string name="receivedEmptyListText">Connections will show here once they send you an invitation.</string>
 
     //Matched Connection Page
+    <string name="matched">matched</string>
     <string name="matchedConnectionHeading">Matched Connection Page</string>
     <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
     <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Add Connection Page</string>
+
+    <string name="zero">zero</string>
+    <string name="one">one</string>
+    <string name="two">two</string>
+    <string name="EMPTY">EMPTY</string>
 
 
 </resources>

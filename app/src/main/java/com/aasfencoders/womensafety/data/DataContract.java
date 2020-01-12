@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 public class DataContract {
 
     //adding URI
-    public static final String CONTENT_AUTHORITY = "com.example.android.Data";
+    public static final String CONTENT_AUTHORITY = "com.aasfencoders.womensafety.android.data";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_Data = "Data";
 

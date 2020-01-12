@@ -35,6 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".data.DataProvider"
+            android:authorities="com.aasfencoders.womensafety.android.data"
+            android:exported="false" />
     </application>
 
 </manifest>
