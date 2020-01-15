@@ -49,7 +49,7 @@ public class receivedConnection extends AppCompatActivity {
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
         view = (View) findViewById(R.id.empty_received_view);
-        listView = (ListView) findViewById(R.id.listOfInvitedConnections);
+        listView = (ListView) findViewById(R.id.listOfReceivedConnections);
         listView.setEmptyView(view);
 
         boolean state = CheckNetworkConnection.checkNetwork(receivedConnection.this);
