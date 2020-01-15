@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
@@ -32,8 +33,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.aasfencoders.womensafety.Class.DataModel;
+import com.aasfencoders.womensafety.Class.RootModel;
+import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.MapsActivity;
 import com.aasfencoders.womensafety.R;
+import com.aasfencoders.womensafety.api.ApiClient;
+import com.aasfencoders.womensafety.api.ApiInterface;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.matchedConnection;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
@@ -52,6 +58,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Callback;
+
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
@@ -60,11 +69,15 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private GoogleMap mMap;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     private ArrayList<String> phoneNumber;
     private ArrayList<String> phoneName;
+
+    private String userPhoneNumber;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -73,7 +86,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
                 }
             }
         }
@@ -85,6 +98,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         final Switch gpsSwitch = view.findViewById(R.id.gpsSwitch);
+        sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
+        userPhoneNumber = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -98,14 +113,14 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                         startActivity(intent);
                         if (Build.VERSION.SDK_INT < 23) {
                            // sendSMS();
-                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
                         } else {
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                             } else {
 
                                // sendSMS();
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
                             }
                         }
                     } else {
@@ -176,6 +191,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
+
+                sendLocationToMatchedContacts(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
             }
 
             @Override
@@ -214,6 +231,31 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         for(i=0 ; i< phoneName.size() ; i++){
             String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
             SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null,null);
+        }
+
+    }
+
+    private void sendLocationToMatchedContacts(String Lat , String Long){
+
+        int i;
+        ApiInterface apiService =  ApiClient.getClient().create(ApiInterface.class);
+        for(i=0 ; i< phoneNumber.size() ; i++){
+            int length = phoneNumber.get(i).length();
+            RootModel rootModel = new RootModel( "/topics/" + phoneNumber.get(i).substring(1,length), new DataModel(Lat, Long , userPhoneNumber));
+
+            retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
+
+            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    Toast.makeText(getContext(),"Sent",Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
         }
 
     }
