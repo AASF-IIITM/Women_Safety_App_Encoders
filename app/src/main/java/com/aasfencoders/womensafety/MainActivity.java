@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.Arrays;
@@ -180,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
                         sharedPreferences.edit().putInt(getString(R.string.firstform),1).apply();
                         sharedPreferences.edit().putString(getString(R.string.username),text.trim()).apply();
                         Toast.makeText(MainActivity.this, "Data Stored in Server", Toast.LENGTH_SHORT).show();
+                        int length = mUserPhoneNumber.length();
+                        FirebaseMessaging.getInstance().subscribeToTopic(mUserPhoneNumber.substring(1,length));
                         onSignedInInitialize(mUserPhoneNumber);
                     }
                 })
