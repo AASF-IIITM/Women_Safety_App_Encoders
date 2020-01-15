@@ -50,7 +50,9 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
                 DataContract.DataEntry.COLUMN_PHONE};
 
         if(getContext() != null){
-            return new CursorLoader(getContext(), DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
+            String selection = DataContract.DataEntry.COLUMN_STATUS + " =? ";
+            String[] selectionArgs = new String[]{getString(R.string.one)};
+            return new CursorLoader(getContext(), DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
         }else {
             return null;
         }
