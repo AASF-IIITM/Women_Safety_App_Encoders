@@ -53,6 +53,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         mCurrentDataUri = intent.getData();
 
+        nameView = findViewById(R.id.nameTrackOther);
+        numberView = findViewById(R.id.numberTrackOther);
+
     }
 
     @Override
@@ -76,6 +79,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+
+        cursor.moveToFirst();
 
         int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         int numberColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);

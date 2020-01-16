@@ -12,11 +12,6 @@ public class DataModel {
         this.phone = phone;
     }
 
-
-    public String getPhone() {
-        return phone;
-    }
-
     public String getLatitude() {
         return latitude;
     }
@@ -24,4 +19,7 @@ public class DataModel {
     public String getLongitude() {
         return longitude;
     }
+
+    public String getPhone() { return phone; }
+
 }
