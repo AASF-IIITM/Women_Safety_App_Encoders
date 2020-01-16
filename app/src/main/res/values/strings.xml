@@ -87,5 +87,10 @@
     <string name="connectionHeading">You can rest now</string>
     <string name="connectionMessage">No connection is in danger</string>
 
+    //FCM
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="Phone">phone</string>
+
 
 </resources>

@@ -238,17 +238,19 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private void sendLocationToMatchedContacts(String Lat , String Long){
 
         int i;
-        ApiInterface apiService =  ApiClient.getClient().create(ApiInterface.class);
+
         for(i=0 ; i< phoneNumber.size() ; i++){
             int length = phoneNumber.get(i).length();
+            ApiInterface apiService =  ApiClient.getClient().create(ApiInterface.class);
             RootModel rootModel = new RootModel( "/topics/" + phoneNumber.get(i).substring(1,length), new DataModel(Lat, Long , userPhoneNumber));
-
             retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
 
             responseBodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                     Toast.makeText(getContext(),"Sent",Toast.LENGTH_SHORT).show();
+
+
                 }
 
                 @Override
