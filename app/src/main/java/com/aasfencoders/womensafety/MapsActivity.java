@@ -1,20 +1,29 @@
 package com.aasfencoders.womensafety;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aasfencoders.womensafety.data.DataContract;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,25 +33,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
+    private Uri mCurrentDataUri;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == 1){
-            if(grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-                }
-            }
-        }
-    }
+    private TextView nameView;
+    private TextView numberView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,60 +50,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Intent intent = getIntent();
+        mCurrentDataUri = intent.getData();
 
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        getSupportLoaderManager().initLoader(1, null, this);
 
-        locationManager =(LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Toast.makeText(MapsActivity.this,"location updated",Toast.LENGTH_SHORT).show();
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,14));
-            }
+    }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        String[] projection = {
+                DataContract.DataEntry.COLUMN_NAME,
+                DataContract.DataEntry.COLUMN_PHONE,
+                DataContract.DataEntry.COLUMN_CURRENT_LAT,
+                DataContract.DataEntry.COLUMN_CURRENT_LONG};
 
-            }
+        return new CursorLoader(MapsActivity.this, mCurrentDataUri, projection, null, null, null);
 
-            @Override
-            public void onProviderEnabled(String provider) {
+    }
 
-            }
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
-            @Override
-            public void onProviderDisabled(String provider) {
+        int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
+        int numberColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
+        int latColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LAT);
+        int longColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LONG);
 
-            }
-        };
+        String name = cursor.getString(nameColIndex);
+        String number = cursor.getString(numberColIndex);
+        String Lat = cursor.getString(latColIndex);
+        String Long = cursor.getString(longColIndex);
 
-        if(Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } else{
-            if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            }else{
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            }
-        }
+        nameView.setText(name);
+        numberView.setText(number);
 
+        LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
+        mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
+    }
 
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
 }

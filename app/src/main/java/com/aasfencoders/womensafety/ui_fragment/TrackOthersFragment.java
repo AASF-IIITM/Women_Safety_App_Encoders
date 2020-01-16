@@ -1,10 +1,14 @@
 package com.aasfencoders.womensafety.ui_fragment;
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +18,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import com.aasfencoders.womensafety.MapsActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.adapter.ConnectionCursorAdapter;
 import com.aasfencoders.womensafety.adapter.MatchedCursorAdapter;
@@ -36,6 +41,16 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
         listView = (ListView) root.findViewById(R.id.listOfInvitedConnections);
         listView.setEmptyView(view);
         listView.setAdapter(mCursorAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getContext(), MapsActivity.class);
+                Uri currentToDoUri = ContentUris.withAppendedId(DataContract.DataEntry.CONTENT_URI, l);
+                intent.setData(currentToDoUri);
+                startActivity(intent);
+            }
+        });
 
         getActivity().getSupportLoaderManager().initLoader(1, null, this);
         return root;

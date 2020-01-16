@@ -24,11 +24,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String Long = data.get(getString(R.string.longitude));
         String phone = data.get(getString(R.string.Phone));
 
-        Log.i("***************Lat",Lat);
-        Log.i("***************LONG",Long);
-        Log.i("***************phone",phone);
-
-
         storeInDatabase(Lat , Long , phone);
 
     }

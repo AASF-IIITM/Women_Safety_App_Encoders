@@ -105,27 +105,29 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked == true) {
+                if (isChecked) {
 
-                    boolean state = CheckNetworkConnection.checkNetwork(getContext());
-                    if (state) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);
-                        if (Build.VERSION.SDK_INT < 23) {
-                           // sendSMS();
-                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
-                        } else {
-                            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                            } else {
-
-                               // sendSMS();
+                    if(getContext() != null){
+                        boolean state = CheckNetworkConnection.checkNetwork(getContext());
+                        if (state) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                            if (Build.VERSION.SDK_INT < 23) {
+                                // sendSMS();
                                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+                            } else {
+                                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                                } else {
+
+                                    // sendSMS();
+                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+                                }
                             }
+                        } else {
+                            NetworkDialog.showNetworkDialog(getContext());
+                            gpsSwitch.setChecked(false);
                         }
-                    } else {
-                        NetworkDialog.showNetworkDialog(getContext());
-                       gpsSwitch.setChecked(false);
                     }
                 } else {
                     locationManager.removeUpdates(locationListener);
@@ -153,9 +155,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                     String number = cursor.getString(numberColumnIndex);
                     phoneName.add(name);
                     phoneNumber.add(number);
-
-                    Log.i("$$$$$$$$$$$$$$$",name);
-                    Log.i("%%%%%%%%%%%",number);
                 }
             }
         }
