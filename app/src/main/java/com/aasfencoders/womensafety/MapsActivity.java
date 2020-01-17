@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-
+        mMap.clear();
         cursor.moveToFirst();
 
         int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
@@ -94,10 +94,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         nameView.setText(name);
         numberView.setText(number);
-
+        float zoomLevel = mMap.getCameraPosition().zoom;
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
         mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
     }
 
     @Override
