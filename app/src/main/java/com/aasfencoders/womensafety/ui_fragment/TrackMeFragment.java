@@ -187,9 +187,12 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 if (getContext() != null) {
                     Toast.makeText(getContext(), "location updated", Toast.LENGTH_SHORT).show();
                 }
+                mMap.clear();
+                float zoomLevel = mMap.getCameraPosition().zoom;
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+
 
                 sendLocationToMatchedContacts(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
             }
