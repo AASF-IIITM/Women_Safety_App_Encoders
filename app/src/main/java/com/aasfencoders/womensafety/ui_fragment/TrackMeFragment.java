@@ -110,8 +110,14 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                     if(getContext() != null){
                         boolean state = CheckNetworkConnection.checkNetwork(getContext());
                         if (state) {
-                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
+
+                            final LocationManager manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
+
+                            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                            }
+
                             if (Build.VERSION.SDK_INT < 23) {
                                 // sendSMS();
                                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
