@@ -72,7 +72,7 @@ public class receivedConnection extends AppCompatActivity {
             loadingDialog.setCancelable(false);
             loadingDialog.show();
 
-            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.received));
+            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.invitation)).child(current_user_number);
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
