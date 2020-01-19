@@ -18,7 +18,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
     const target_name = data.target_name;
 
     if(selection === "accept") {
-        admin.database().ref(`/Users/${target_no}/received/`).once("value")
+        admin.database().ref(`/invitation/${target_no}/`).once("value")
         .then(snapshot => {
             const findSource = snapshot.val()// return all the timestamp along with the contianed object
             var keys = Object.keys(findSource)
@@ -26,13 +26,13 @@ exports.sent_status = functions.https.onCall((data, context) => {
             for (var i=0 ;i < keys.length ; i++) {
                 var k =keys[i];
                 if (findSource[k].number === source_no) {
-                    const p=admin.database().ref(`/Users/${target_no}/received/${k}`).remove();
+                    const p=admin.database().ref(`/invitation/${target_no}/${k}`).remove();
                     promises.push(p)
-                    const q= admin.database().ref(`/Users/${target_no}/matched/`).push({
-                        name : source_name,
-                        number : source_no,
-                    })
-                    promises.push(q)
+                    // const q= admin.database().ref(`/Users/${target_no}/matched/`).push({
+                    //     name : source_name,
+                    //     number : source_no,
+                    // })
+                    // promises.push(q)
                     // const r= admin.database().ref(`/Users/${source_no}/sent`).once("value")
                     // promises.push(r)
                     break;
@@ -70,7 +70,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
     }
 
     else {
-        admin.database().ref(`/Users/${target_no}/received/`).once("value")
+        admin.database().ref(`/invitation/${target_no}/`).once("value")
         .then(snapshot => {
             const findSource = snapshot.val() // return all the timestamp along with the contianed object
             var keys = Object.keys(findSource)
@@ -78,7 +78,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
             for (var i=0 ;i < keys.length ; i++) {
                 var k =keys[i];
                 if (findSource[k].number === source_no) {
-                    const p=admin.database().ref(`/Users/${target_no}/received/${k}`).remove();
+                    const p=admin.database().ref(`/invitation/${target_no}/${k}`).remove();
                     promises.push(p)
                     break;
                 }
