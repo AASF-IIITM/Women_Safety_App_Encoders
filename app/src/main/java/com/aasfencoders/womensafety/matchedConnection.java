@@ -109,10 +109,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
 
                         Uri uri = getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
-                        if(uri == null){
-                            Log.d("*********","ERROR WITH INSERTING DATA");
-                        }else{
-                            Log.d("*********","DONE");
+                        if(uri != null){
                             ds.getRef().removeValue();
                         }
 

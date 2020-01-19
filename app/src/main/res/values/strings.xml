@@ -92,5 +92,11 @@
     <string name="longitude">longitude</string>
     <string name="Phone">phone</string>
 
+    //connectivity
+    <string name="noInternet">No Internet Connectivity</string>
+    <string name="reload">reload</string>
+    <string name="loading">loading</string>
+    <string name="noInternetMessage">Connect to Mobile Network/Wi-Fi and then try again</string>
+
 
 </resources>
