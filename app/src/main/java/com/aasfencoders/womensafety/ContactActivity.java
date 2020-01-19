@@ -297,8 +297,8 @@ public class ContactActivity extends AppCompatActivity {
                 rootRef.child(key).setValue(value);
 
                 Map<String, Object> value2 = new HashMap<>();
-                value.put(getString(R.string.name), current_user_name);
-                value.put(getString(R.string.number),current_user_number);
+                value2.put(getString(R.string.name), current_user_name);
+                value2.put(getString(R.string.number),current_user_number);
 
                 mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value2);
 
