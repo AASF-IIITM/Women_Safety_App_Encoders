@@ -45,6 +45,20 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
 
+    private View progress;
+
+    private void checkConnection(){
+        boolean state = CheckNetworkConnection.checkNetwork(matchedConnection.this);
+        if (state) {
+            fetchMatchedContacts();
+            progress.setVisibility(View.VISIBLE);
+            view.setVisibility(View.GONE);
+        } else {
+            progress.setVisibility(View.INVISIBLE);
+            view.setVisibility(View.GONE);
+        }
+    }
+
     MatchedCursorAdapter mCursorAdapter;
 
     @Override
@@ -64,18 +78,17 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         mCursorAdapter = new MatchedCursorAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
 
+        progress = findViewById(R.id.progress_view);
+
+        checkConnection();
+
         getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
 
         FloatingActionButton reload = (FloatingActionButton) findViewById(R.id.fab_reload_matched);
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean state = CheckNetworkConnection.checkNetwork(matchedConnection.this);
-                if (state) {
-                    fetchMatchedContacts();
-                } else {
-                    NetworkDialog.showNetworkDialog(matchedConnection.this);
-                }
+                checkConnection();
             }
         });
 
@@ -89,11 +102,6 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             Toast.makeText(matchedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
             final SweetAlertDialog loadingDialog;
-            loadingDialog = new SweetAlertDialog(matchedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
-            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText(getString(R.string.matchedDialogString));
-            loadingDialog.setCancelable(false);
-            loadingDialog.show();
 
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matched));
             ValueEventListener eventListener = new ValueEventListener() {
@@ -114,14 +122,13 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         }
 
                     }
-
-                    loadingDialog.dismissWithAnimation();
+                    progress.setVisibility(View.GONE);
                     getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    progress.setVisibility(View.GONE);
                 }
             };
             userNameRef.addListenerForSingleValueEvent(eventListener);
@@ -144,7 +151,13 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        mCursorAdapter.swapCursor(data);
+
+        if(data != null){
+            mCursorAdapter.swapCursor(data);
+        }else{
+            view.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
