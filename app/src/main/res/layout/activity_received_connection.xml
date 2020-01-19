@@ -10,14 +10,14 @@
     <!-- List View -->
 
     <ListView
-        android:id="@+id/listOfInvitedConnections"
+        android:id="@+id/listOfReceivedConnections"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </ListView>
 
     <!-- Empty view for the list -->
     <RelativeLayout
-        android:id="@+id/empty_view"
+        android:id="@+id/empty_received_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif-medium"
             android:paddingTop="6dp"
-            android:text="@string/inviteConnectionEmptyListTitle"
+            android:text="@string/receivedEmptyListTitle"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="#133241"/>
 
@@ -42,7 +42,7 @@
             android:textAlignment="center"
             android:fontFamily="sans-serif"
             android:paddingTop="15dp"
-            android:text="@string/inviteConnectionEmptyListText"
+            android:text="@string/receivedEmptyListText"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#235877"/>
     </RelativeLayout>

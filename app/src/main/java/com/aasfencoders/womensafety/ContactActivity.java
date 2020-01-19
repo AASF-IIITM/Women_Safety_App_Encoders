@@ -279,15 +279,14 @@ public class ContactActivity extends AppCompatActivity {
             Toast.makeText(ContactActivity.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
             final SweetAlertDialog loadingDialog;
-
             loadingDialog = new SweetAlertDialog(ContactActivity.this, SweetAlertDialog.PROGRESS_TYPE);
             loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText("Creating Coonection Links ...");
+            loadingDialog.setTitleText(getString(R.string.contactDialogString));
             loadingDialog.setCancelable(false);
 
             Iterator iterator = items.iterator();
+            loadingDialog.show();
             while (iterator.hasNext()) {
-                loadingDialog.show();
                 final String sent_phone_number = iterator.next().toString();
                 DatabaseReference rootRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
                 String key = mFirebaseReference.push().getKey();
@@ -297,32 +296,14 @@ public class ContactActivity extends AppCompatActivity {
                 value.put(getString(R.string.status), getString(R.string.invited));
                 rootRef.child(key).setValue(value);
 
-                final DatabaseReference receiverPresentRef = mFirebaseReference.child(getString(R.string.users));
-                receiverPresentRef.addListenerForSingleValueEvent(  new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String key = mFirebaseReference.push().getKey();
-                        Map<String, Object> value = new HashMap<>();
-                        value.put(getString(R.string.name), current_user_name);
-                        value.put(getString(R.string.number),current_user_number);
+                Map<String, Object> value2 = new HashMap<>();
+                value.put(getString(R.string.name), current_user_name);
+                value.put(getString(R.string.number),current_user_number);
 
-                        if (dataSnapshot.hasChild(sent_phone_number)) {
-                            receiverPresentRef.child(sent_phone_number).child(getString(R.string.received)).child(key).setValue(value);
-                        } else {
-                            mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value);
-                        }
-                        loadingDialog.dismissWithAnimation();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        loadingDialog.dismissWithAnimation();
-                    }
-                });
-
+                mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value2);
 
             }
-
+            loadingDialog.dismissWithAnimation();
         }
 
     }

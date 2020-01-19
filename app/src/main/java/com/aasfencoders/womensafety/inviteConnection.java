@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class inviteConnection extends AppCompatActivity {
 
@@ -80,7 +83,7 @@ public class inviteConnection extends AppCompatActivity {
         sharedPreferences = inviteConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
-        view = (View) findViewById(R.id.empty_view);
+        view = (View) findViewById(R.id.empty_invite_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
         listView.setEmptyView(view);
 
@@ -113,17 +116,24 @@ public class inviteConnection extends AppCompatActivity {
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(inviteConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
+            final SweetAlertDialog loadingDialog;
+            loadingDialog = new SweetAlertDialog(inviteConnection.this, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
+            loadingDialog.setTitleText(getString(R.string.inviteDialogString));
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     inviteList = new ArrayList<InviteSentClass>();
 
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
                         inviteList.add(callClassObj);
                     }
+                    loadingDialog.dismissWithAnimation();
                     Collections.reverse(inviteList);
                     InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);
                     listView.setAdapter(inviteAdapter);

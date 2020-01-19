@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -20,9 +21,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class receivedConnection extends AppCompatActivity {
 
@@ -30,6 +34,7 @@ public class receivedConnection extends AppCompatActivity {
     ListView listView;
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
+    private SweetAlertDialog loadingDialog;
 
     private ArrayList<ReceiveClass> receivedList;
 
@@ -38,11 +43,13 @@ public class receivedConnection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_received_connection);
 
+        getSupportActionBar().setTitle(getString(R.string.receivedHeading));
+
         sharedPreferences = receivedConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
-        view = (View) findViewById(R.id.empty_view);
-        listView = (ListView) findViewById(R.id.listOfInvitedConnections);
+        view = (View) findViewById(R.id.empty_received_view);
+        listView = (ListView) findViewById(R.id.listOfReceivedConnections);
         listView.setEmptyView(view);
 
         boolean state = CheckNetworkConnection.checkNetwork(receivedConnection.this);
@@ -59,7 +66,13 @@ public class receivedConnection extends AppCompatActivity {
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(receivedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.received));
+            loadingDialog = new SweetAlertDialog(receivedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
+            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
+            loadingDialog.setTitleText(getString(R.string.receivedDialogString));
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
+            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.invitation)).child(current_user_number);
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,6 +83,9 @@ public class receivedConnection extends AppCompatActivity {
                         ReceiveClass callClassObj = ds.getValue(ReceiveClass.class);
                         receivedList.add(callClassObj);
                     }
+
+                    loadingDialog.dismissWithAnimation();
+
                     Collections.reverse(receivedList);
                     ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
                     listView.setAdapter(receiveAdapter);
