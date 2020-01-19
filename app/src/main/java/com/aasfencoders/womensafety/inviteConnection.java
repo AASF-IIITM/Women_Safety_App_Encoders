@@ -31,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class inviteConnection extends AppCompatActivity {
 
@@ -39,6 +38,9 @@ public class inviteConnection extends AppCompatActivity {
     ListView listView;
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
+
+    private View no_network;
+    private View progress;
 
     private ArrayList<InviteSentClass> inviteList;
 
@@ -53,6 +55,20 @@ public class inviteConnection extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         }else{
             contact();
+        }
+    }
+
+    private void checkConnection(){
+        boolean state = CheckNetworkConnection.checkNetwork(inviteConnection.this);
+        if (state) {
+            fetchInvitedContacts();
+            no_network.setVisibility(View.GONE);
+            progress.setVisibility(View.VISIBLE);
+            view.setVisibility(View.GONE);
+        } else {
+            no_network.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.INVISIBLE);
+            view.setVisibility(View.GONE);
         }
     }
 
@@ -85,7 +101,9 @@ public class inviteConnection extends AppCompatActivity {
 
         view = (View) findViewById(R.id.empty_invite_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
-        listView.setEmptyView(view);
+
+        no_network = findViewById(R.id.no_internet_view);
+        progress = findViewById(R.id.progress_view);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +117,11 @@ public class inviteConnection extends AppCompatActivity {
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean state = CheckNetworkConnection.checkNetwork(inviteConnection.this);
-                if (state) {
-                    fetchInvitedContacts();
-                } else {
-                    NetworkDialog.showNetworkDialog(inviteConnection.this);
-                }
+                checkConnection();
             }
         });
+
+        checkConnection();
     }
 
     private void fetchInvitedContacts() {
@@ -116,13 +131,6 @@ public class inviteConnection extends AppCompatActivity {
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(inviteConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            final SweetAlertDialog loadingDialog;
-            loadingDialog = new SweetAlertDialog(inviteConnection.this, SweetAlertDialog.PROGRESS_TYPE);
-            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText(getString(R.string.inviteDialogString));
-            loadingDialog.setCancelable(false);
-            loadingDialog.show();
-
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
@@ -133,10 +141,17 @@ public class inviteConnection extends AppCompatActivity {
                         InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
                         inviteList.add(callClassObj);
                     }
-                    loadingDialog.dismissWithAnimation();
-                    Collections.reverse(inviteList);
-                    InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);
-                    listView.setAdapter(inviteAdapter);
+
+                    if(inviteList.size() > 0){
+                        Collections.reverse(inviteList);
+                        InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);
+                        listView.setAdapter(inviteAdapter);
+                    }
+                    else{
+                        view.setVisibility(View.VISIBLE);
+                    }
+
+                    progress.setVisibility(View.GONE);
 
                 }
 
