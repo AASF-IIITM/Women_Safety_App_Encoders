@@ -56,6 +56,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -250,7 +251,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         for(i=0 ; i< phoneNumber.size() ; i++){
             int length = phoneNumber.get(i).length();
             ApiInterface apiService =  ApiClient.getClient().create(ApiInterface.class);
-            RootModel rootModel = new RootModel( "/topics/" + phoneNumber.get(i).substring(1,length), new DataModel(Lat, Long , userPhoneNumber));
+            Date dateObject = new Date();
+            RootModel rootModel = new RootModel( "/topics/" + phoneNumber.get(i).substring(1,length), new DataModel(Lat, Long , userPhoneNumber , dateObject.toString()));
             retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
 
             responseBodyCall.enqueue(new Callback<ResponseBody>() {

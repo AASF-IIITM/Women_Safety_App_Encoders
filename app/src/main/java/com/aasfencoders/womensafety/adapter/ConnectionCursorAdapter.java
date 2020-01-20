@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.data.DataContract;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ConnectionCursorAdapter extends CursorAdapter {
 
     public ConnectionCursorAdapter(Context context, Cursor c) {
@@ -27,17 +30,27 @@ public class ConnectionCursorAdapter extends CursorAdapter {
 
         TextView matched_name = (TextView) view.findViewById(R.id.person_connection_name);
         TextView matched_phone = (TextView) view.findViewById(R.id.person_connection_number);
+        TextView matched_stamp = (TextView) view.findViewById(R.id.person_connection_stamp);
 
         int idColIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
         int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         int numberColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
+        int stampColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STAMP);
 
         int id = cursor.getInt(idColIndex);
         String name = cursor.getString(nameColIndex);
         String number = cursor.getString(numberColIndex);
+        String stamp = cursor.getString(stampColIndex);
 
         matched_name.setText(name);
         matched_phone.setText(number);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY, MMM dd h:mm a");
+
+        Date obj = new Date(Integer.parseInt(stamp));
+        String date = dateFormat.format(obj);
+
+        matched_stamp.setText(date);
 
     }
 

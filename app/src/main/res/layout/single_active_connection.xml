@@ -24,4 +24,12 @@
         android:textStyle="bold"
         android:textSize="16sp"
         />
+    <TextView
+        android:id="@+id/person_connection_stamp"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:text="Stamp Date"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        />
 </LinearLayout>
