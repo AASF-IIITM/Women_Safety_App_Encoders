@@ -47,7 +47,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
     private View progress;
 
-    private void checkConnection(){
+    private void checkConnection() {
         boolean state = CheckNetworkConnection.checkNetwork(matchedConnection.this);
         if (state) {
             fetchMatchedContacts();
@@ -94,7 +94,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
     }
 
-    private void fetchMatchedContacts(){
+    private void fetchMatchedContacts() {
 
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
@@ -112,14 +112,16 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
 
                         ContentValues values = new ContentValues();
-                        values.put(DataContract.DataEntry.COLUMN_NAME, callClassObj.getName());
-                        values.put(DataContract.DataEntry.COLUMN_PHONE,callClassObj.getNumber());
+                        values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.matched));
                         values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
 
-                        Uri uri = getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
-                        if(uri != null){
-                            ds.getRef().removeValue();
-                        }
+                        String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                        String[] selectionArgs = new String[]{callClassObj.getNumber()};
+
+                        Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+
+                        ds.getRef().removeValue();
+
 
                     }
                     progress.setVisibility(View.GONE);
@@ -145,16 +147,19 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_PHONE};
 
-        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
+
+        String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
+        String[] selectionArgs = new String[]{getString(R.string.matched)};
+        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
 
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
 
-        if(data != null){
+        if (data != null) {
             mCursorAdapter.swapCursor(data);
-        }else{
+        } else {
             view.setVisibility(View.VISIBLE);
         }
 

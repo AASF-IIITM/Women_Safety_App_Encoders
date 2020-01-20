@@ -72,6 +72,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 values.put(DataContract.DataEntry.COLUMN_NAME, currentCall.getName());
                 values.put(DataContract.DataEntry.COLUMN_PHONE,currentCall.getNumber());
                 values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
+                values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
                 mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 callFunction(currentCall.getName() , currentCall.getNumber() , mContext.getString(R.string.accept));
             }
