@@ -79,8 +79,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         listView.setAdapter(mCursorAdapter);
 
         progress = findViewById(R.id.progress_view);
-
-        checkConnection();
+        progress.setVisibility(View.INVISIBLE);
 
         getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
 
@@ -89,6 +88,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
                 checkConnection();
+                listView.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -101,7 +101,6 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(matchedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            final SweetAlertDialog loadingDialog;
 
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matched));
             ValueEventListener eventListener = new ValueEventListener() {
@@ -125,12 +124,14 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
                     }
                     progress.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
                     getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     progress.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
                 }
             };
             userNameRef.addListenerForSingleValueEvent(eventListener);
@@ -150,19 +151,13 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
         String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
         String[] selectionArgs = new String[]{getString(R.string.matched)};
-        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
+        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, DataContract.DataEntry._ID + " DESC");
 
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-
-        if (data != null) {
-            mCursorAdapter.swapCursor(data);
-        } else {
-            view.setVisibility(View.VISIBLE);
-        }
-
+        mCursorAdapter.swapCursor(data);
     }
 
     @Override
