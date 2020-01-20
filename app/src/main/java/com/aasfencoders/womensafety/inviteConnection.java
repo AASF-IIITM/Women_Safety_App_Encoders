@@ -1,17 +1,23 @@
 package com.aasfencoders.womensafety;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -19,6 +25,8 @@ import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.adapter.InviteAdapter;
+import com.aasfencoders.womensafety.adapter.MatchedCursorAdapter;
+import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,17 +40,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class inviteConnection extends AppCompatActivity {
+public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     View view;
     ListView listView;
     SharedPreferences sharedPreferences;
-    private DatabaseReference mFirebaseReference;
 
-    private View no_network;
-    private View progress;
-
-    private ArrayList<InviteSentClass> inviteList;
+    private InviteAdapter mCursorAdapter;
 
     private void contact(){
         Intent intent = new Intent(inviteConnection.this , ContactActivity.class);
@@ -55,20 +59,6 @@ public class inviteConnection extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         }else{
             contact();
-        }
-    }
-
-    private void checkConnection(){
-        boolean state = CheckNetworkConnection.checkNetwork(inviteConnection.this);
-        if (state) {
-            fetchInvitedContacts();
-            no_network.setVisibility(View.GONE);
-            progress.setVisibility(View.VISIBLE);
-            view.setVisibility(View.GONE);
-        } else {
-            no_network.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.INVISIBLE);
-            view.setVisibility(View.GONE);
         }
     }
 
@@ -97,13 +87,13 @@ public class inviteConnection extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.inviteConnectionHeading));
 
         sharedPreferences = inviteConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
-        mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
         view = (View) findViewById(R.id.empty_invite_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
 
-        no_network = findViewById(R.id.no_internet_view);
-        progress = findViewById(R.id.progress_view);
+        mCursorAdapter = new InviteAdapter(this, null);
+        listView.setAdapter(mCursorAdapter);
+        listView.setEmptyView(view);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,57 +103,34 @@ public class inviteConnection extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton reload = (FloatingActionButton) findViewById(R.id.fab_reload);
-        reload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkConnection();
-            }
-        });
+        getSupportLoaderManager().initLoader(1, null, inviteConnection.this);
 
-        checkConnection();
     }
 
-    private void fetchInvitedContacts() {
-
-        String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
-
-        if (current_user_number.equals(R.string.error)) {
-            Toast.makeText(inviteConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
-        } else {
-            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
-            ValueEventListener eventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    inviteList = new ArrayList<InviteSentClass>();
-
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
-                        inviteList.add(callClassObj);
-                    }
-
-                    if(inviteList.size() > 0){
-                        Collections.reverse(inviteList);
-                        InviteAdapter inviteAdapter = new InviteAdapter(inviteConnection.this, inviteList);
-                        listView.setAdapter(inviteAdapter);
-                    }
-                    else{
-                        view.setVisibility(View.VISIBLE);
-                    }
-
-                    progress.setVisibility(View.GONE);
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-            userNameRef.addListenerForSingleValueEvent(eventListener);
-
-        }
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        String[] projection = {
+                DataContract.DataEntry._ID,
+                DataContract.DataEntry.COLUMN_NAME,
+                DataContract.DataEntry.COLUMN_PHONE,
+                DataContract.DataEntry.COLUMN_STATUS_INVITATION};
 
 
+        String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
+        String[] selectionArgs = new String[]{getString(R.string.invited)};
+        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, DataContract.DataEntry._ID + " DESC");
+
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+            mCursorAdapter.swapCursor(data);
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 }
