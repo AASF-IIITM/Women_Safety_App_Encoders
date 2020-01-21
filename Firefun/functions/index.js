@@ -44,7 +44,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
             console.log(error)
             response.status(500).send(error)
         })
-        const r= admin.database().ref(`/Users/${source_no}/sent`).once("value")
+        admin.database().ref(`/Users/${source_no}/sent`).once("value")
         .then (snapshot => {
             const findTarget = snapshot.val()
             var keys = Object.keys(findTarget)
@@ -52,7 +52,9 @@ exports.sent_status = functions.https.onCall((data, context) => {
             for (var i=0 ;i < keys.length ; i++) {
                 var k =keys[i];
                 if (findTarget[k].number === target_no) {
-                    const p=admin.database().ref(`/Users/${source_no}/sent/${k}`).remove();
+                    const p=admin.database().ref(`/Users/${source_no}/sent/${k}`).update({
+                        "status" : "accepted",
+                    });
                     promises.push(p)
                     const q= admin.database().ref(`/Users/${source_no}/matched/`).push({
                         name : target_name,
@@ -78,7 +80,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
             for (var i=0 ;i < keys.length ; i++) {
                 var k =keys[i];
                 if (findSource[k].number === source_no) {
-                    const p=admin.database().ref(`/invitation/${target_no}/${k}`).remove();
+                    const p=admin.database().ref(`/invitation/${target_no}/${k}/`).remove();
                     promises.push(p)
                     break;
                 }
@@ -89,7 +91,7 @@ exports.sent_status = functions.https.onCall((data, context) => {
             console.log(error)
             response.status(500).send(error)
         })
-        const r= admin.database().ref(`/Users/${source_no}/sent`).once("value")
+        admin.database().ref(`/Users/${source_no}/sent`).once("value")
         .then (source_snap => {
             const findTarget = source_snap.val()
             var keys = Object.keys(findTarget)
@@ -97,7 +99,9 @@ exports.sent_status = functions.https.onCall((data, context) => {
             for (var i=0 ;i < keys.length ; i++) {
                 var k =keys[i];
                 if (findTarget[k].number === target_no) {
-                    const p=admin.database().ref(`/Users/${source_no}/sent/${k}`).remove();
+                    const p=admin.database().ref(`/Users/${source_no}/sent/${k}`).update({
+                        "status" : "rejected"
+                    });
                     promises.push(p)
                     break;
                 }
