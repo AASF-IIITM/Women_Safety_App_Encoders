@@ -14,12 +14,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , LoaderManager.LoaderCallbacks<Cursor> {
@@ -98,6 +104,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
         mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+
+
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> addressList = geocoder.getFromLocation(Double.parseDouble(Lat),Double.parseDouble(Long),1);
+            if(addressList != null && addressList.size()>0){
+                Log.i("place tag$$$$$$$$$$",addressList.get(0).toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

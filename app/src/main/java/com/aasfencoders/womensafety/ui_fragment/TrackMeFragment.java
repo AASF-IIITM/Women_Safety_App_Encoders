@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -52,12 +54,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
@@ -79,18 +83,26 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private String userPhoneNumber;
 
     private SharedPreferences sharedPreferences;
+    private Switch gpsSwitch;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+        Toast.makeText(getContext(),"ghggygygu",Toast.LENGTH_SHORT).show();
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+                }else{
+                    gpsSwitch.setChecked(false);
                 }
+            }else{
+                gpsSwitch.setChecked(false);
             }
         }
+
+
+
     }
 
 
@@ -98,7 +110,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
-        final Switch gpsSwitch = view.findViewById(R.id.gpsSwitch);
+        gpsSwitch = view.findViewById(R.id.gpsSwitch);
         sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         userPhoneNumber = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -108,29 +120,32 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
                 if (isChecked) {
 
-                    if(getContext() != null){
+                    if (getContext() != null) {
                         boolean state = CheckNetworkConnection.checkNetwork(getContext());
                         if (state) {
 
-                            final LocationManager manager = (LocationManager) getContext().getSystemService( Context.LOCATION_SERVICE );
+                            final LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
-                            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(intent);
-                            }
+
 
                             if (Build.VERSION.SDK_INT < 23) {
                                 // sendSMS();
                                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
                             } else {
                                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                                    requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                                 } else {
 
                                     // sendSMS();
+                                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        startActivity(intent);
+                                    }
                                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
                                 }
                             }
+
+
                         } else {
                             NetworkDialog.showNetworkDialog(getContext());
                             gpsSwitch.setChecked(false);
@@ -149,15 +164,15 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
         Cursor cursor;
 
-        if(getContext() != null){
+        if (getContext() != null) {
             phoneName = new ArrayList<String>();
             phoneNumber = new ArrayList<String>();
             cursor = getContext().getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
             int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
             int numberColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
 
-            if(cursor != null && cursor.getCount()>0){
-                while (cursor.moveToNext()){
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
                     String name = cursor.getString(nameColumnIndex);
                     String number = cursor.getString(numberColumnIndex);
                     phoneName.add(name);
@@ -190,7 +205,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
-            public void onLocationChanged(Location location) {
+            public void onLocationChanged(final Location location) {
                 if (getContext() != null) {
                     Toast.makeText(getContext(), "location updated", Toast.LENGTH_SHORT).show();
                 }
@@ -200,30 +215,49 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
 
+                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                try {
+                    List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        String address = "";
+                        Address completeAddress = addressList.get(0);
+                        address = completeAddress.getFeatureName() + "," + completeAddress.getLocality() + "," + completeAddress.getAdminArea() + "," + completeAddress.getPostalCode() + "," + completeAddress.getCountryName();
+                        if(getContext()!=null)
+                        Toast.makeText(getContext(), address, Toast.LENGTH_LONG).show();
+                    } else {
+                        //Toast.makeText(getContext(), "AALU", Toast.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    if(getContext()!=null)
+                    Toast.makeText(getContext(), "User's Location not accessible", Toast.LENGTH_LONG).show();
+                }
 
-                sendLocationToMatchedContacts(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
-            }
+            sendLocationToMatchedContacts(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
+        }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+        @Override
+        public void onStatusChanged (String provider,int status, Bundle extras){
 
-            }
+        }
 
-            @Override
-            public void onProviderEnabled(String provider) {
+        @Override
+        public void onProviderEnabled (String provider){
 
-            }
+        }
 
-            @Override
-            public void onProviderDisabled(String provider) {
+        @Override
+        public void onProviderDisabled (String provider){
 
-            }
-        };
-
-
+        }
     }
 
-    private void sendSMS(){
+    ;
+
+
+}
+
+    private void sendSMS() {
         int i;
 
         final ArrayList<Integer> simCardList = new ArrayList<>();
@@ -237,28 +271,28 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
 
         int smsToSendFrom = simCardList.get(0);
-        for(i=0 ; i< phoneName.size() ; i++){
+        for (i = 0; i < phoneName.size(); i++) {
             String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
-            SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null,null);
+            SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null, null);
         }
 
     }
 
-    private void sendLocationToMatchedContacts(String Lat , String Long){
+    private void sendLocationToMatchedContacts(String Lat, String Long) {
 
         int i;
 
-        for(i=0 ; i< phoneNumber.size() ; i++){
+        for (i = 0; i < phoneNumber.size(); i++) {
             int length = phoneNumber.get(i).length();
-            ApiInterface apiService =  ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
             Date dateObject = new Date();
-            RootModel rootModel = new RootModel( "/topics/" + phoneNumber.get(i).substring(1,length), new DataModel(Lat, Long , userPhoneNumber , dateObject.toString()));
+            RootModel rootModel = new RootModel("/topics/" + phoneNumber.get(i).substring(1, length), new DataModel(Lat, Long, userPhoneNumber, dateObject.toString()));
             retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
 
             responseBodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    Toast.makeText(getContext(),"Sent",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Sent", Toast.LENGTH_SHORT).show();
 
 
                 }
