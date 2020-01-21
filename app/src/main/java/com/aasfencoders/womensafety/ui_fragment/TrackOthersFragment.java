@@ -35,7 +35,9 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_trackothers,container,false);
-        mCursorAdapter = new ConnectionCursorAdapter(getContext(), null);
+        if(getContext() != null){
+            mCursorAdapter = new ConnectionCursorAdapter(getContext(), null);
+        }
 
         view = (View) root.findViewById(R.id.empty_connection_view);
         listView = (ListView) root.findViewById(R.id.listOfInvitedConnections);
@@ -52,7 +54,9 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
             }
         });
 
-        getActivity().getSupportLoaderManager().initLoader(1, null, this);
+        if(getActivity() != null){
+            getActivity().getSupportLoaderManager().initLoader(1, null, this);
+        }
         return root;
     }
 
