@@ -45,6 +45,20 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
 
+    private View progress;
+
+    private void checkConnection() {
+        boolean state = CheckNetworkConnection.checkNetwork(matchedConnection.this);
+        if (state) {
+            fetchMatchedContacts();
+            progress.setVisibility(View.VISIBLE);
+            view.setVisibility(View.GONE);
+        } else {
+            progress.setVisibility(View.INVISIBLE);
+            view.setVisibility(View.GONE);
+        }
+    }
+
     MatchedCursorAdapter mCursorAdapter;
 
     @Override
@@ -64,36 +78,29 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         mCursorAdapter = new MatchedCursorAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
 
+        progress = findViewById(R.id.progress_view);
+        progress.setVisibility(View.INVISIBLE);
+
         getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
 
         FloatingActionButton reload = (FloatingActionButton) findViewById(R.id.fab_reload_matched);
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean state = CheckNetworkConnection.checkNetwork(matchedConnection.this);
-                if (state) {
-                    fetchMatchedContacts();
-                } else {
-                    NetworkDialog.showNetworkDialog(matchedConnection.this);
-                }
+                checkConnection();
+                listView.setVisibility(View.INVISIBLE);
             }
         });
 
     }
 
-    private void fetchMatchedContacts(){
+    private void fetchMatchedContacts() {
 
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(matchedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            final SweetAlertDialog loadingDialog;
-            loadingDialog = new SweetAlertDialog(matchedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
-            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText(getString(R.string.matchedDialogString));
-            loadingDialog.setCancelable(false);
-            loadingDialog.show();
 
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matched));
             ValueEventListener eventListener = new ValueEventListener() {
@@ -104,27 +111,27 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
 
                         ContentValues values = new ContentValues();
-                        values.put(DataContract.DataEntry.COLUMN_NAME, callClassObj.getName());
-                        values.put(DataContract.DataEntry.COLUMN_PHONE,callClassObj.getNumber());
+                        values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.matched));
                         values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
 
-                        Uri uri = getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
-                        if(uri == null){
-                            Log.d("*********","ERROR WITH INSERTING DATA");
-                        }else{
-                            Log.d("*********","DONE");
-                            ds.getRef().removeValue();
-                        }
+                        String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                        String[] selectionArgs = new String[]{callClassObj.getNumber()};
+
+                        Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+
+                        ds.getRef().removeValue();
+
 
                     }
-
-                    loadingDialog.dismissWithAnimation();
+                    progress.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
                     getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    progress.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
                 }
             };
             userNameRef.addListenerForSingleValueEvent(eventListener);
@@ -141,7 +148,10 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_PHONE};
 
-        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
+
+        String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
+        String[] selectionArgs = new String[]{getString(R.string.matched)};
+        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, DataContract.DataEntry._ID + " DESC");
 
     }
 

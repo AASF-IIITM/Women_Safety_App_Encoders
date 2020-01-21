@@ -1,7 +1,9 @@
 package com.aasfencoders.womensafety.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.Class.ReceiveClass;
 import com.aasfencoders.womensafety.R;
+import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.receivedConnection;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -65,6 +68,12 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ContentValues values = new ContentValues();
+                values.put(DataContract.DataEntry.COLUMN_NAME, currentCall.getName());
+                values.put(DataContract.DataEntry.COLUMN_PHONE,currentCall.getNumber());
+                values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
+                values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
+                mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 callFunction(currentCall.getName() , currentCall.getNumber() , mContext.getString(R.string.accept));
             }
         });

@@ -37,10 +37,8 @@ public class DataContract {
         public static final String COLUMN_STATUS = "status";
         public static final String COLUMN_CURRENT_LAT = "currentlat";
         public static final String COLUMN_CURRENT_LONG = "currentlong";
-        public static final String COLUMN_SOURCE_LAT = "sourcelat";
-        public static final String COLUMN_SOURCE_LONG = "sourcelong";
-        public static final String COLUMN_DEST_LAT = "destlat";
-        public static final String COLUMN_DEST_LONG = "destlong";
+        public static final String COLUMN_STAMP = "stamp";
+        public static final String COLUMN_STATUS_INVITATION = "invitation";
 
     }
 }

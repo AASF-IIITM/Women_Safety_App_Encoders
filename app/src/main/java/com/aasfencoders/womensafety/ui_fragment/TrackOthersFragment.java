@@ -62,7 +62,8 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
         String[] projection = {
                 DataContract.DataEntry._ID,
                 DataContract.DataEntry.COLUMN_NAME,
-                DataContract.DataEntry.COLUMN_PHONE};
+                DataContract.DataEntry.COLUMN_PHONE,
+                DataContract.DataEntry.COLUMN_STAMP};
 
         if(getContext() != null){
             String selection = DataContract.DataEntry.COLUMN_STATUS + " =? ";

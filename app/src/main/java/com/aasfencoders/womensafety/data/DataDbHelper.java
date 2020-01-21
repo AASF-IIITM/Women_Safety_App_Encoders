@@ -22,10 +22,8 @@ public class DataDbHelper extends SQLiteOpenHelper {
                 + DataContract.DataEntry.COLUMN_STATUS + " TEXT NOT NULL, "
                 + DataContract.DataEntry.COLUMN_CURRENT_LAT + " TEXT NOT NULL DEFAULT 'EMPTY', "
                 + DataContract.DataEntry.COLUMN_CURRENT_LONG + " TEXT NOT NULL DEFAULT 'EMPTY', "
-                + DataContract.DataEntry.COLUMN_SOURCE_LAT + " TEXT NOT NULL DEFAULT 'EMPTY', "
-                + DataContract.DataEntry.COLUMN_SOURCE_LONG + " TEXT NOT NULL DEFAULT 'EMPTY', "
-                + DataContract.DataEntry.COLUMN_DEST_LAT + " TEXT NOT NULL DEFAULT 'EMPTY', "
-                + DataContract.DataEntry.COLUMN_DEST_LONG + " TEXT NOT NULL DEFAULT 'EMPTY');";
+                + DataContract.DataEntry.COLUMN_STAMP + " TEXT NOT NULL DEFAULT 'EMPTY', "
+                + DataContract.DataEntry.COLUMN_STATUS_INVITATION + " TEXT NOT NULL DEFAULT 'EMPTY');";
 
         sqLiteDatabase.execSQL(SQL_CREATE_Data_TABLE);
     }

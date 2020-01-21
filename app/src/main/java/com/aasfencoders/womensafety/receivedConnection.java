@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,7 +27,6 @@ import com.google.firebase.functions.FirebaseFunctions;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class receivedConnection extends AppCompatActivity {
 
@@ -34,9 +34,27 @@ public class receivedConnection extends AppCompatActivity {
     ListView listView;
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
-    private SweetAlertDialog loadingDialog;
+    
+    private View no_network;
+    private View progress;
+
+    private Button reload;
 
     private ArrayList<ReceiveClass> receivedList;
+
+    private void checkConnection(){
+        boolean state = CheckNetworkConnection.checkNetwork(receivedConnection.this);
+        if (state) {
+            fetchReceivedContacts();
+            no_network.setVisibility(View.GONE);
+            progress.setVisibility(View.VISIBLE);
+            view.setVisibility(View.GONE);
+        } else {
+            no_network.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.INVISIBLE);
+            view.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +68,22 @@ public class receivedConnection extends AppCompatActivity {
 
         view = (View) findViewById(R.id.empty_received_view);
         listView = (ListView) findViewById(R.id.listOfReceivedConnections);
-        listView.setEmptyView(view);
+        
+        no_network = findViewById(R.id.no_internet_view);
 
-        boolean state = CheckNetworkConnection.checkNetwork(receivedConnection.this);
-        if (state) {
-            fetchReceivedContacts();
-        } else {
-            NetworkDialog.showNetworkDialog(receivedConnection.this);
-        }
+        progress = findViewById(R.id.progress_view);
+
+        reload = findViewById(R.id.reloadButton);
+
+        reload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkConnection();
+            }
+        });
+
+        checkConnection();
+
     }
 
     private void fetchReceivedContacts(){
@@ -66,12 +92,7 @@ public class receivedConnection extends AppCompatActivity {
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(receivedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            loadingDialog = new SweetAlertDialog(receivedConnection.this, SweetAlertDialog.PROGRESS_TYPE);
-            loadingDialog.getProgressHelper().setBarColor(Color.parseColor("#8a1ca6"));
-            loadingDialog.setTitleText(getString(R.string.receivedDialogString));
-            loadingDialog.setCancelable(false);
-            loadingDialog.show();
-
+            
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.invitation)).child(current_user_number);
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
@@ -84,17 +105,20 @@ public class receivedConnection extends AppCompatActivity {
                         receivedList.add(callClassObj);
                     }
 
-                    loadingDialog.dismissWithAnimation();
+                    if(receivedList.size() > 0){
+                        Collections.reverse(receivedList);
+                        ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
+                        listView.setAdapter(receiveAdapter);
+                    }else{
+                        view.setVisibility(View.VISIBLE);
+                    }
 
-                    Collections.reverse(receivedList);
-                    ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
-                    listView.setAdapter(receiveAdapter);
-
+                    progress.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    progress.setVisibility(View.GONE);
                 }
             };
             userNameRef.addListenerForSingleValueEvent(eventListener);

@@ -81,7 +81,7 @@
     <string name="zero">zero</string>
     <string name="one">one</string>
     <string name="two">two</string>
-    <string name="EMPTY">EMPTY</string>
+    <string name="EMPTY">EMPTY</string>0
     <string name="title_activity_maps">Map</string>
 
     <string name="connectionHeading">You can rest now</string>
@@ -91,6 +91,13 @@
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
     <string name="Phone">phone</string>
+    <string name="stamp">stamp</string>
+
+    //connectivity
+    <string name="noInternet">No Internet Connectivity</string>
+    <string name="reload">reload</string>
+    <string name="loading">Data Loading From Server</string>
+    <string name="noInternetMessage">Connect to Mobile Network/Wi-Fi and then try again</string>
 
 
 </resources>

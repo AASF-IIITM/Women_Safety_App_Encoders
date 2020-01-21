@@ -4,6 +4,7 @@ package com.aasfencoders.womensafety;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.adapter.ContactAdapter;
+import com.aasfencoders.womensafety.data.DataContract;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -297,10 +299,18 @@ public class ContactActivity extends AppCompatActivity {
                 rootRef.child(key).setValue(value);
 
                 Map<String, Object> value2 = new HashMap<>();
-                value.put(getString(R.string.name), current_user_name);
-                value.put(getString(R.string.number),current_user_number);
+                value2.put(getString(R.string.name), current_user_name);
+                value2.put(getString(R.string.number),current_user_number);
 
                 mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value2);
+
+                ContentValues values = new ContentValues();
+                values.put(DataContract.DataEntry.COLUMN_NAME, name);
+                values.put(DataContract.DataEntry.COLUMN_PHONE,sent_phone_number);
+                values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
+                values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.invited));
+
+                Uri uri = getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
 
             }
             loadingDialog.dismissWithAnimation();

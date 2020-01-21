@@ -46,16 +46,6 @@
             android:textColor="#235877"/>
     </RelativeLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_reload"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:padding="30dp"
-        android:src="@drawable/ic_refresh_white_24dp"
-        android:layout_margin="10dp"/>
 
     <!-- Floating Action Button-->
 
@@ -69,5 +59,6 @@
         android:padding="30dp"
         android:src="@drawable/plus"
         android:layout_margin="10dp"/>
+
 
 </RelativeLayout>
