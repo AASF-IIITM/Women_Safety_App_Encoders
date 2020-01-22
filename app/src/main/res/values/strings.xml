@@ -99,5 +99,17 @@
     <string name="loading">Data Loading From Server</string>
     <string name="noInternetMessage">Connect to Mobile Network/Wi-Fi and then try again</string>
 
+    //sms
+    <string name="sms_title">Select your preferred SIM</string>
+    <string name="sms_message">It will be used to sent automated SMS. Data rates will apply,</string>
+    <string name="SIM">SIM</string>
+    <string name="SIM1">SIM 1</string>
+    <string name="SIM2">SIM 2</string>
+    <string name="SIMSET">SIMSET</string>
+    <string name="YES">YES</string>
+    <string name="NO">NO</string>
+    <string name="SIMNO">Don\'t send automated SMS alert</string>
+
+
 
 </resources>

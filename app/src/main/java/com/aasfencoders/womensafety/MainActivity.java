@@ -3,6 +3,7 @@ package com.aasfencoders.womensafety;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.Arrays;
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseReference = mFirebaseDatabase.getReference();
+        MainActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -167,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTopColorRes(R.color.dialogColour)
                 .setTitle(R.string.text_input_title)
                 .setMessage(R.string.text_input_message)
+                .setCancelable(false)
                 .setIcon(R.drawable.ic_person_outline_white_36dp)
                 .setInputFilter(R.string.text_input_error_message, new LovelyTextInputDialog.TextFilter() {
                     @Override
@@ -176,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setConfirmButton(R.string.upload, new LovelyTextInputDialog.OnTextInputConfirmListener() {
                     @Override
-                    public void onTextInputConfirmed(String text) {
+                    public void onTextInputConfirmed(final String text) {
                         mFirebaseReference.child(getString(R.string.users)).child(mUserPhoneNumber).child(getString(R.string.profile)).child(getString(R.string.name)).setValue(text.trim());
                         sharedPreferences.edit().putInt(getString(R.string.firstform),1).apply();
                         sharedPreferences.edit().putString(getString(R.string.username),text.trim()).apply();
@@ -188,4 +194,5 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show();
     }
+
 }
