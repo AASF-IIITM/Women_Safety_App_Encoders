@@ -242,7 +242,18 @@ public class ContactActivity extends AppCompatActivity {
                         flagCommon = true;
                 }
                 if (!flagCommon) {
-                    items.add(phoneNo);
+                    String[] projection = {
+                            DataContract.DataEntry._ID,
+                            DataContract.DataEntry.COLUMN_NAME,
+                            DataContract.DataEntry.COLUMN_PHONE};
+                    String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                    String[] selectionArgs = new String[]{phoneNo};
+
+                    Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
+                    if (!(cursor != null && cursor.getCount() > 0)) {
+                        items.add(phoneNo);
+                    }
+                    cursor.close();
                 }
 
             }
