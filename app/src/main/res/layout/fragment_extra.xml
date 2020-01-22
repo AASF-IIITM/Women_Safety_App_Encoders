@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/solve_your_problems_radio_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sms_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <RadioGroup
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/sim_radio_group"
+        android:layout_marginTop="10dp"
+        >
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sim1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:checked="false"
+            android:text="@string/SIM1"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sim2"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:checked="false"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="@string/SIM2"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sim_No"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:checked="false"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="@string/SIMNO"/>
+
+    </RadioGroup>
+
+</LinearLayout>

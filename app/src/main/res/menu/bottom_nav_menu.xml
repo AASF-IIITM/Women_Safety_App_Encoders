@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_person_pin_circle_black_24dp"
         android:title="@string/title_trackMe" />
 
+    <item
+        android:id="@+id/navigation_extra"
+        android:icon="@drawable/ic_grade_pink_24dp"
+        android:title="@string/title_extras" />
+
 </menu>

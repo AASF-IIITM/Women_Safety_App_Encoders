@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.aasfencoders.womensafety.ui_fragment.ExtrasFragment;
 import com.aasfencoders.womensafety.ui_fragment.HomeFragment;
 import com.aasfencoders.womensafety.ui_fragment.TrackMeFragment;
 import com.aasfencoders.womensafety.ui_fragment.TrackOthersFragment;
@@ -38,6 +39,10 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_trackMe:
                     selectedFragment = new TrackMeFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    break;
+                case R.id.navigation_extra:
+                    selectedFragment = new ExtrasFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                     break;
             }
