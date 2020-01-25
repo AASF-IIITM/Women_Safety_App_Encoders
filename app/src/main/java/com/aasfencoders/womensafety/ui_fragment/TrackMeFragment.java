@@ -214,23 +214,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
 
-                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                try {
-                    List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    if (addressList != null && addressList.size() > 0) {
-                        String address = "";
-                        Address completeAddress = addressList.get(0);
-                        address = completeAddress.getFeatureName() + "," + completeAddress.getLocality() + "," + completeAddress.getAdminArea() + "," + completeAddress.getPostalCode() + "," + completeAddress.getCountryName();
-                        if(getContext()!=null)
-                        Toast.makeText(getContext(), address, Toast.LENGTH_LONG).show();
-                    } else {
-                        //Toast.makeText(getContext(), "AALU", Toast.LENGTH_LONG).show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    if(getContext()!=null)
-                    Toast.makeText(getContext(), "User's Location not accessible", Toast.LENGTH_LONG).show();
-                }
+
 
             sendLocationToMatchedContacts(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
         }
