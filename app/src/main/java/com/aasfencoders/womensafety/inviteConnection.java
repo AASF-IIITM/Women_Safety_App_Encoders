@@ -117,9 +117,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
                 DataContract.DataEntry.COLUMN_STATUS_INVITATION};
 
 
-        String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
-        String[] selectionArgs = new String[]{getString(R.string.invited)};
-        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, DataContract.DataEntry._ID + " DESC");
+        return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, null, null, DataContract.DataEntry._ID + " DESC");
 
     }
 
