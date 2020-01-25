@@ -41,7 +41,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , LoaderManager.LoaderCallbacks<Cursor> {
+import static java.security.AccessController.doPrivileged;
+import static java.security.AccessController.getContext;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
     private Uri mCurrentDataUri;
@@ -50,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView numberView;
     private TextView stampDate;
     private TextView stampTime;
+    private TextView addresstext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         numberView = findViewById(R.id.numberTrackOther);
         stampDate = findViewById(R.id.stampDateTrackOther);
         stampTime = findViewById(R.id.stampTimeTrackOther);
+        addresstext = findViewById(R.id.geocoder_track_other);
 
     }
 
@@ -118,7 +123,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stampTime.setText(time);
         stampDate.setText(date);
 
-        
 
         float zoomLevel = mMap.getCameraPosition().zoom;
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
@@ -128,12 +132,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
-            List<Address> addressList = geocoder.getFromLocation(Double.parseDouble(Lat),Double.parseDouble(Long),1);
-            if(addressList != null && addressList.size()>0){
-                Log.i("place tag$$$$$$$$$$",addressList.get(0).toString());
+            List<Address> addressList = geocoder.getFromLocation(Double.parseDouble(Lat), Double.parseDouble(Long), 1);
+            if (addressList != null && addressList.size() > 0) {
+                String address = "";
+                Address completeAddress = addressList.get(0);
+                address = completeAddress.getFeatureName() + "," + completeAddress.getLocality() + "," + completeAddress.getAdminArea() + "," + completeAddress.getPostalCode() + "," + completeAddress.getCountryName();
+                addresstext.setText(address);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            addresstext.setText("User's Location not available");
+
         }
 
     }
@@ -142,4 +151,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
 }
