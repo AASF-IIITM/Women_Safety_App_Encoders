@@ -107,7 +107,7 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public void onSeeking(SeekParams seekParams) {
                 int cur_pos = contactPosArray[seekParams.progress - 1];
-                contactListView.smoothScrollToPosition(cur_pos);
+                contactListView.setSelection(cur_pos);
             }
 
             @Override

@@ -1,6 +1,8 @@
 package com.aasfencoders.womensafety.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
 
@@ -35,6 +38,25 @@ public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
 
         TextView name = listItemView.findViewById(R.id.single_contactname_textview);
         name.setText(currentContact.getName());
+        TextView image = listItemView.findViewById(R.id.single_contactname_image);
+        image.setText(currentContact.getName().substring(0,1).toUpperCase());
+
+        Random rnd = new Random();
+        int color = Color.argb(255, rnd.nextInt(230), rnd.nextInt(230), rnd.nextInt(230));
+        image.setBackgroundColor(color);
+        color = Color.argb(255,255,255,255);
+        image.setTextColor(color);
+
+        if(currentContact.getName().length() < 2)
+        {
+            image.setVisibility(View.INVISIBLE);
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP,25);
+        }
+        else
+        {
+            image.setVisibility(View.VISIBLE);
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        }
 
         return listItemView;
     }
