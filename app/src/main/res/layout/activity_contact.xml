@@ -31,7 +31,7 @@
             app:isb_show_indicator="rounded_rectangle"
             app:isb_show_tick_marks_type="divider"
             app:isb_show_tick_texts="true"
-            app:isb_thumb_color="@color/color_green"
+            app:isb_thumb_color="@color/float_transparent"
             app:isb_thumb_size="20dp"
             app:isb_tick_marks_size="10dp"
             app:isb_tick_texts_array="@array/alpha"
