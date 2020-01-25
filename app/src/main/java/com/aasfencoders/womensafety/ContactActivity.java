@@ -148,6 +148,15 @@ public class ContactActivity extends AppCompatActivity {
                     null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
             if ((cur != null ? cur.getCount() : 0) > 0) {
+
+                for(int i=0;i<26;i++)
+                {
+                    String id2 = getID(i);
+                    String name = getName(i);
+                    contactList.add(new ContactNameClass(id2,name));
+                }
+
+
                 while (cur != null && cur.moveToNext()) {
                     String id = cur.getString(
                             cur.getColumnIndex(ContactsContract.Contacts._ID));
@@ -159,12 +168,7 @@ public class ContactActivity extends AppCompatActivity {
                     }
 
                 }
-                for(int i=0;i<26;i++)
-                {
-                    String id2 = getID(i);
-                    String name = getName(i);
-                    contactList.add(new ContactNameClass(id2,name));
-                }
+
 
                 Collections.sort(contactList, new Comparator<ContactNameClass>() {
                     @Override
@@ -193,7 +197,7 @@ public class ContactActivity extends AppCompatActivity {
             super.onPostExecute(contactList);
             progressBar.setVisibility(View.GONE);
             loadingtextview.setVisibility(View.GONE);
-            ContactAdapter contactAdapter = new ContactAdapter(getBaseContext(), contactList);
+            ContactAdapter contactAdapter = new ContactAdapter(getBaseContext(), contactList , contactPosArray);
             contactListView.setAdapter(contactAdapter);
             contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
