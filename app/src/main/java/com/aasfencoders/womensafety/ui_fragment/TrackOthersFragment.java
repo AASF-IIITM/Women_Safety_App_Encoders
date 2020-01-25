@@ -25,6 +25,9 @@ import com.aasfencoders.womensafety.adapter.MatchedCursorAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.matchedConnection;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TrackOthersFragment extends Fragment implements  LoaderManager.LoaderCallbacks<Cursor>{
 
     private View view;
@@ -68,6 +71,9 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_PHONE,
                 DataContract.DataEntry.COLUMN_STAMP};
+
+
+
 
         if(getContext() != null){
             String selection = DataContract.DataEntry.COLUMN_STATUS + " =? ";

@@ -30,7 +30,8 @@ public class ConnectionCursorAdapter extends CursorAdapter {
 
         TextView matched_name = (TextView) view.findViewById(R.id.person_connection_name);
         TextView matched_phone = (TextView) view.findViewById(R.id.person_connection_number);
-        TextView matched_stamp = (TextView) view.findViewById(R.id.person_connection_stamp);
+        TextView matched_stamp_date = (TextView) view.findViewById(R.id.person_connection_stamp_date);
+        TextView matched_stamp_time = (TextView) view.findViewById(R.id.person_connection_stamp_time);
 
         int idColIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
         int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
@@ -42,15 +43,17 @@ public class ConnectionCursorAdapter extends CursorAdapter {
         String number = cursor.getString(numberColIndex);
         String stamp = cursor.getString(stampColIndex);
 
+        Date dateObject = new Date(Long.parseLong(stamp));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY, MMM, dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        String date = dateFormat.format(dateObject);
+        String time = timeFormat.format(dateObject);
+
         matched_name.setText(name);
         matched_phone.setText(number);
+        matched_stamp_date.setText(date);
+        matched_stamp_time.setText(time);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY, MMM dd h:mm a");
-
-        Date obj = new Date(Integer.parseInt(stamp));
-        String date = dateFormat.format(obj);
-
-        matched_stamp.setText(date);
 
     }
 

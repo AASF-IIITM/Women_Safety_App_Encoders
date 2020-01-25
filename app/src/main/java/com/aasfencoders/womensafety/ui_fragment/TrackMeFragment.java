@@ -88,7 +88,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Toast.makeText(getContext(),"ghggygygu",Toast.LENGTH_SHORT).show();
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -286,14 +285,16 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             int length = phoneNumber.get(i).length();
             ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
             Date dateObject = new Date();
-            RootModel rootModel = new RootModel("/topics/" + phoneNumber.get(i).substring(1, length), new DataModel(Lat, Long, userPhoneNumber, dateObject.toString()));
+            long date = dateObject.getTime();
+            RootModel rootModel = new RootModel("/topics/" + phoneNumber.get(i).substring(1, length), new DataModel(Lat, Long, userPhoneNumber, java.lang.Long.toString(date)));
             retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
 
             responseBodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    Toast.makeText(getContext(), "Sent", Toast.LENGTH_SHORT).show();
-
+                    if(getContext()!=null) {
+                        Toast.makeText(getContext(), "Sent", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
