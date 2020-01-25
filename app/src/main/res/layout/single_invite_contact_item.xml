@@ -9,6 +9,7 @@
     android:padding="7dp">
 
     <ImageView
+        android:id="@+id/invite_view_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_person_pin_black_24dp"
@@ -44,10 +45,11 @@
     </LinearLayout>
     <TextView
         android:id="@+id/person_invite_status"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="Person Status"
         android:textSize="16sp"
+        android:gravity="center"
         android:textStyle="bold"
         android:layout_gravity="center"/>
 
