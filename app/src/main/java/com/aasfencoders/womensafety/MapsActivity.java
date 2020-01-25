@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -46,6 +48,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private TextView nameView;
     private TextView numberView;
+    private TextView stampDate;
+    private TextView stampTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         nameView = findViewById(R.id.nameTrackOther);
         numberView = findViewById(R.id.numberTrackOther);
+        stampDate = findViewById(R.id.stampDateTrackOther);
+        stampTime = findViewById(R.id.stampTimeTrackOther);
 
     }
 
@@ -77,7 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_PHONE,
                 DataContract.DataEntry.COLUMN_CURRENT_LAT,
-                DataContract.DataEntry.COLUMN_CURRENT_LONG};
+                DataContract.DataEntry.COLUMN_CURRENT_LONG,
+                DataContract.DataEntry.COLUMN_STAMP};
 
         return new CursorLoader(MapsActivity.this, mCurrentDataUri, projection, null, null, null);
 
@@ -92,14 +99,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int numberColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
         int latColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LAT);
         int longColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LONG);
+        int stampColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STAMP);
 
         String name = cursor.getString(nameColIndex);
         String number = cursor.getString(numberColIndex);
         String Lat = cursor.getString(latColIndex);
         String Long = cursor.getString(longColIndex);
+        String stamp = cursor.getString(stampColIndex);
+
+        Date dateObject = new Date(java.lang.Long.parseLong(stamp));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY, MMM, dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        String date = dateFormat.format(dateObject);
+        String time = timeFormat.format(dateObject);
 
         nameView.setText(name);
         numberView.setText(number);
+        stampTime.setText(time);
+        stampDate.setText(date);
+
+        
+
         float zoomLevel = mMap.getCameraPosition().zoom;
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
         mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
