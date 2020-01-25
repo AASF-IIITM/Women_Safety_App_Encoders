@@ -2,14 +2,18 @@ package com.aasfencoders.womensafety.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.data.DataContract;
+
+import java.util.Random;
 
 public class MatchedCursorAdapter extends CursorAdapter {
 
@@ -35,6 +39,12 @@ public class MatchedCursorAdapter extends CursorAdapter {
         int id = cursor.getInt(idColIndex);
         String name = cursor.getString(nameColIndex);
         String number = cursor.getString(numberColIndex);
+
+        ImageView image = view.findViewById(R.id.matched_view_image);
+        Random rnd = new Random();
+        int color = Color.argb(255, rnd.nextInt(230), rnd.nextInt(230), rnd.nextInt(230));
+        image.setBackgroundColor(color);
+
 
         matched_name.setText(name);
         matched_phone.setText(number);
