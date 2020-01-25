@@ -2,6 +2,8 @@ package com.aasfencoders.womensafety.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +45,9 @@ public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
 
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(230), rnd.nextInt(230), rnd.nextInt(230));
-        image.setBackgroundColor(color);
+//        GradientDrawable shape = (GradientDrawable)image.getBackground();
+//        shape.setColor(color);
+        (image.getBackground()).setColorFilter(color, PorterDuff.Mode.SRC_IN);
         color = Color.argb(255,255,255,255);
         image.setTextColor(color);
 
