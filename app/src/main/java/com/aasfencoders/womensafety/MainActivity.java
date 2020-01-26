@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
 
     private void onSignedInInitialize(String username) {
-        Intent intent = new Intent(this,BottomNavigationActivity.class);
+        Intent intent = new Intent(this,OnBoardingScreen.class);
         intent.putExtra(getString(R.string.phone),username);
         startActivity(intent);
         this.finish();
