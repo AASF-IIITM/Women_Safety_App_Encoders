@@ -10,6 +10,7 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,24 +41,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     View view;
     ListView listView;
     SharedPreferences sharedPreferences;
 
+    DatabaseReference mFirebaseReference;
+
     private InviteAdapter mCursorAdapter;
 
-    private void contact(){
-        Intent intent = new Intent(inviteConnection.this , ContactActivity.class);
+    private void contact() {
+        Intent intent = new Intent(inviteConnection.this, ContactActivity.class);
         startActivity(intent);
     }
 
-    private void checkContactPermission(){
+    private void checkContactPermission() {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED  ) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        }else{
+        } else {
             contact();
         }
     }
@@ -71,10 +74,10 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                     contact();
                 } else {
-                    Toast.makeText(this , getString(R.string.permissionDenied) , Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
                 }
-            }  else {
-                Toast.makeText(this , getString(R.string.permissionDenied) , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -86,6 +89,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_invite_connection);
         getSupportActionBar().setTitle(getString(R.string.inviteConnectionHeading));
 
+        mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = inviteConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
 
         view = (View) findViewById(R.id.empty_invite_view);
@@ -102,6 +106,8 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
                 checkContactPermission();
             }
         });
+
+        checkConnection();
 
         getSupportLoaderManager().initLoader(1, null, inviteConnection.this);
 
@@ -123,12 +129,55 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-            mCursorAdapter.swapCursor(data);
+        mCursorAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
+    }
+
+    private void checkConnection() {
+        boolean state = CheckNetworkConnection.checkNetwork(inviteConnection.this);
+        if (state) {
+            fetchRejectedContacts();
+        }
+    }
+
+    private void fetchRejectedContacts() {
+
+        String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
+
+        DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
+
+                    if(callClassObj.getStatus().equals(getString(R.string.rejected))){
+                        ContentValues values = new ContentValues();
+                        values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.rejected));
+                        values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
+
+                        String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                        String[] selectionArgs = new String[]{callClassObj.getNumber()};
+
+                        Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+                        ds.getRef().removeValue();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        userNameRef.addListenerForSingleValueEvent(eventListener);
+
+
     }
 }
