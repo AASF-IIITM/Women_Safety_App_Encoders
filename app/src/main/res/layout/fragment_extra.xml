@@ -13,7 +13,7 @@
         android:textColor="@color/colorPrimaryDark" />
 
     <RadioGroup
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:id="@+id/sim_radio_group"
@@ -53,5 +53,23 @@
             android:text="@string/SIMNO"/>
 
     </RadioGroup>
+
+    <Button
+        android:id="@+id/showPolice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:background="@drawable/button"
+        android:elevation="18dp"
+        android:paddingLeft="32dp"
+        android:paddingTop="16dp"
+        android:paddingRight="32dp"
+        android:paddingBottom="16dp"
+        android:text="@string/ShowPolice"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -16,11 +16,13 @@ import androidx.fragment.app.Fragment;
 
 import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.R;
+import com.aasfencoders.womensafety.ShowPolice;
 
 public class ExtrasFragment extends Fragment {
 
     private RadioGroup radioGroup;
     private SharedPreferences sharedPreferences;
+    private Button showPolice;
 
     @Nullable
     @Override
@@ -32,6 +34,16 @@ public class ExtrasFragment extends Fragment {
         }
 
         String checked = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
+
+        showPolice = view.findViewById(R.id.showPolice);
+
+        showPolice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext() , ShowPolice.class);
+                startActivity(intent);
+            }
+        });
 
         if(checked.equals(getString(R.string.SIM1))){
             radioGroup.check(R.id.sim1);

@@ -112,5 +112,8 @@
     <string name="NO">NO</string>
     <string name="SIMNO">Don\'t send automated SMS alert</string>
 
+    <string name="ShowPolice">Nearby Police Stations</string>
+    <string name="title_activity_show_police">Map</string>
+
 
 </resources>
