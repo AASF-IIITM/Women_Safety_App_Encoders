@@ -114,6 +114,14 @@
 
     <string name="ShowPolice">Nearby Police Stations</string>
     <string name="title_activity_show_police">Map</string>
+    <string name="results">results</string>
+    <string name="name3">name</string>
+    <string name="geometry">geometry</string>
+    <string name="location">location</string>
+
+    <string name="lat">lat</string>
+    <string name="lng">lng</string>
+    <string name="vicinity">vicinity</string>
 
 
 </resources>
