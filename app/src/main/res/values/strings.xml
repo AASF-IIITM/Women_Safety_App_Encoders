@@ -123,5 +123,8 @@
     <string name="lng">lng</string>
     <string name="vicinity">vicinity</string>
 
+    <string name="notiChannelId" translatable="false">reminder</string>
+    <string name="notiChannelName" translatable="false">ShaniPeeth Notification</string>
+
 
 </resources>
