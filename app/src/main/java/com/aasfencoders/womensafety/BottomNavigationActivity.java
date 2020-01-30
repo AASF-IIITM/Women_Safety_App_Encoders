@@ -30,20 +30,26 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
                     selectedFragment = new HomeFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                     break;
                 case R.id.navigation_trackOther:
+                    sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
                     selectedFragment = new TrackOthersFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                     break;
                 case R.id.navigation_trackMe:
-                    selectedFragment = new TrackMeFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    if(sharedPreferences.getString(getString(R.string.NAVITEM) ,getString(R.string.NAVITEM0)).equals(getString(R.string.NAVITEM0))){
+                        selectedFragment = new TrackMeFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                        sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM1)).apply();
+                    }
                     break;
                 case R.id.navigation_extra:
                     selectedFragment = new ExtrasFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
                     break;
             }
 
@@ -87,5 +93,17 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
     }
 }

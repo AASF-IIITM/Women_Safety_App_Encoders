@@ -83,7 +83,7 @@
     <string name="zero">zero</string>
     <string name="one">one</string>
     <string name="two">two</string>
-    <string name="EMPTY">EMPTY</string>0
+    <string name="EMPTY">EMPTY</string>
     <string name="title_activity_maps">Map</string>
 
     <string name="connectionHeading">You can rest now</string>
@@ -126,6 +126,10 @@
 
     <string name="notiChannelId" >reminder</string>
     <string name="notiChannelName" >ShaniPeeth Notification</string>
+
+    <string name="NAVITEM" >NAVITEM</string>
+    <string name="NAVITEM0" >0</string>
+    <string name="NAVITEM1" >1</string>
 
 
 </resources>
