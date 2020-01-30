@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.adapter.ContactAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
+import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -274,7 +275,13 @@ public class ContactActivity extends AppCompatActivity {
                             if (items.isEmpty()) {
                                 Toast.makeText(getBaseContext(), R.string.noContactSelected, Toast.LENGTH_SHORT).show();
                             } else {
-                                updateDatabase(items, name);
+                                boolean state = CheckNetworkConnection.checkNetwork(ContactActivity.this);
+                                if (state) {
+                                    updateDatabase(items, name);
+                                } else {
+                                    Toast.makeText(ContactActivity.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
+                                }
+
                             }
                         }
                     })

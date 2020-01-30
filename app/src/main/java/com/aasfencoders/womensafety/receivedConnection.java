@@ -17,6 +17,7 @@ import com.aasfencoders.womensafety.adapter.InviteAdapter;
 import com.aasfencoders.womensafety.adapter.ReceiveAdapter;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -73,8 +74,9 @@ public class receivedConnection extends AppCompatActivity {
 
         progress = findViewById(R.id.progress_view);
 
-        reload = findViewById(R.id.reloadButton);
+        checkConnection();
 
+        FloatingActionButton reload = (FloatingActionButton) findViewById(R.id.fab_reload_received);
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +84,6 @@ public class receivedConnection extends AppCompatActivity {
             }
         });
 
-        checkConnection();
 
     }
 

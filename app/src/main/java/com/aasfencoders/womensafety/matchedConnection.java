@@ -56,9 +56,12 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             fetchMatchedContacts();
             progress.setVisibility(View.VISIBLE);
             view.setVisibility(View.GONE);
+            listView.setVisibility(View.INVISIBLE);
         } else {
             progress.setVisibility(View.INVISIBLE);
-            view.setVisibility(View.GONE);
+            view.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.VISIBLE);
+            Toast.makeText(matchedConnection.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -91,7 +94,6 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
                 checkConnection();
-                listView.setVisibility(View.INVISIBLE);
             }
         });
 
