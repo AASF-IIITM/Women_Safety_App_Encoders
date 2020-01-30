@@ -52,8 +52,6 @@ public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
 
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(230), rnd.nextInt(230), rnd.nextInt(230));
-//        GradientDrawable shape = (GradientDrawable)image.getBackground();
-//        shape.setColor(color);
         (image.getBackground()).setColorFilter(color, PorterDuff.Mode.SRC_IN);
         color = Color.argb(255,255,255,255);
         image.setTextColor(color);

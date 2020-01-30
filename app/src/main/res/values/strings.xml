@@ -122,9 +122,10 @@
     <string name="lat">lat</string>
     <string name="lng">lng</string>
     <string name="vicinity">vicinity</string>
+    <string name="noPreviousConnection">You haven\'t received any tracking info from this user.</string>
 
-    <string name="notiChannelId" translatable="false">reminder</string>
-    <string name="notiChannelName" translatable="false">ShaniPeeth Notification</string>
+    <string name="notiChannelId" >reminder</string>
+    <string name="notiChannelName" >ShaniPeeth Notification</string>
 
 
 </resources>

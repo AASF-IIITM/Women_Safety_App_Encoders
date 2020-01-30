@@ -100,10 +100,23 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(matchedConnection.this, MapsActivity.class);
+
                 Uri currentToDoUri = ContentUris.withAppendedId(DataContract.DataEntry.CONTENT_URI, l);
-                intent.setData(currentToDoUri);
-                startActivity(intent);
+                String[] projection = {
+                        DataContract.DataEntry.COLUMN_CURRENT_LAT};
+                Cursor cursor = getContentResolver().query(currentToDoUri, projection, null, null, null);
+                cursor.moveToFirst();
+                int latColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LAT);
+                String lat = cursor.getString(latColumnIndex);
+                cursor.close();
+
+                if(lat.equals(getString(R.string.EMPTY))){
+                     Toast.makeText(matchedConnection.this , getString(R.string.noPreviousConnection) , Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(matchedConnection.this, MapsActivity.class);
+                    intent.setData(currentToDoUri);
+                    startActivity(intent);
+                }
             }
         });
 
