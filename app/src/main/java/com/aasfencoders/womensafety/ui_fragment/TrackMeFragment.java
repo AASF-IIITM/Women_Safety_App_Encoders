@@ -9,23 +9,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
+
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.telephony.SmsManager;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,16 +30,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.aasfencoders.womensafety.Class.DataModel;
-import com.aasfencoders.womensafety.Class.RootModel;
+import com.aasfencoders.womensafety.BottomNavigationActivity;
 import com.aasfencoders.womensafety.ExampleService;
-import com.aasfencoders.womensafety.MainActivity;
-import com.aasfencoders.womensafety.MapsActivity;
+
+import com.aasfencoders.womensafety.NotificationCancelReceiver;
 import com.aasfencoders.womensafety.R;
-import com.aasfencoders.womensafety.api.ApiClient;
-import com.aasfencoders.womensafety.api.ApiInterface;
-import com.aasfencoders.womensafety.data.DataContract;
-import com.aasfencoders.womensafety.matchedConnection;
+import com.aasfencoders.womensafety.ServiceDetector;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,19 +46,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import okhttp3.ResponseBody;
-import retrofit2.Callback;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
@@ -115,6 +88,13 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         receiver = new LocationReceiver();
         getContext().registerReceiver(receiver, new IntentFilter("GET_LOCATION_CUR"));
 
+        ServiceDetector serviceDetector = new ServiceDetector();
+        if (!serviceDetector.isServiceRunning(getContext(), ExampleService.class)) {
+            gpsSwitch.setChecked(false);
+        } else {
+            gpsSwitch.setChecked(true);
+        }
+
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -153,7 +133,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 } else {
-                    startService();
+                    Intent broadcast = new Intent(getContext(), NotificationCancelReceiver.class);
+                    getContext().sendBroadcast(broadcast);
                 }
             }
         });
@@ -211,7 +192,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public void onStop()
     {
         super.onStop();
-        getContext().unregisterReceiver(receiver);
     }
 
 }
