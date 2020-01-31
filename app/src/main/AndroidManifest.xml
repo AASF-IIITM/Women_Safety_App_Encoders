@@ -101,6 +101,7 @@
             android:stopWithTask="false" />
 
         <receiver android:name=".NotificationCancelReceiver"></receiver>
+        <receiver android:name=".updateBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

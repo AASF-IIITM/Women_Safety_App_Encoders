@@ -1,6 +1,7 @@
 package com.aasfencoders.womensafety.api;
 
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,9 +21,11 @@ import androidx.core.content.ContextCompat;
 import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.data.DataContract;
+import com.aasfencoders.womensafety.updateBroadcastReceiver;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Calendar;
 import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -30,6 +33,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     NotificationCompat.Builder notificationBuilder;
     NotificationManager notificationManager;
     PendingIntent notifyPendingIntent;
+
+    AlarmManager alarmManager;
+    PendingIntent broadcast;
+    Intent notificationIntent;
+
+    String id;
 
     @Override
     public void onMessageReceived(@NonNull final RemoteMessage remoteMessage) {
@@ -51,15 +60,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String[] selectionArgs = new String[]{phone};
 
         String[] projection = {
+                DataContract.DataEntry._ID,
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_STATUS};
 
         Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
         cursor.moveToFirst();
+        int idColumnIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
+        id = cursor.getString(idColumnIndex);
         int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         String name = cursor.getString(nameColumnIndex);
         int statusColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STATUS);
         String status = cursor.getString(statusColumnIndex);
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        notificationIntent = new Intent(getApplicationContext(), updateBroadcastReceiver.class);
+        notificationIntent.putExtra("phone", phone);
+        broadcast = PendingIntent.getBroadcast(getApplicationContext(), Integer.parseInt(id), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+120*1000, broadcast);
 
         if(status.equals(getString(R.string.zero))){
             makeNotification(name);
@@ -123,7 +141,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
         }
 
-        notificationManager.notify(requestCode, notificationBuilder.build());
+        notificationManager.notify(Integer.parseInt(id), notificationBuilder.build());
     }
 
 }
