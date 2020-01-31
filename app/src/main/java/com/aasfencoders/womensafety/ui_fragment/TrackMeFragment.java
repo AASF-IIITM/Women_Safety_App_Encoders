@@ -37,6 +37,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aasfencoders.womensafety.Class.DataModel;
 import com.aasfencoders.womensafety.Class.RootModel;
+import com.aasfencoders.womensafety.ExampleService;
 import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.MapsActivity;
 import com.aasfencoders.womensafety.R;
@@ -73,16 +74,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
     private GoogleMap mMap;
-
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-
-    private ArrayList<String> phoneNumber;
-    private ArrayList<String> phoneName;
-
-    private String userPhoneNumber;
-
-    private SharedPreferences sharedPreferences;
     private Switch gpsSwitch;
 
     @Override
@@ -91,15 +82,14 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
-                }else{
+                    startService();
+                } else {
                     gpsSwitch.setChecked(false);
                 }
-            }else{
+            } else {
                 gpsSwitch.setChecked(false);
             }
         }
-
 
 
     }
@@ -110,8 +100,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         gpsSwitch = view.findViewById(R.id.gpsSwitch);
-        sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
-        userPhoneNumber = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -126,13 +114,12 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                             final LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
 
-
                             if (Build.VERSION.SDK_INT < 23) {
                                 // sendSMS();
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+                                startService();
                             } else {
                                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                                 } else {
 
                                     // sendSMS();
@@ -140,7 +127,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                         startActivity(intent);
                                     }
-                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+                                    startService();
                                 }
                             }
 
@@ -151,34 +138,10 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 } else {
-                    locationManager.removeUpdates(locationListener);
+                    startService();
                 }
             }
         });
-
-        String[] projection = {
-                DataContract.DataEntry._ID,
-                DataContract.DataEntry.COLUMN_NAME,
-                DataContract.DataEntry.COLUMN_PHONE};
-
-        Cursor cursor;
-
-        if (getContext() != null) {
-            phoneName = new ArrayList<String>();
-            phoneNumber = new ArrayList<String>();
-            cursor = getContext().getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
-            int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
-            int numberColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
-
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    String name = cursor.getString(nameColumnIndex);
-                    String number = cursor.getString(numberColumnIndex);
-                    phoneName.add(name);
-                    phoneNumber.add(number);
-                }
-            }
-        }
 
         return view;
     }
@@ -201,94 +164,11 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
         mMap = googleMap;
 
-        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "location updated", Toast.LENGTH_SHORT).show();
-                }
-                mMap.clear();
-                float zoomLevel = mMap.getCameraPosition().zoom;
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Live Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
-
-
-
-            sendLocationToMatchedContacts(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
-        }
-
-        @Override
-        public void onStatusChanged (String provider,int status, Bundle extras){
-
-        }
-
-        @Override
-        public void onProviderEnabled (String provider){
-
-        }
-
-        @Override
-        public void onProviderDisabled (String provider){
-
-        }
     }
 
-    ;
-
-
-}
-
-    private void sendSMS() {
-        int i;
-
-        final ArrayList<Integer> simCardList = new ArrayList<>();
-        SubscriptionManager subscriptionManager;
-        subscriptionManager = SubscriptionManager.from(getActivity());
-        @SuppressLint("MissingPermission") final List<SubscriptionInfo> subscriptionInfoList = subscriptionManager
-                .getActiveSubscriptionInfoList();
-        for (SubscriptionInfo subscriptionInfo : subscriptionInfoList) {
-            int subscriptionId = subscriptionInfo.getSubscriptionId();
-            simCardList.add(subscriptionId);
-        }
-
-        int smsToSendFrom = simCardList.get(0);
-        for (i = 0; i < phoneName.size(); i++) {
-            String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
-            SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null, null);
-        }
-
-    }
-
-    private void sendLocationToMatchedContacts(String Lat, String Long) {
-
-        int i;
-
-        for (i = 0; i < phoneNumber.size(); i++) {
-            int length = phoneNumber.get(i).length();
-            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-            Date dateObject = new Date();
-            long date = dateObject.getTime();
-            RootModel rootModel = new RootModel("/topics/" + phoneNumber.get(i).substring(1, length), new DataModel(Lat, Long, userPhoneNumber, java.lang.Long.toString(date)));
-            retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
-
-            responseBodyCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    if(getContext()!=null) {
-                        Toast.makeText(getContext(), "Sent", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
-        }
-
+    private void startService(){
+        Intent serviceIntent = new Intent(getContext(), ExampleService.class);
+        ContextCompat.startForegroundService(getContext(), serviceIntent);
     }
 
 }
