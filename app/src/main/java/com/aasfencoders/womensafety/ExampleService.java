@@ -136,6 +136,7 @@ public class ExampleService extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
+                sendDataToFragment(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
                 sendLocationToMatchedContacts(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
             }
 
@@ -160,6 +161,14 @@ public class ExampleService extends Service {
         }
 
         return Service.START_NOT_STICKY;
+    }
+
+    private void sendDataToFragment(String lat , String lng){
+        Intent sendLoc = new Intent();
+        sendLoc.setAction("GET_LOCATION_CUR");
+        sendLoc.putExtra( "lat_DATA",lat);
+        sendLoc.putExtra( "lng_DATA",lng);
+        sendBroadcast(sendLoc);
     }
 
 

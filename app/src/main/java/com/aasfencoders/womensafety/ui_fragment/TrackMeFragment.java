@@ -3,8 +3,10 @@ package com.aasfencoders.womensafety.ui_fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -16,6 +18,9 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
@@ -75,6 +80,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private GoogleMap mMap;
     private Switch gpsSwitch;
+    public SharedPreferences sharedPreferences;
+    private LocationReceiver receiver;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -100,6 +107,14 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         gpsSwitch = view.findViewById(R.id.gpsSwitch);
+
+        if (getContext() != null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        }
+
+        receiver = new LocationReceiver();
+        getContext().registerReceiver(receiver, new IntentFilter("GET_LOCATION_CUR"));
+
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -166,9 +181,37 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void startService(){
+    private void startService() {
         Intent serviceIntent = new Intent(getContext(), ExampleService.class);
         ContextCompat.startForegroundService(getContext(), serviceIntent);
+    }
+
+
+    class LocationReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction().equals("GET_LOCATION_CUR"))
+            {
+                String Lat = intent.getStringExtra("lat_DATA");
+                String Lng = intent.getStringExtra("lng_DATA");
+                mMap.clear();
+                float zoomLevel = mMap.getCameraPosition().zoom;
+                LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lng));
+                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+
+            }
+        }
+
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        getContext().unregisterReceiver(receiver);
     }
 
 }

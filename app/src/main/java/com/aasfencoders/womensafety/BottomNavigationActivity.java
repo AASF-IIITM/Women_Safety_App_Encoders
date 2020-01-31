@@ -106,4 +106,5 @@ public class BottomNavigationActivity extends AppCompatActivity {
         super.onDestroy();
         sharedPreferences.edit().putString(getString(R.string.NAVITEM),getString(R.string.NAVITEM0)).apply();
     }
+
 }
