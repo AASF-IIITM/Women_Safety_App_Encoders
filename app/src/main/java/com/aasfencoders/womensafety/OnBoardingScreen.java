@@ -26,15 +26,15 @@ public class OnBoardingScreen extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra(getString(R.string.phone));
 
-        PaperOnboardingPage scr1 = new PaperOnboardingPage("Hotels",
-                "All hotels and hostels are sorted by hospitality rating",
-                Color.parseColor("#678FB4"), R.drawable.ic_grade_pink_24dp, R.drawable.ic_grade_pink_24dp);
-        PaperOnboardingPage scr2 = new PaperOnboardingPage("Banks",
-                "We carefully verify all banks before add them into the app",
-                Color.parseColor("#65B0B4"), R.drawable.ic_cloud_upload_black_24dp, R.drawable.ic_cloud_upload_black_24dp);
-        PaperOnboardingPage scr3 = new PaperOnboardingPage("Stores",
-                "All local stores are categorized for your convenience",
-                Color.parseColor("#9B90BC"), R.drawable.ic_home_pink_24dp, R.drawable.ic_home_pink_24dp);
+        PaperOnboardingPage scr1 = new PaperOnboardingPage("Make Your Connections",
+                "Make connection with your friend and well-wisher to ",
+                Color.parseColor("#678FB4"), R.drawable.team_small, R.drawable.team_small);
+        PaperOnboardingPage scr2 = new PaperOnboardingPage("Two Way Connection",
+                "Ones they accept your request you both will be connected to each other",
+                Color.parseColor("#65B0B4"), R.drawable.hand_small, R.drawable.hand_small);
+        PaperOnboardingPage scr3 = new PaperOnboardingPage("Track your Loved Ones",
+                "Send realtime location to friends when you want with just one tap",
+                Color.parseColor("#9B90BC"), R.drawable.mapssmall, R.drawable.mapssmall);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
         elements.add(scr1);
