@@ -118,13 +118,17 @@ public class ExtrasFragment extends Fragment {
         ArrayAdapter<String> numberISO = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.CountryCodes));
         numberCodes.setAdapter(numberISO);
 
+        String pos = sharedPreferences.getString(getString(R.string.ISOPOSE) , getString(R.string.NAVITEM0));
+
+        numberCodes.setSelection(Integer.parseInt(pos));
+
         numberCodes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String[] splited = numberCodes.getSelectedItem().toString().split(" ");
                 isoCodeNumber = splited[0];
                 sharedPreferences.edit().putString(getString(R.string.ISONUMBER) , isoCodeNumber).apply();
-                Toast.makeText(getContext() , "Selected Country Code is" + numberCodes.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                sharedPreferences.edit().putString(getString(R.string.ISOPOSE) , Integer.toString(i)).apply();
             }
 
             @Override

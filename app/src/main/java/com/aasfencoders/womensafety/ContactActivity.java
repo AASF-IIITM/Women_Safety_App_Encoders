@@ -256,7 +256,13 @@ public class ContactActivity extends AppCompatActivity {
 
                     Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
                     if (!(cursor != null && cursor.getCount() > 0)) {
-                        items.add(phoneNo);
+                        if(phoneNo.charAt(0) == '+'){
+                            items.add(phoneNo);
+                        }else{
+                            String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                            items.add(isocode + phoneNo);
+                        }
+
                     }
                     cursor.close();
                 }

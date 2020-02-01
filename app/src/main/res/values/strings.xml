@@ -137,6 +137,8 @@
     <string name="OnBoarding" >OnBoarding</string>
     <string name="done" >done</string>
 
+    <string name="ISOPOSE" >ISOPOSE</string>
+
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">
