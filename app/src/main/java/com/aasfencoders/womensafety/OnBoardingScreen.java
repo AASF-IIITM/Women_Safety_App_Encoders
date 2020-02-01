@@ -23,9 +23,6 @@ public class OnBoardingScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_boarding_screen);
 
-        Intent intent = getIntent();
-        username = intent.getStringExtra(getString(R.string.phone));
-
         PaperOnboardingPage scr1 = new PaperOnboardingPage("Make Your Connections",
                 "Make connection with your friend and well-wisher to ",
                 Color.parseColor("#678FB4"), R.drawable.team_small, R.drawable.team_small);
@@ -50,8 +47,7 @@ public class OnBoardingScreen extends AppCompatActivity {
         onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
             @Override
             public void onRightOut() {
-                Intent intent = new Intent(OnBoardingScreen.this , BottomNavigationActivity.class);
-                intent.putExtra(getString(R.string.phone),username);
+                Intent intent = new Intent(OnBoardingScreen.this , MainActivity.class);
                 startActivity(intent);
             }
         });

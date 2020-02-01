@@ -124,12 +124,16 @@
     <string name="vicinity">vicinity</string>
     <string name="noPreviousConnection">You haven\'t received any tracking info from this user.</string>
 
-    <string name="notiChannelId" >reminder</string>
-    <string name="notiChannelName" >ShaniPeeth Notification</string>
+    <string name="notiChannelId">reminder</string>
+    <string name="notiChannelName">ShaniPeeth Notification</string>
 
-    <string name="NAVITEM" >NAVITEM</string>
-    <string name="NAVITEM0" >0</string>
-    <string name="NAVITEM1" >1</string>
+    <string name="NAVITEM">NAVITEM</string>
+    <string name="NAVITEM0">0</string>
+    <string name="NAVITEM1">1</string>
+
+    <string name="OnBoarding" >OnBoarding</string>
+    <string name="done" >done</string>
+
 
 
 </resources>
