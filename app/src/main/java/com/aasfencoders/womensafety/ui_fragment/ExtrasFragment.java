@@ -11,12 +11,15 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,14 +42,18 @@ public class ExtrasFragment extends Fragment {
     LocationManager locationManager;
     LocationListener locationListener;
 
+    private Spinner numberCodes;
+    private String isoCodeNumber;
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    checkGPS();
-                    startShowPolice();
-                    Log.i("############","1");
+                if(getContext() != null){
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        checkGPS();
+                        startShowPolice();
+                    }
                 }
             }
         }
@@ -54,12 +61,14 @@ public class ExtrasFragment extends Fragment {
 
     private void getPermission() {
 
-        boolean state = CheckNetworkConnection.checkNetwork(getContext());
+        boolean state = false;
+        if(getContext() != null){
+            state = CheckNetworkConnection.checkNetwork(getContext());
+        }
         if (state) {
             locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             if (Build.VERSION.SDK_INT < 23) {
                 startShowPolice();
-                Log.i("############","3");
             } else {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -69,7 +78,6 @@ public class ExtrasFragment extends Fragment {
                 }
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     startShowPolice();
-                    Log.i("############","2");
                 }
             }
 
@@ -102,6 +110,29 @@ public class ExtrasFragment extends Fragment {
         }
 
         String checked = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
+
+        isoCodeNumber = getString(R.string.defaultISOCodeNumber);
+
+
+        numberCodes = (Spinner) view.findViewById(R.id.number_codes2);
+        ArrayAdapter<String> numberISO = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.CountryCodes));
+        numberCodes.setAdapter(numberISO);
+
+        numberCodes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String[] splited = numberCodes.getSelectedItem().toString().split(" ");
+                isoCodeNumber = splited[0];
+                sharedPreferences.edit().putString(getString(R.string.ISONUMBER) , isoCodeNumber).apply();
+                Toast.makeText(getContext() , "Selected Country Code is" + numberCodes.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+        });
 
         showPolice = view.findViewById(R.id.showPolice);
 

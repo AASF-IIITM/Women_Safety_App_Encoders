@@ -55,7 +55,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private Switch gpsSwitch;
     public SharedPreferences sharedPreferences;
     private LocationReceiver receiver;
-    private LocationManager manager;
+    private LocationManager manager ;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -77,6 +77,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void checkGPS() {
+        manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
