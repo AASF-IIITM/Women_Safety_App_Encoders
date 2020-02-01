@@ -52,7 +52,6 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                     Log.i("############","1");
                 }
             }
-
         }
     }
 
