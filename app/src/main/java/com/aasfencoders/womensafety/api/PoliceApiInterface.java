@@ -4,9 +4,12 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface PoliceApiInterface {
 
-    @GET("json?location=26.2183,78.1828&rankby=distance&types=police&sensor=false&key=AIzaSyDzbVaqexiRvDpSt3t9oO2kwEu34Qbm3QI")
-    Call<JsonObject> fetchCount();
+    @GET
+    Call<JsonObject> fetchCount(@Url String url);
 }

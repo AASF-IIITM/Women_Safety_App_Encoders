@@ -1,11 +1,26 @@
 package com.aasfencoders.womensafety;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 
 import com.aasfencoders.womensafety.api.PoliceApiClient;
 import com.aasfencoders.womensafety.api.PoliceApiInterface;
+import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
+import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,22 +39,96 @@ import retrofit2.Callback;
 public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    LocationManager locationManager;
+    LocationListener locationListener;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_police);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    checkGPS();
+                    startLocationUpdate();
+                    Log.i("############","1");
+                }
+            }
 
+        }
+    }
+
+    private void getLocation() {
+
+        boolean state = CheckNetworkConnection.checkNetwork(getApplicationContext());
+        if (state) {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            if (Build.VERSION.SDK_INT < 23) {
+                startLocationUpdate();
+                Log.i("############","3");
+            } else {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    checkGPS();
+                }
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    startLocationUpdate();
+                    Log.i("############","2");
+                }
+            }
+
+        } else {
+            NetworkDialog.showNetworkDialog(getApplicationContext());
+        }
+
+    }
+
+    private void checkGPS() {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
+    }
+
+    private void startLocationUpdate() {
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(final Location location) {
+                Log.i("############","4");
+                retrofit(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
+                locationManager.removeUpdates(locationListener);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+        }
+    }
+
+    private void retrofit(String Latitude, String Longitude) {
+        String url = "https://maps.googleapis.com/maps/api/place/search/" + "json?location=" +Latitude+","+Longitude + "&rankby=distance&types=police&sensor=false&key=AIzaSyDzbVaqexiRvDpSt3t9oO2kwEu34Qbm3QI";
         PoliceApiInterface apiService = PoliceApiClient.getClient().create(PoliceApiInterface.class);
-        retrofit2.Call<JsonObject> responseBodyCall = apiService.fetchCount();
+        retrofit2.Call<JsonObject> responseBodyCall = apiService.fetchCount(url);
 
         responseBodyCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                Log.i("############","6");
 
                 if (response.body() != null && response.code() == 200) {
 
@@ -53,7 +142,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
                         mMap.clear();
 
-                        for(int i =0; i < arr.length() ; i++){
+                        for (int i = 0; i < arr.length(); i++) {
                             JSONObject content = arr.getJSONObject(i);
                             String name = content.get(getString(R.string.name3)).toString();
 
@@ -68,7 +157,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
                             String lat = jsonObject2.get(getString(R.string.lat)).toString();
                             String lng = jsonObject2.get(getString(R.string.lng)).toString();
-                            
+
                             LatLng markerPoliceStation = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
                             mMap.addMarker(new MarkerOptions().position(markerPoliceStation).title(name).snippet(vicinity));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPoliceStation, 12));
@@ -85,21 +174,25 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                Log.i("############","7");
             }
         });
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_police);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+        getLocation();
+
+    }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
