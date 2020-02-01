@@ -55,6 +55,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private Switch gpsSwitch;
     public SharedPreferences sharedPreferences;
     private LocationReceiver receiver;
+    private LocationManager manager;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -62,6 +63,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    checkGPS();
                     startService();
                 } else {
                     gpsSwitch.setChecked(false);
@@ -72,6 +74,13 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
 
 
+    }
+
+    private void checkGPS() {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
     }
 
 
@@ -94,7 +103,9 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         } else {
             gpsSwitch.setChecked(true);
         }
-
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -106,7 +117,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                         boolean state = CheckNetworkConnection.checkNetwork(getContext());
                         if (state) {
 
-                            final LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                            manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
 
                             if (Build.VERSION.SDK_INT < 23) {
@@ -115,17 +126,14 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                             } else {
                                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                                } else {
-
-                                    // sendSMS();
-                                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                        startActivity(intent);
-                                    }
+                                }
+                                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                   checkGPS();
+                                }
+                                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                                     startService();
                                 }
                             }
-
 
                         } else {
                             NetworkDialog.showNetworkDialog(getContext());
@@ -173,8 +181,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals("GET_LOCATION_CUR"))
-            {
+            if (intent.getAction().equals("GET_LOCATION_CUR")) {
                 String Lat = intent.getStringExtra("lat_DATA");
                 String Lng = intent.getStringExtra("lng_DATA");
                 mMap.clear();
@@ -189,8 +196,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
     }
 
