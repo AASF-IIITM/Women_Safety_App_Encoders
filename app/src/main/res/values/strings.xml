@@ -138,6 +138,9 @@
     <string name="done" >done</string>
 
     <string name="ISOPOSE" >ISOPOSE</string>
+    <string name="police_station">Police Station(s) found in the surrounding area!!</string>
+    <string name="police_station_title">NEARBY POLICE STATIONS</string>
+    <string name="police_station_fetch">Fetching Nearby Police Station</string>
 
     <!--    Country Codes-->
 
