@@ -16,6 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.aasfencoders.womensafety.api.PoliceApiClient;
 import com.aasfencoders.womensafety.api.PoliceApiInterface;
@@ -41,6 +44,10 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     LocationManager locationManager;
     LocationListener locationListener;
+    TextView police_station_count;
+    TextView police_station_title;
+    TextView police_station_fetch;
+    ProgressBar progressBar;
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -49,7 +56,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     checkGPS();
                     startLocationUpdate();
-                    Log.i("############","1");
+                    Log.i("############", "1");
                 }
             }
         }
@@ -62,7 +69,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
             locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             if (Build.VERSION.SDK_INT < 23) {
                 startLocationUpdate();
-                Log.i("############","3");
+                Log.i("############", "3");
             } else {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -72,7 +79,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                 }
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     startLocationUpdate();
-                    Log.i("############","2");
+                    Log.i("############", "2");
                 }
             }
 
@@ -93,8 +100,8 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-                Log.i("############","4");
-                retrofit(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
+                Log.i("############", "4");
+                retrofit(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
                 locationManager.removeUpdates(locationListener);
             }
 
@@ -119,16 +126,16 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
     }
 
     private void retrofit(String Latitude, String Longitude) {
-        String url = "https://maps.googleapis.com/maps/api/place/search/" + "json?location=" +Latitude+","+Longitude + "&rankby=distance&types=police&sensor=false&key=AIzaSyDzbVaqexiRvDpSt3t9oO2kwEu34Qbm3QI";
+        String url = "https://maps.googleapis.com/maps/api/place/search/" + "json?location=" + Latitude + "," + Longitude + "&rankby=distance&types=police&sensor=false&key=AIzaSyDzbVaqexiRvDpSt3t9oO2kwEu34Qbm3QI";
         PoliceApiInterface apiService = PoliceApiClient.getClient().create(PoliceApiInterface.class);
         retrofit2.Call<JsonObject> responseBodyCall = apiService.fetchCount(url);
+
 
         responseBodyCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                Log.i("############","6");
-
+                Log.i("############", "6");
                 if (response.body() != null && response.code() == 200) {
 
                     JSONObject jsonObject;
@@ -140,8 +147,8 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                         arr = new JSONArray(item);
 
                         mMap.clear();
-
-                        for (int i = 0; i < arr.length(); i++) {
+                        int i;
+                        for (i = 0; i < arr.length(); i++) {
                             JSONObject content = arr.getJSONObject(i);
                             String name = content.get(getString(R.string.name3)).toString();
 
@@ -161,8 +168,12 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                             mMap.addMarker(new MarkerOptions().position(markerPoliceStation).title(name).snippet(vicinity));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPoliceStation, 12));
                         }
+                        police_station_title.setVisibility(View.VISIBLE);
+                        police_station_count.setVisibility(View.VISIBLE);
+                        police_station_fetch.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-
+                        police_station_count.setText(Integer.toString(i) + " " + getString(R.string.police_station));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -173,7 +184,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.i("############","7");
+                Log.i("############", "7");
             }
         });
     }
@@ -187,6 +198,14 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        police_station_count = findViewById(R.id.police_station_count);
+        police_station_title = findViewById(R.id.police_station_title);
+        police_station_fetch = findViewById(R.id.police_station_fetching);
+        progressBar = findViewById(R.id.progressBar_police);
+        police_station_title.setVisibility(View.INVISIBLE);
+        police_station_count.setVisibility(View.INVISIBLE);
+        police_station_fetch.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         getLocation();
 
     }
