@@ -53,6 +53,7 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
                 Intent intent = new Intent(getContext(), MapsActivity.class);
                 Uri currentToDoUri = ContentUris.withAppendedId(DataContract.DataEntry.CONTENT_URI, l);
                 intent.setData(currentToDoUri);
+                intent.putExtra("to_map",0);
                 startActivity(intent);
             }
         });

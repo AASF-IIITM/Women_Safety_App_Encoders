@@ -115,6 +115,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                 }else{
                     Intent intent = new Intent(matchedConnection.this, MapsActivity.class);
                     intent.setData(currentToDoUri);
+                    intent.putExtra("to_map",1);
                     startActivity(intent);
                 }
             }
