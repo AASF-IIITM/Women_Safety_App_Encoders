@@ -142,6 +142,11 @@
     <string name="police_station_title">NEARBY POLICE STATIONS</string>
     <string name="police_station_fetch">Fetching Nearby Police Station</string>
 
+    <string name="noAddress">User\'s current location address can not be parsed!!</string>
+    <string name="updated_location">USER\'s CURRENT LOCATION</string>
+    <string name="saved_location">USER\'s LAST LOCATION</string>
+    <string name="parsed_location">Approximate location of the User</string>
+
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">

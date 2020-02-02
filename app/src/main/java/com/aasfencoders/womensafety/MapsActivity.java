@@ -66,6 +66,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent intent = getIntent();
         mCurrentDataUri = intent.getData();
+        int key = intent.getIntExtra("to_map",-1);
+
+        TextView fragment_title = findViewById(R.id.fragment_title);
+        switch (key) {
+            case 0:fragment_title.setText(getString(R.string.updated_location));
+            break;
+            case 1:fragment_title.setText(getString(R.string.saved_location));
+            break;
+        }
 
         nameView = findViewById(R.id.nameTrackOther);
         numberView = findViewById(R.id.numberTrackOther);
@@ -139,9 +148,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 address = completeAddress.getFeatureName() + "," + completeAddress.getLocality() + "," + completeAddress.getAdminArea() + "," + completeAddress.getPostalCode() + "," + completeAddress.getCountryName();
                 addresstext.setText(address);
             }
+            else {
+                addresstext.setText(getString(R.string.noAddress));
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            addresstext.setText("User's Location not available");
+            addresstext.setText(getString(R.string.noAddress));
 
         }
 
