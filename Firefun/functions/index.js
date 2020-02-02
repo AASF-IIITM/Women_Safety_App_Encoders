@@ -28,11 +28,11 @@ exports.sent_status = functions.https.onCall((data, context) => {
                 if (findSource[k].number === source_no) {
                     const p=admin.database().ref(`/invitation/${target_no}/${k}`).remove();
                     promises.push(p)
-                    // const q= admin.database().ref(`/Users/${target_no}/matched/`).push({
-                    //     name : source_name,
-                    //     number : source_no,
-                    // })
-                    // promises.push(q)
+                    const q= admin.database().ref(`/Users/${target_no}/matchedall/`).push({
+                        name : source_name,
+                        number : source_no,
+                    })
+                    promises.push(q)
                     // const r= admin.database().ref(`/Users/${source_no}/sent`).once("value")
                     // promises.push(r)
                     break;
@@ -61,6 +61,11 @@ exports.sent_status = functions.https.onCall((data, context) => {
                         number : target_no,
                     })
                     promises.push(q)
+                    const r = admin.database().ref(`/Users/${source_no}/matchedall/`).push({
+                        name : target_name,
+                        number : target_no,
+                    })
+                    promises.push(r)
                     break;
                 }
             }
