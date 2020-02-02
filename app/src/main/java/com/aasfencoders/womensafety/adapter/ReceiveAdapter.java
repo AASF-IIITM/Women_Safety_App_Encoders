@@ -1,11 +1,16 @@
 package com.aasfencoders.womensafety.adapter;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.Class.ReceiveClass;
@@ -79,8 +85,27 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String nameOfContact  = null;
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    nameOfContact = getContactName(getContext() , currentCall.getNumber());
+
+                    if(nameOfContact == null){
+                        String phone = currentCall.getNumber();
+                        String code = sharedPreferences.getString(mContext.getString(R.string.ISONUMBER) , mContext.getString(R.string.defaultISOCodeNumber));
+                        String phonewithCode = phone.replace(code , "");
+                        String nameOfContactWithoutCOde = getContactName(getContext() , phonewithCode);
+
+                        if(nameOfContactWithoutCOde != null){
+                            nameOfContact = nameOfContactWithoutCOde;
+                        }
+                    }
+                }
+
+                if(nameOfContact == null){
+                    nameOfContact = currentCall.getName();
+                }
                 ContentValues values = new ContentValues();
-                values.put(DataContract.DataEntry.COLUMN_NAME, currentCall.getName());
+                values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
                 values.put(DataContract.DataEntry.COLUMN_PHONE, currentCall.getNumber());
                 values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
                 values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
@@ -100,6 +125,26 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
         return listItemView;
     }
+
+    private String getContactName(Context context, String phoneNumber) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if(cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return contactName;
+    }
+
 
     private void showButton() {
         accept.setVisibility(View.VISIBLE);
