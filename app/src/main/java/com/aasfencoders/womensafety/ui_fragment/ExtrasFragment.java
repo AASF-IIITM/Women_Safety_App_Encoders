@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -40,7 +42,8 @@ public class ExtrasFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private Button showPolice;
     LocationManager locationManager;
-    LocationListener locationListener;
+    MediaPlayer mediaPlayer;
+    Button mPause, mPlay;
 
     private Spinner numberCodes;
     private String isoCodeNumber;
@@ -49,7 +52,7 @@ public class ExtrasFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(getContext() != null){
+                if (getContext() != null) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         checkGPS();
                     }
@@ -61,7 +64,7 @@ public class ExtrasFragment extends Fragment {
     private void getPermission() {
 
         boolean state = false;
-        if(getContext() != null){
+        if (getContext() != null) {
             state = CheckNetworkConnection.checkNetwork(getContext());
         }
         if (state) {
@@ -99,7 +102,7 @@ public class ExtrasFragment extends Fragment {
     }
 
     private void startShowPolice() {
-        Intent intent = new Intent(getContext() , ShowPolice.class);
+        Intent intent = new Intent(getContext(), ShowPolice.class);
         startActivity(intent);
     }
 
@@ -107,9 +110,9 @@ public class ExtrasFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_extra,container,false);
+        View view = inflater.inflate(R.layout.fragment_extra, container, false);
         radioGroup = view.findViewById(R.id.sim_radio_group);
-        if(getContext() != null){
+        if (getContext() != null) {
             sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         }
 
@@ -122,7 +125,7 @@ public class ExtrasFragment extends Fragment {
         ArrayAdapter<String> numberISO = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.CountryCodes));
         numberCodes.setAdapter(numberISO);
 
-        String pos = sharedPreferences.getString(getString(R.string.ISOPOSE) , getString(R.string.NAVITEM0));
+        String pos = sharedPreferences.getString(getString(R.string.ISOPOSE), getString(R.string.NAVITEM0));
 
         numberCodes.setSelection(Integer.parseInt(pos));
 
@@ -131,8 +134,8 @@ public class ExtrasFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String[] splited = numberCodes.getSelectedItem().toString().split(" ");
                 isoCodeNumber = splited[0];
-                sharedPreferences.edit().putString(getString(R.string.ISONUMBER) , isoCodeNumber).apply();
-                sharedPreferences.edit().putString(getString(R.string.ISOPOSE) , Integer.toString(i)).apply();
+                sharedPreferences.edit().putString(getString(R.string.ISONUMBER), isoCodeNumber).apply();
+                sharedPreferences.edit().putString(getString(R.string.ISOPOSE), Integer.toString(i)).apply();
             }
 
             @Override
@@ -151,18 +154,17 @@ public class ExtrasFragment extends Fragment {
             }
         });
 
-        if(checked.equals(getString(R.string.SIM1))){
+        if (checked.equals(getString(R.string.SIM1))) {
             radioGroup.check(R.id.sim1);
-        }else if(checked.equals(getString(R.string.SIM2))){
+        } else if (checked.equals(getString(R.string.SIM2))) {
             radioGroup.check(R.id.sim2);
-        }else{
+        } else {
             radioGroup.check(R.id.sim_No);
         }
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId){
+                switch (checkedId) {
                     case R.id.sim1:
                         sharedPreferences.edit().putString(getString(R.string.SIM), getString(R.string.SIM1)).apply();
                         break;
@@ -175,7 +177,38 @@ public class ExtrasFragment extends Fragment {
                 }
             }
         });
+        mPause = view.findViewById(R.id.media_pause);
+        mPlay = view.findViewById(R.id.media_play);
 
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
+        mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+            }
+        });
+        mPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.pause();
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseMediaPlayer();
+    }
+
+    void releaseMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
