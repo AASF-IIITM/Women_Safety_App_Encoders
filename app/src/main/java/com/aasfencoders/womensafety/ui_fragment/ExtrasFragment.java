@@ -90,14 +90,20 @@ public class ExtrasFragment extends Fragment {
     private void checkGPS() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-            checkproviderEnabled();
+            startActivityForResult(intent,1);
+        }
+        else {
+            startShowPolice();
         }
     }
 
-    private void checkproviderEnabled() {
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            startShowPolice();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                startShowPolice();
+            }
         }
     }
 

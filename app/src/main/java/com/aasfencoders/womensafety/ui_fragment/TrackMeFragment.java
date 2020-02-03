@@ -87,6 +87,9 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivityForResult(intent,1);
         }
+        else {
+            startService();
+        }
 
     }
 

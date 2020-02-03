@@ -1,6 +1,7 @@
 package com.aasfencoders.womensafety;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -49,54 +50,9 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
     TextView police_station_fetch;
     ProgressBar progressBar;
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    checkGPS();
-                    startLocationUpdate();
-                    Log.i("############", "1");
-                }
-            }
-        }
-    }
-
-    private void getLocation() {
-
-        boolean state = CheckNetworkConnection.checkNetwork(getApplicationContext());
-        if (state) {
-            locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            if (Build.VERSION.SDK_INT < 23) {
-                startLocationUpdate();
-                Log.i("############", "3");
-            } else {
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                }
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    checkGPS();
-                }
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    startLocationUpdate();
-                    Log.i("############", "2");
-                }
-            }
-
-        } else {
-            NetworkDialog.showNetworkDialog(getApplicationContext());
-        }
-
-    }
-
-    private void checkGPS() {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }
-    }
 
     private void startLocationUpdate() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -206,7 +162,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
         police_station_count.setVisibility(View.INVISIBLE);
         police_station_fetch.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        getLocation();
+        startLocationUpdate();
 
     }
 
