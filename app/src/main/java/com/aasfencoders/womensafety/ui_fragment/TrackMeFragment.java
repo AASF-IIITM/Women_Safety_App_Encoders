@@ -56,6 +56,11 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public SharedPreferences sharedPreferences;
     private LocationReceiver receiver;
     private LocationManager manager ;
+    boolean flag;
+
+    public TrackMeFragment() {
+        flag = true;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -186,10 +191,21 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 String Lat = intent.getStringExtra("lat_DATA");
                 String Lng = intent.getStringExtra("lng_DATA");
                 mMap.clear();
-                float zoomLevel = mMap.getCameraPosition().zoom;
+                float zoomLevel;
                 LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lng));
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+                if(userLocation != null) {
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location"));
+                    if(flag==true)
+                    {
+                        flag = false;
+                        zoomLevel = 17;
+                    }
+                    else
+                    {
+                        zoomLevel = mMap.getCameraPosition().zoom;
+                    }
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+                }
 
             }
         }

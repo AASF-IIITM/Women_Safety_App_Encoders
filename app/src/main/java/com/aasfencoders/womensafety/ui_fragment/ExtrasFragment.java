@@ -52,7 +52,6 @@ public class ExtrasFragment extends Fragment {
                 if(getContext() != null){
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         checkGPS();
-                        startShowPolice();
                     }
                 }
             }
@@ -76,9 +75,7 @@ public class ExtrasFragment extends Fragment {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     checkGPS();
                 }
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    startShowPolice();
-                }
+
             }
 
         } else {
@@ -91,6 +88,13 @@ public class ExtrasFragment extends Fragment {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
+            checkproviderEnabled();
+        }
+    }
+
+    private void checkproviderEnabled() {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            startShowPolice();
         }
     }
 
