@@ -22,11 +22,13 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aasfencoders.womensafety.data.DataContract;
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,6 +56,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView stampDate;
     private TextView stampTime;
     private TextView addresstext;
+    float zoomLevel;
+    boolean flag;
+
+    public MapsActivity() {
+        flag = true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +75,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         mCurrentDataUri = intent.getData();
         int key = intent.getIntExtra("to_map",-1);
-
         TextView fragment_title = findViewById(R.id.fragment_title);
         switch (key) {
             case 0:fragment_title.setText(getString(R.string.updated_location));
@@ -133,10 +140,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stampDate.setText(date);
 
 
-        float zoomLevel = mMap.getCameraPosition().zoom;
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
-        mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+        if(userLocation != null) {
+            mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
+            if(flag==true)
+            {
+                flag = false;
+                zoomLevel = 17;
+                Toast.makeText(getApplicationContext(),"flag true",Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                zoomLevel = mMap.getCameraPosition().zoom;
+                Toast.makeText(getApplicationContext(),"flag false",Toast.LENGTH_LONG).show();
+
+            }
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
+        }
 
 
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
