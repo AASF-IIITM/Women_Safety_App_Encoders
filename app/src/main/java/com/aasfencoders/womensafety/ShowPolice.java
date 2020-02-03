@@ -166,7 +166,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
                             LatLng markerPoliceStation = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
                             mMap.addMarker(new MarkerOptions().position(markerPoliceStation).title(name).snippet(vicinity));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPoliceStation, 12));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerPoliceStation, 12));
                         }
                         police_station_title.setVisibility(View.VISIBLE);
                         police_station_count.setVisibility(View.VISIBLE);

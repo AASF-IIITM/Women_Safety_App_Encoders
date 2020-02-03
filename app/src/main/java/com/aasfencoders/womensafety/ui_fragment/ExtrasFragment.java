@@ -41,9 +41,9 @@ public class ExtrasFragment extends Fragment {
     private RadioGroup radioGroup;
     private SharedPreferences sharedPreferences;
     private Button showPolice;
-    LocationManager locationManager;
-    MediaPlayer mediaPlayer;
-    Button mPause, mPlay;
+    private LocationManager locationManager;
+    private MediaPlayer mediaPlayer;
+    private Button mPause, mPlay;
 
     private Spinner numberCodes;
     private String isoCodeNumber;
@@ -184,8 +184,18 @@ public class ExtrasFragment extends Fragment {
         mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+                AudioManager audioManager;
+                if(getContext() != null){
+                    audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+                    if(audioManager != null){
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+                    }
+                }
+
+                if(mediaPlayer == null)
+                {
+                    mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
+                }
                 mediaPlayer.start();
                 mediaPlayer.setLooping(true);
             }
@@ -193,7 +203,10 @@ public class ExtrasFragment extends Fragment {
         mPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.pause();
+                if(mediaPlayer != null){
+                    mediaPlayer.pause();
+                    releaseMediaPlayer();
+                }
             }
         });
         return view;
@@ -205,7 +218,7 @@ public class ExtrasFragment extends Fragment {
         releaseMediaPlayer();
     }
 
-    void releaseMediaPlayer() {
+    private void releaseMediaPlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
