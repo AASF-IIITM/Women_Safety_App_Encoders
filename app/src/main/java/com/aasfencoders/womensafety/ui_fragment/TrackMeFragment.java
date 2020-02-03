@@ -69,7 +69,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     checkGPS();
-                    startService();
                 } else {
                     gpsSwitch.setChecked(false);
                 }
@@ -84,11 +83,23 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private void checkGPS() {
         manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsSwitch.setChecked(false);
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+            startActivityForResult(intent,1);
         }
+
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                gpsSwitch.setChecked(true);
+                startService();
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -135,9 +146,6 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                                 }
                                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                    checkGPS();
-                                }
-                                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                                    startService();
                                 }
                             }
 
