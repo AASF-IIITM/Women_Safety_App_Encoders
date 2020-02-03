@@ -71,8 +71,10 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                     checkGPS();
                 } else {
                     gpsSwitch.setChecked(false);
+                    Toast.makeText(getContext(),getString(R.string.location_permission),Toast.LENGTH_SHORT).show();
                 }
             } else {
+                Toast.makeText(getContext(),getString(R.string.location_permission),Toast.LENGTH_SHORT).show();
                 gpsSwitch.setChecked(false);
             }
         }
@@ -100,6 +102,9 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
                 gpsSwitch.setChecked(true);
                 startService();
+            }
+            else {
+                Toast.makeText(getContext(),getString(R.string.gps_permission),Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -132,14 +137,11 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-
                     if (getContext() != null) {
                         boolean state = CheckNetworkConnection.checkNetwork(getContext());
                         if (state) {
 
                             manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-
-
                             if (Build.VERSION.SDK_INT < 23) {
                                 // sendSMS();
                                 startService();
@@ -158,8 +160,10 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 } else {
-                    Intent broadcast = new Intent(getContext(), NotificationCancelReceiver.class);
-                    getContext().sendBroadcast(broadcast);
+                    Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                    getContext().sendBroadcast(it);
+                    Intent serviceIntent = new Intent(getContext(), ExampleService.class);
+                    getContext().stopService(serviceIntent);
                 }
             }
         });

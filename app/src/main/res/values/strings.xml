@@ -148,6 +148,8 @@
     <string name="parsed_location">Approximate location of the User</string>
     <string name="siren_sound">Want to play the police siren sound?</string>
 
+    <string name="location_permission">Enable Location Permission to continue</string>
+    <string name="gps_permission">Enable GPS permission to continue</string>
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">

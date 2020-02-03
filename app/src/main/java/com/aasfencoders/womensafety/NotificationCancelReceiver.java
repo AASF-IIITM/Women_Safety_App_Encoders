@@ -17,5 +17,8 @@ public class NotificationCancelReceiver extends BroadcastReceiver {
         context.sendBroadcast(it);
         Intent serviceIntent = new Intent(context, ExampleService.class);
         context.stopService(serviceIntent);
+        Intent i = new Intent(context,BottomNavigationActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
     }
 }

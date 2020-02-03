@@ -55,7 +55,11 @@ public class ExtrasFragment extends Fragment {
                 if (getContext() != null) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         checkGPS();
+                    } else {
+                        Toast.makeText(getContext(), getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -90,9 +94,8 @@ public class ExtrasFragment extends Fragment {
     private void checkGPS() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivityForResult(intent,1);
-        }
-        else {
+            startActivityForResult(intent, 1);
+        } else {
             startShowPolice();
         }
     }
@@ -100,9 +103,12 @@ public class ExtrasFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
+        if (requestCode == 1) {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 startShowPolice();
+            }
+            else {
+                Toast.makeText(getContext(),getString(R.string.gps_permission),Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -191,15 +197,14 @@ public class ExtrasFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AudioManager audioManager;
-                if(getContext() != null){
+                if (getContext() != null) {
                     audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-                    if(audioManager != null){
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+                    if (audioManager != null) {
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                     }
                 }
 
-                if(mediaPlayer == null)
-                {
+                if (mediaPlayer == null) {
                     mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
                 }
                 mediaPlayer.start();
@@ -209,7 +214,7 @@ public class ExtrasFragment extends Fragment {
         mPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer != null){
+                if (mediaPlayer != null) {
                     mediaPlayer.pause();
                     releaseMediaPlayer();
                 }
