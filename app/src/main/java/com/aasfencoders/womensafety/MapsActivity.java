@@ -147,13 +147,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             {
                 flag = false;
                 zoomLevel = 17;
-                Toast.makeText(getApplicationContext(),"flag true",Toast.LENGTH_LONG).show();
             }
             else
             {
                 zoomLevel = mMap.getCameraPosition().zoom;
-                Toast.makeText(getApplicationContext(),"flag false",Toast.LENGTH_LONG).show();
-
             }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
         }

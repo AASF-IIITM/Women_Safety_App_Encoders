@@ -199,13 +199,10 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                     {
                         flag = false;
                         zoomLevel = 17;
-                        Toast.makeText(getContext(),"flag true",Toast.LENGTH_LONG).show();
                     }
                     else
                     {
                         zoomLevel = mMap.getCameraPosition().zoom;
-                        Toast.makeText(getContext(),"flag false",Toast.LENGTH_LONG).show();
-
                     }
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
                 }
