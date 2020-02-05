@@ -115,7 +115,7 @@
     <string name="NO">NO</string>
     <string name="SIMNO">Don\'t send automated SMS alert</string>
 
-    <string name="ShowPolice">Nearby Police Stations</string>
+    <string name="ShowPolice">Get Location</string>
     <string name="title_activity_show_police">Map</string>
     <string name="results">results</string>
     <string name="name3">name</string>
@@ -150,6 +150,12 @@
 
     <string name="location_permission">Enable Location Permission to continue</string>
     <string name="gps_permission">Enable GPS permission to continue</string>
+
+
+    <string name="showNearbyPolice">Want to see Police Stations that can be reached from your current location?</string>
+    <string name="clickButton">Click the button</string>
+    <string name="settings">SETTINGS</string>
+    <string name="policeSiren">Play Police Siren</string>
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">

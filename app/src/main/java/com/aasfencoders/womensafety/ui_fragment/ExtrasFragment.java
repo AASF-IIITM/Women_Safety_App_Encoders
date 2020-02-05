@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -33,6 +36,8 @@ import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.ShowPolice;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
+
+import jp.co.recruit_lifestyle.android.widget.PlayPauseButton;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
@@ -43,7 +48,7 @@ public class ExtrasFragment extends Fragment {
     private Button showPolice;
     private LocationManager locationManager;
     private MediaPlayer mediaPlayer;
-    private Button mPause, mPlay;
+    private PlayPauseButton mPlayPause;
 
     private Spinner numberCodes;
     private String isoCodeNumber;
@@ -106,9 +111,8 @@ public class ExtrasFragment extends Fragment {
         if (requestCode == 1) {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 startShowPolice();
-            }
-            else {
-                Toast.makeText(getContext(),getString(R.string.gps_permission),Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), getString(R.string.gps_permission), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -126,6 +130,10 @@ public class ExtrasFragment extends Fragment {
         radioGroup = view.findViewById(R.id.sim_radio_group);
         if (getContext() != null) {
             sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
+        }
+        ColorDrawable cd = new ColorDrawable(0xFFFF6666);
+        if(getActivity() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 
         String checked = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
@@ -189,38 +197,51 @@ public class ExtrasFragment extends Fragment {
                 }
             }
         });
-        mPause = view.findViewById(R.id.media_pause);
-        mPlay = view.findViewById(R.id.media_play);
-
+        mPlayPause = view.findViewById(R.id.main_play_pause_button);
+        mPlayPause.setColor(Color.rgb(255, 107, 129));
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
-        mPlay.setOnClickListener(new View.OnClickListener() {
+
+        mPlayPause.setOnControlStatusChangeListener(new PlayPauseButton.OnControlStatusChangeListener() {
             @Override
-            public void onClick(View v) {
-                AudioManager audioManager;
-                if (getContext() != null) {
-                    audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-                    if (audioManager != null) {
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+            public void onStatusChange(View view, boolean state) {
+                if (state) {
+                    AudioManager audioManager;
+                    if (getContext() != null) {
+                        audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+                        if (audioManager != null) {
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+                        }
+                    }
+
+                    if (mediaPlayer == null) {
+                        mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
+                    }
+                    mediaPlayer.start();
+                    mediaPlayer.setLooping(true);
+                } else {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.pause();
+                        releaseMediaPlayer();
+
                     }
                 }
+            }
+        });
 
-                if (mediaPlayer == null) {
-                    mediaPlayer = MediaPlayer.create(getContext(), R.raw.police_siren);
-                }
-                mediaPlayer.start();
-                mediaPlayer.setLooping(true);
-            }
-        });
-        mPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.pause();
-                    releaseMediaPlayer();
-                }
-            }
-        });
+
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mPlayPause.setPlayed(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPlayPause.setPlayed(false);
     }
 
     @Override

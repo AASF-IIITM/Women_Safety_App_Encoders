@@ -1,122 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/solve_your_problems_radio_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sms_title"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark" />
-
-    <RadioGroup
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/sim_radio_group"
-        android:layout_marginTop="10dp"
-        >
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sim1"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            android:checked="false"
-            android:text="@string/SIM1"/>
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sim2"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp"
-            android:checked="false"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="@string/SIM2"/>
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sim_No"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp"
-            android:checked="false"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="@string/SIMNO"/>
-
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/showPolice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
-        android:background="@drawable/button"
-        android:elevation="18dp"
-        android:paddingLeft="32dp"
-        android:paddingTop="16dp"
-        android:paddingRight="32dp"
-        android:paddingBottom="16dp"
-        android:text="@string/ShowPolice"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/country_code_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/country_title"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark" />
-
-    <Spinner
-        android:id="@+id/number_codes2"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/color_white"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/siren_sound"
-        android:layout_margin="10dp"
-        android:textSize="16sp"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:layout_marginRight="15dp"
-            android:text="PLAY"
-            android:id="@+id/media_play"/>
-        <Button
-            android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layoutOne">
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:layout_marginLeft="15dp"
-            android:text="PAUSE"
-            android:id="@+id/media_pause" />
+            android:id="@+id/showNearbyPoliceTitle"
+            android:text="@string/showNearbyPolice"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:layout_gravity="center"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/showNearbyPoliceContent"
+                android:text="@string/clickButton"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="2"/>
+
+            <Button
+                android:id="@+id/showPolice"
+                android:layout_width="7dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/button"
+                android:elevation="18dp"
+                android:paddingLeft="32dp"
+                android:paddingTop="16dp"
+                android:paddingRight="32dp"
+                android:paddingBottom="16dp"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/policeSiren"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:padding="10dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/siren_sound"
+                android:textSize="16sp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:layout_toLeftOf="@+id/main_play_pause_button"
+                android:layout_gravity="center"/>
+
+            <jp.co.recruit_lifestyle.android.widget.PlayPauseButton
+                android:id="@+id/main_play_pause_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:id="@+id/layoutTwo"
+        android:layout_alignParentBottom="true">
+
+    <TextView
+            android:id="@+id/settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25sp"
+        android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginBottom="30dp"/>
+
+        <TextView
+            android:id="@+id/country_code_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/country_title"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <Spinner
+            android:id="@+id/number_codes2"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/color_white"/>
+
+        <TextView
+            android:id="@+id/solve_your_problems_radio_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sms_title"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <RadioGroup
+            android:id="@+id/sim_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/sim1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/SIM1"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/sim2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:checked="false"
+                android:text="@string/SIM2"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/sim_No"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:checked="false"
+                android:text="@string/SIMNO"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>
