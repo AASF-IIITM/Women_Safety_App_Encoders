@@ -131,7 +131,7 @@ public class ExtrasFragment extends Fragment {
         if (getContext() != null) {
             sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         }
-        ColorDrawable cd = new ColorDrawable(0xFFFF6666);
+        ColorDrawable cd = new ColorDrawable(0XFF731383);
         if(getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }

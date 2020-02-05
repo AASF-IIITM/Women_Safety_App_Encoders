@@ -116,7 +116,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         gpsSwitch = view.findViewById(R.id.gpsSwitch);
-        ColorDrawable cd = new ColorDrawable(0xFFFF2222);
+        ColorDrawable cd = new ColorDrawable(0xFFBD1509);
         if(getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }

@@ -3,6 +3,7 @@ package com.aasfencoders.womensafety.ui_fragment;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -40,6 +42,10 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
         View root = inflater.inflate(R.layout.fragment_trackothers,container,false);
         if(getContext() != null){
             mCursorAdapter = new ConnectionCursorAdapter(getContext(), null);
+        }
+        ColorDrawable cd = new ColorDrawable(0xFF3F51B5);
+        if(getActivity() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 
         view = (View) root.findViewById(R.id.empty_connection_view);
