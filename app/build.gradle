@@ -49,6 +49,8 @@ dependencies {
     implementation 'com.ornach.nobobutton:nobobutton:1.6'
     implementation 'com.github.recruit-lifestyle:PlayPauseButton:1.0'
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:3.0.0'
+    //AndroidX
+    implementation "androidx.cardview:cardview:1.0.0"
 
 }
 apply plugin: 'com.google.gms.google-services'
