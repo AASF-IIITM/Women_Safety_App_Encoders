@@ -1,11 +1,13 @@
 package com.aasfencoders.womensafety.ui_fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -29,8 +31,12 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
         ColorDrawable cd = new ColorDrawable(0xFF0F9214);
+
+
         if(getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
+            Window window = getActivity().getWindow();
+            window.setStatusBarColor(Color.parseColor("#0a5c0c"));
         }
 
         inviteNewConnection = view.findViewById(R.id.inviteConnection);

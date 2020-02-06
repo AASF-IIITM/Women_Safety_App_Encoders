@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -20,6 +21,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -116,12 +118,15 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         gpsSwitch = view.findViewById(R.id.gpsSwitch);
-        ColorDrawable cd = new ColorDrawable(0xFFBD1509);
+        ColorDrawable cd = new ColorDrawable(0xFFAD6400);
         if(getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.setStatusBarColor(Color.parseColor("#804a00"));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 
         if (getContext() != null) {
+
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         }
 
