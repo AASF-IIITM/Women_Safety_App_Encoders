@@ -22,7 +22,7 @@
     <item
         android:id="@+id/navigation_trackMe"
         android:icon="@drawable/ic_person_pin_circle_black_24dp"
-        android:color="#BD1509"
+        android:color="#AD6400"
         android:title="@string/title_trackMe" />
 
     <item

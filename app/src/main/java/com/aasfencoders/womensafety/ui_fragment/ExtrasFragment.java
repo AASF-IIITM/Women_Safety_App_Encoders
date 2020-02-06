@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -133,6 +134,8 @@ public class ExtrasFragment extends Fragment {
         }
         ColorDrawable cd = new ColorDrawable(0XFF731383);
         if(getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.setStatusBarColor(Color.parseColor("#4e0d59"));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 

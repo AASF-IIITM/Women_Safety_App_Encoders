@@ -3,12 +3,14 @@ package com.aasfencoders.womensafety.ui_fragment;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -45,6 +47,8 @@ public class TrackOthersFragment extends Fragment implements  LoaderManager.Load
         }
         ColorDrawable cd = new ColorDrawable(0xFF3F51B5);
         if(getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.setStatusBarColor(Color.parseColor("#2e3b84"));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 
