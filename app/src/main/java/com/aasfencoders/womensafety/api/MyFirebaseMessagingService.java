@@ -65,34 +65,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 DataContract.DataEntry.COLUMN_STATUS};
 
         Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
-        cursor.moveToFirst();
-        int idColumnIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
-        id = cursor.getString(idColumnIndex);
-        int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
-        String name = cursor.getString(nameColumnIndex);
-        int statusColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STATUS);
-        String status = cursor.getString(statusColumnIndex);
 
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        notificationIntent = new Intent(getApplicationContext(), updateBroadcastReceiver.class);
-        notificationIntent.putExtra("phone", phone);
-        broadcast = PendingIntent.getBroadcast(getApplicationContext(), Integer.parseInt(id), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+120*1000, broadcast);
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+            int idColumnIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
+            id = cursor.getString(idColumnIndex);
+            int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
+            String name = cursor.getString(nameColumnIndex);
+            int statusColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STATUS);
+            String status = cursor.getString(statusColumnIndex);
 
-        if(status.equals(getString(R.string.zero))){
-            makeNotification(name);
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            notificationIntent = new Intent(getApplicationContext(), updateBroadcastReceiver.class);
+            notificationIntent.putExtra("phone", phone);
+            broadcast = PendingIntent.getBroadcast(getApplicationContext(), Integer.parseInt(id), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+120*1000, broadcast);
+
+            if(status.equals(getString(R.string.zero))){
+                makeNotification(name);
+            }
+
+            ContentValues values = new ContentValues();
+            values.put(DataContract.DataEntry.COLUMN_CURRENT_LAT, Lat);
+            values.put(DataContract.DataEntry.COLUMN_CURRENT_LONG, Long);
+            values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.one));
+            values.put(DataContract.DataEntry.COLUMN_STAMP, stamp);
+
+            Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
         }
 
-        cursor.close();
-
-        ContentValues values = new ContentValues();
-        values.put(DataContract.DataEntry.COLUMN_CURRENT_LAT, Lat);
-        values.put(DataContract.DataEntry.COLUMN_CURRENT_LONG, Long);
-        values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.one));
-        values.put(DataContract.DataEntry.COLUMN_STAMP, stamp);
-
-        Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
-
+        if(cursor != null){
+            cursor.close();
+        }
 
     }
 
