@@ -134,10 +134,10 @@
     <string name="NAVITEM0">0</string>
     <string name="NAVITEM1">1</string>
 
-    <string name="OnBoarding" >OnBoarding</string>
-    <string name="done" >done</string>
+    <string name="OnBoarding">OnBoarding</string>
+    <string name="done">done</string>
 
-    <string name="ISOPOSE" >ISOPOSE</string>
+    <string name="ISOPOSE">ISOPOSE</string>
     <string name="police_station">Police Station(s) found in the surrounding area!!</string>
     <string name="police_station_title">NEARBY POLICE STATIONS</string>
     <string name="police_station_fetch">Fetching Nearby Police Station</string>
@@ -147,6 +147,7 @@
     <string name="saved_location">USER\'s LAST LOCATION</string>
     <string name="parsed_location">Approximate location of the User</string>
     <string name="siren_sound">Want to play the police siren sound?</string>
+    <string name="photo">Send photos of suspicious activity / location when GPS not working</string>
 
     <string name="location_permission">Enable Location Permission to continue</string>
     <string name="gps_permission">Enable GPS permission to continue</string>
@@ -156,6 +157,7 @@
     <string name="clickButton">Click the button</string>
     <string name="settings">SETTINGS</string>
     <string name="policeSiren">Play Police Siren</string>
+    <string name="choosePhoto">Send Photos to Friends</string>
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">

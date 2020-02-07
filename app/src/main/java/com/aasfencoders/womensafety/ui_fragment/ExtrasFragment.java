@@ -35,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.ShowPolice;
+import com.aasfencoders.womensafety.capturePhoto;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
 
@@ -174,6 +175,15 @@ public class ExtrasFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getPermission();
+            }
+        });
+
+        Button clickPhoto = view.findViewById(R.id.clickPhoto);
+        clickPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), capturePhoto.class);
+                startActivity(intent);
             }
         });
 

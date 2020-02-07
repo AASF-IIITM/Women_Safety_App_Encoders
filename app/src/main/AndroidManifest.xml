@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".SplashActivity"
+        <activity android:name=".capturePhoto"></activity>
+        <activity
+            android:name=".SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +48,10 @@
         <activity
             android:name=".ShowPolice"
             android:label="@string/title_activity_show_police"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".OnBoardingScreen"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OnBoardingScreen"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -60,9 +63,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".matchedConnection"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".matchedConnection"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".receivedConnection"
             android:screenOrientation="portrait" />
@@ -77,8 +81,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <provider
             android:name=".data.DataProvider"

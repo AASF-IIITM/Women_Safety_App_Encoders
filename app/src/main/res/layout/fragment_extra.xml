@@ -29,7 +29,7 @@
             android:orientation="horizontal"
             android:padding="10dp">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/showNearbyPoliceContent"
                 android:text="@string/clickButton"
@@ -44,9 +44,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/police_station"
-                android:elevation="18dp"
                 android:paddingLeft="32dp"
                 android:paddingTop="16dp"
                 android:paddingRight="32dp"
@@ -74,20 +73,53 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="@string/siren_sound"
-                android:textSize="16sp"
-                android:layout_weight="4"
+                android:textSize="14sp"
                 android:gravity="center"
-                android:layout_toLeftOf="@+id/main_play_pause_button"
+                android:layout_toStartOf="@+id/main_play_pause_button"
                 android:layout_gravity="center"/>
 
             <jp.co.recruit_lifestyle.android.widget.PlayPauseButton
                 android:id="@+id/main_play_pause_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"/>
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choosePhoto"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:padding="10dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/photo"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_toStartOf="@+id/clickPhoto"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/clickPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/ic_camera_enhance_black_24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp" />
+
         </RelativeLayout>
 
     </LinearLayout>
