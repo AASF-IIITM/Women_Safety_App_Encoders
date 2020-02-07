@@ -86,8 +86,8 @@
     <string name="EMPTY">EMPTY</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="connectionHeading">You can rest now</string>
-    <string name="connectionMessage">No connection is in danger</string>
+    <string name="connectionHeading">You can rest now.\nNo connection is in danger.</string>
+    <string name="connectionMessage">Here only those connection will display who are in danger at the current moment. For past location of your matched contacts, refer to Show Connection section.</string>
 
     //FCM
     <string name="latitude">latitude</string>

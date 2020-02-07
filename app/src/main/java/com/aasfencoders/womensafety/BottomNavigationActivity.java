@@ -46,12 +46,12 @@ public class BottomNavigationActivity extends AppCompatActivity {
                         selectedFragment = new TrackOthersFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                         break;
-                    case R.id.navigation_trackMe:
-                        selectedFragment = new TrackMeFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
-                        break;
                     case R.id.navigation_extra:
                         selectedFragment = new ExtrasFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                        break;
+                    case R.id.navigation_trackMe:
+                        selectedFragment = new TrackMeFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
                         break;
                 }

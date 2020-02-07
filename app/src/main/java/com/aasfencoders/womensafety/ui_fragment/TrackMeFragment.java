@@ -139,9 +139,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         } else {
             gpsSwitch.setChecked(true);
         }
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
+
         gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -188,6 +186,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
         mapView = view.findViewById(R.id.mapView);
         if (mapView != null) {
+            mapView.setVisibility(View.VISIBLE);
             mapView.onCreate(null);
             mapView.onResume();
             mapView.getMapAsync(this);
@@ -240,7 +239,23 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStop() {
+        if(mapView != null){
+            mapView.onPause();
+            mapView.onStop();
+            mapView.onDestroy();
+            mapView = null;
+        }
         super.onStop();
     }
 
+    @Override
+    public void onDestroyView() {
+        if(mapView != null){
+            mapView.onPause();
+            mapView.onStop();
+            mapView.onDestroy();
+            mapView = null;
+        }
+        super.onDestroyView();
+    }
 }

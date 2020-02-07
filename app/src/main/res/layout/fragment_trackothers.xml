@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:padding="16dp"
         android:id="@+id/headingOther"
         android:text="TRACK OTHER"
         android:textAlignment="center"
@@ -34,10 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:textAlignment="center"
             android:fontFamily="sans-serif-medium"
             android:paddingTop="6dp"
             android:text="@string/connectionHeading"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="#133241"/>
 
@@ -50,7 +52,7 @@
             android:textAlignment="center"
             android:fontFamily="sans-serif"
             android:paddingTop="15dp"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="@string/connectionMessage"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#235877"/>
