@@ -44,6 +44,25 @@ exports.sent_status = functions.https.onCall((data, context) => {
             console.log(error)
             response.status(500).send(error)
         })
+        admin.database().ref(`/invitation/${source_no}/`).once("value")  // get snapshot of the all received connection request
+        .then(snapshot => {
+            const findTarget = snapshot.val() // return all the timestamp along with the contained objects
+            var keys = Object.keys(findTarget)
+            const promises =[]
+            for (var i=0 ;i< keys.length ; i++) {
+                var k =keys[i];
+                if (findTarget[k].number === target_no) {
+                    const p=admin.database().ref(`/invitation/${source_no}/${k}`).remove();
+                    promises.push(p)
+                    break;
+                }
+            }
+            return Promise.all(promises)
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(500).send(error)
+        })
         admin.database().ref(`/Users/${source_no}/sent`).once("value")
         .then (snapshot => {
             const findTarget = snapshot.val()
