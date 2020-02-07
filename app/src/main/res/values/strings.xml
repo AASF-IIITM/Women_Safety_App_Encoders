@@ -156,6 +156,7 @@
     <string name="showNearbyPolice">Want to see Police Stations that can be reached from your current location?</string>
     <string name="clickButton">Click the button</string>
     <string name="settings">SETTINGS</string>
+    <string name="share">SHARE</string>
     <string name="policeSiren">Play Police Siren</string>
     <string name="choosePhoto">Send Photos to Friends</string>
     <!--    Country Codes-->

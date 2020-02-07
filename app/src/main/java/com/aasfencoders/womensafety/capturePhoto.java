@@ -45,6 +45,8 @@ public class capturePhoto extends AppCompatActivity {
     ProgressBar progressBar;
     private static final String IMAGE_DIRECTORY = "/WomenSafetyApp";
     private String pictureImagePath = "";
+    private Button button;
+    private Button share;
 
     public int VAL = 0;
 
@@ -52,11 +54,14 @@ public class capturePhoto extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_photo);
-        Button button = (Button) findViewById(R.id.captureButton);
+        button = (Button) findViewById(R.id.captureButton);
         imageView = findViewById(R.id.photoPlaceholder);
         textView2 = findViewById(R.id.loading_view4);
         textDisp = findViewById(R.id.disp);
         progressBar = findViewById(R.id.loading_view5);
+        share = findViewById(R.id.share_button);
+        button.setEnabled(true);
+        share.setVisibility(View.INVISIBLE);
         textView2.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +79,17 @@ public class capturePhoto extends AppCompatActivity {
                     startCamera();
                 }
 
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_TEXT, "Sharing this emergency photo through Women Safety App. Help me out.");
+                intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(capturePhoto.this,getPackageName(),new File(pictureImagePath)));
+                startActivity(Intent.createChooser(intent,"Share with..."));
             }
         });
     }
@@ -115,6 +131,7 @@ public class capturePhoto extends AppCompatActivity {
                 textView2.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
                 imageView.setVisibility(View.INVISIBLE);
+                button.setEnabled(false);
                 DownloadTask task = new DownloadTask();
                 task.execute();
             }
@@ -177,6 +194,8 @@ public class capturePhoto extends AppCompatActivity {
             textView2.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.VISIBLE);
+            share.setVisibility(View.VISIBLE);
+            button.setEnabled(true);
             if (imgFile.exists()) {
                 imageView.setImageBitmap(bitmap);
                 saveImage(bitmap);
@@ -205,7 +224,7 @@ public class capturePhoto extends AppCompatActivity {
                     new String[]{f.getPath()},
                     new String[]{"image/jpeg"}, null);
             fo.close();
-            Toast.makeText(capturePhoto.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(capturePhoto.this, "Image Saved to Gallery!", Toast.LENGTH_SHORT).show();
             return f.getAbsolutePath();
         } catch (IOException e1) {
             e1.printStackTrace();
