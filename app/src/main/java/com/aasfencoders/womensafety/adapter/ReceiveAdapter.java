@@ -205,7 +205,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
             final SweetAlertDialog pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            pDialog.setTitleText("Loading...");
+            pDialog.setTitleText("Updating...");
             pDialog.setCancelable(false);
             pDialog.show();
 

@@ -75,6 +75,7 @@
 
     //Matched Connection Page
     <string name="matched">matched</string>
+    <string name="matchedall">matchedall</string>
     <string name="matchedDialogString">Fetching Matched Contacts &#8230;</string>
     <string name="matchedConnectionHeading">Matched Connection Page</string>
     <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
@@ -159,6 +160,7 @@
     <string name="share">SHARE</string>
     <string name="policeSiren">Play Police Siren</string>
     <string name="choosePhoto">Send Photos to Friends</string>
+    <string name="firstInstall">firstInstall</string>
     <!--    Country Codes-->
 
     <string-array name="CountryCodes">
