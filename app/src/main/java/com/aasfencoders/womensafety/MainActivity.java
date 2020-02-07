@@ -118,11 +118,17 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     mUserPhoneNumber = user.getPhoneNumber();
                     sharedPreferences.edit().putString(getString(R.string.userNumber),mUserPhoneNumber).apply();
-                    int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
-                    if (firstTime == 0) {
-                        checkConnection();
+
+
+                    if (sharedPreferences.getString(getString(R.string.SIMSET), getString(R.string.NO)).equals(getString(R.string.NO))) {
+                        checkSIM();
                     }else{
-                        onSignedInInitialize(mUserPhoneNumber);
+                        int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
+                        if (firstTime == 0) {
+                            checkConnection();
+                        }else{
+                            onSignedInInitialize(mUserPhoneNumber);
+                        }
                     }
 
 
@@ -186,10 +192,39 @@ public class MainActivity extends AppCompatActivity {
                         mFirebaseReference.child(getString(R.string.users)).child(mUserPhoneNumber).child(getString(R.string.profile)).child(getString(R.string.name)).setValue(text.trim());
                         sharedPreferences.edit().putInt(getString(R.string.firstform),1).apply();
                         sharedPreferences.edit().putString(getString(R.string.username),text.trim()).apply();
-                        Toast.makeText(MainActivity.this, "Data Stored in Server", Toast.LENGTH_SHORT).show();
                         int length = mUserPhoneNumber.length();
                         FirebaseMessaging.getInstance().subscribeToTopic(mUserPhoneNumber.substring(1,length));
                         onSignedInInitialize(mUserPhoneNumber);
+                    }
+                })
+                .show();
+    }
+
+
+    private void checkSIM() {
+        String[] items_sim = {
+                getString(R.string.SIM1),
+                getString(R.string.SIM2),
+                getString(R.string.SIMNO)
+        };
+
+        new LovelyChoiceDialog(MainActivity.this)
+                .setTopColorRes(R.color.dialogColour)
+                .setTitle(R.string.sms_title)
+                .setIcon(R.drawable.ic_textsms_black_24dp)
+                .setMessage(R.string.sms_message)
+                .setCancelable(false)
+                .setItems(items_sim, new LovelyChoiceDialog.OnItemSelectedListener<String>() {
+                    @Override
+                    public void onItemSelected(int position, String item) {
+                        sharedPreferences.edit().putString(getString(R.string.SIM), item).apply();
+                        sharedPreferences.edit().putString(getString(R.string.SIMSET), getString(R.string.YES)).apply();
+                        int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
+                        if (firstTime == 0) {
+                            checkConnection();
+                        }else{
+                            onSignedInInitialize(mUserPhoneNumber);
+                        }
                     }
                 })
                 .show();
