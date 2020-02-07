@@ -1,14 +1,20 @@
 package com.aasfencoders.womensafety;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Html;
@@ -47,12 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mFirebaseReference;
 
-    ProgressBar progressBar;
-    TextView textView;
 
     private void onSignedInInitialize(String username) {
-        Intent intent = new Intent(this,BottomNavigationActivity.class);
-        intent.putExtra(getString(R.string.phone),username);
+        Intent intent = new Intent(this, BottomNavigationActivity.class);
+        intent.putExtra(getString(R.string.phone), username);
         startActivity(intent);
         this.finish();
     }
@@ -69,10 +73,30 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, getString(R.string.signIn), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, getString(R.string.signOut), Toast.LENGTH_SHORT).show();
                 finish();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            startCheck();
+        }
+    }
+
+    private void startCheck() {
+
+        if (sharedPreferences.getString(getString(R.string.SIMSET), getString(R.string.NO)).equals(getString(R.string.NO))) {
+            checkSIM();
+        } else {
+            int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
+            if (firstTime == 0) {
+                checkConnection();
+            } else {
+                onSignedInInitialize(mUserPhoneNumber);
             }
         }
     }
@@ -81,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext);
         builder.setCancelable(false);
         builder.setTitle(Html.fromHtml("<h6><font color='#465ba6'>You are offline!</font></h6>"));
-        builder.setMessage( Html.fromHtml("Connect your phone to internet/WiFi connection and then press on RETRY button."));
+        builder.setMessage(Html.fromHtml("Connect your phone to internet/WiFi connection and then press on RETRY button."));
         builder.setIcon(R.drawable.ic_warning_pink_24dp);
         builder.setNegativeButton(Html.fromHtml("<h7><font color='#465ba6'>RETRY</font></h7>"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -97,12 +121,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        progressBar = findViewById(R.id.progress);
-        textView  = findViewById(R.id.loadingUser);
 
         ANONYMOUS = getString(R.string.ANONYMOUS);
         sharedPreferences = MainActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
@@ -110,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseReference = mFirebaseDatabase.getReference();
         MainActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) || (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED)) {
+            String[] permission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+            ActivityCompat.requestPermissions(MainActivity.this, permission, 1);
+        }
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -117,20 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     mUserPhoneNumber = user.getPhoneNumber();
-                    sharedPreferences.edit().putString(getString(R.string.userNumber),mUserPhoneNumber).apply();
-
-
-                    if (sharedPreferences.getString(getString(R.string.SIMSET), getString(R.string.NO)).equals(getString(R.string.NO))) {
-                        checkSIM();
-                    }else{
-                        int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
-                        if (firstTime == 0) {
-                            checkConnection();
-                        }else{
-                            onSignedInInitialize(mUserPhoneNumber);
-                        }
-                    }
-
+                    sharedPreferences.edit().putString(getString(R.string.userNumber), mUserPhoneNumber).apply();
+                    startCheck();
 
                 } else {
                     onSignedOutCleanup();
@@ -162,18 +177,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkConnection(){
+    private void checkConnection() {
         boolean state = CheckNetworkConnection.checkNetwork(MainActivity.this);
         if (state) {
-            progressBar.setVisibility(View.INVISIBLE);
-            textView.setVisibility(View.INVISIBLE);
             showForm();
         } else {
             showNetworkDialog(MainActivity.this);
         }
     }
 
-    private void showForm(){
+    private void showForm() {
         new LovelyTextInputDialog(this, R.style.TintTheme)
                 .setTopColorRes(R.color.dialogColour)
                 .setTitle(R.string.text_input_title)
@@ -190,10 +203,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onTextInputConfirmed(final String text) {
                         mFirebaseReference.child(getString(R.string.users)).child(mUserPhoneNumber).child(getString(R.string.profile)).child(getString(R.string.name)).setValue(text.trim());
-                        sharedPreferences.edit().putInt(getString(R.string.firstform),1).apply();
-                        sharedPreferences.edit().putString(getString(R.string.username),text.trim()).apply();
+                        sharedPreferences.edit().putInt(getString(R.string.firstform), 1).apply();
+                        sharedPreferences.edit().putString(getString(R.string.username), text.trim()).apply();
                         int length = mUserPhoneNumber.length();
-                        FirebaseMessaging.getInstance().subscribeToTopic(mUserPhoneNumber.substring(1,length));
+                        FirebaseMessaging.getInstance().subscribeToTopic(mUserPhoneNumber.substring(1, length));
                         onSignedInInitialize(mUserPhoneNumber);
                     }
                 })
@@ -222,9 +235,11 @@ public class MainActivity extends AppCompatActivity {
                         int firstTime = sharedPreferences.getInt(getString(R.string.firstform), 0);
                         if (firstTime == 0) {
                             checkConnection();
-                        }else{
+                        } else {
                             onSignedInInitialize(mUserPhoneNumber);
                         }
+
+
                     }
                 })
                 .show();
