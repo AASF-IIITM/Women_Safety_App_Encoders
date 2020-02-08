@@ -85,31 +85,43 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nameOfContact  = null;
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    nameOfContact = getContactName(getContext() , currentCall.getNumber());
 
-                    if(nameOfContact == null){
-                        String phone = currentCall.getNumber();
-                        String code = sharedPreferences.getString(mContext.getString(R.string.ISONUMBER) , mContext.getString(R.string.defaultISOCodeNumber));
-                        String phonewithCode = phone.replace(code , "");
-                        String nameOfContactWithoutCOde = getContactName(getContext() , phonewithCode);
+                String phone = currentCall.getNumber();
+                ContentValues values2 = new ContentValues();
+                values2.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
+                values2.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
 
-                        if(nameOfContactWithoutCOde != null){
-                            nameOfContact = nameOfContactWithoutCOde;
+                String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                String[] selectionArgs = new String[]{phone};
+
+                int rowsAffected = mContext.getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values2, selection, selectionArgs);
+
+                if (rowsAffected == 0) {
+                    String nameOfContact = null;
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                        nameOfContact = getContactName(getContext(), currentCall.getNumber());
+
+                        if (nameOfContact == null) {
+                            String code = sharedPreferences.getString(mContext.getString(R.string.ISONUMBER), mContext.getString(R.string.defaultISOCodeNumber));
+                            String phonewithCode = phone.replace(code, "");
+                            String nameOfContactWithoutCOde = getContactName(getContext(), phonewithCode);
+
+                            if (nameOfContactWithoutCOde != null) {
+                                nameOfContact = nameOfContactWithoutCOde;
+                            }
                         }
                     }
-                }
 
-                if(nameOfContact == null){
-                    nameOfContact = currentCall.getName();
+                    if (nameOfContact == null) {
+                        nameOfContact = currentCall.getName();
+                    }
+                    ContentValues values = new ContentValues();
+                    values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
+                    values.put(DataContract.DataEntry.COLUMN_PHONE, currentCall.getNumber());
+                    values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
+                    values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
+                    mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 }
-                ContentValues values = new ContentValues();
-                values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
-                values.put(DataContract.DataEntry.COLUMN_PHONE, currentCall.getNumber());
-                values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
-                values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
-                mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 callFunction(currentCall.getName(), currentCall.getNumber(), mContext.getString(R.string.accept));
 
             }
@@ -134,11 +146,11 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
             return null;
         }
         String contactName = null;
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
