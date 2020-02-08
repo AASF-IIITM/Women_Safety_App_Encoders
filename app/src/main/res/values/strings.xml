@@ -80,7 +80,7 @@
     <string name="matchedDialogString">Fetching Matched Contacts &#8230;</string>
     <string name="matchedConnectionHeading">Matched Connection Page</string>
     <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
-    <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Add Connection Page</string>
+    <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Invite New Connection Section</string>
 
     <string name="zero">zero</string>
     <string name="one">one</string>

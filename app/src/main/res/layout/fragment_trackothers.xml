@@ -24,17 +24,24 @@
     </ListView>
 
     <!-- Empty view for the list -->
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/empty_connection_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
         android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/inviteImage"
+            android:src="@drawable/ic_calm" />
 
         <TextView
             android:id="@+id/empty_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:textAlignment="center"
             android:fontFamily="sans-serif-medium"
             android:paddingTop="6dp"
@@ -47,8 +54,6 @@
             android:id="@+id/empty_subtitle_text"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/empty_title_text"
-            android:layout_centerHorizontal="true"
             android:textAlignment="center"
             android:fontFamily="sans-serif"
             android:paddingTop="15dp"
@@ -56,6 +61,6 @@
             android:text="@string/connectionMessage"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#235877"/>
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
