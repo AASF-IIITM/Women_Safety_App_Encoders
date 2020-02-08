@@ -373,4 +373,8 @@
         <item>+263 (ZW)</item>
     </string-array>
 
+    <string name="ok">Exit Application</string>
+    <string name="cancel">Cancel</string>
+    <string name="backMessage">Are you sure you want to exit application?</string>
+
 </resources>

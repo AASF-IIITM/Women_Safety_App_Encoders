@@ -59,8 +59,9 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             listView.setVisibility(View.INVISIBLE);
         } else {
             progress.setVisibility(View.INVISIBLE);
-            view.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
+            view.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
             Toast.makeText(matchedConnection.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
         }
     }
@@ -79,14 +80,13 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
         view = (View) findViewById(R.id.empty_matched_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
+        listView.setEmptyView(view);
 
         mCursorAdapter = new MatchedCursorAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
 
         progress = findViewById(R.id.progress_view);
         progress.setVisibility(View.INVISIBLE);
-
-        checkConnection();
 
         getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
 
@@ -167,6 +167,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                     }
                     progress.setVisibility(View.GONE);
                     listView.setVisibility(View.VISIBLE);
+                    listView.setEmptyView(view);
                     getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
                 }
 

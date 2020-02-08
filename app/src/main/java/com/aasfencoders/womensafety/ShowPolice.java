@@ -1,5 +1,6 @@
 package com.aasfencoders.womensafety;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -10,6 +11,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -29,6 +35,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
@@ -81,7 +89,7 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    private void retrofit(String Latitude, String Longitude) {
+    private void retrofit(final String Latitude, final String Longitude) {
         String url = "https://maps.googleapis.com/maps/api/place/search/" + "json?location=" + Latitude + "," + Longitude + "&rankby=distance&types=police&sensor=false&key=AIzaSyDzbVaqexiRvDpSt3t9oO2kwEu34Qbm3QI";
         PoliceApiInterface apiService = PoliceApiClient.getClient().create(PoliceApiInterface.class);
         retrofit2.Call<JsonObject> responseBodyCall = apiService.fetchCount(url);
@@ -91,7 +99,6 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                Log.i("############", "6");
                 if (response.body() != null && response.code() == 200) {
 
                     JSONObject jsonObject;
@@ -121,9 +128,14 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                             String lng = jsonObject2.get(getString(R.string.lng)).toString();
 
                             LatLng markerPoliceStation = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-                            mMap.addMarker(new MarkerOptions().position(markerPoliceStation).title(name).snippet(vicinity));
+                            mMap.addMarker(new MarkerOptions().position(markerPoliceStation).title(name).snippet(vicinity).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerPoliceStation, 12));
                         }
+
+                        LatLng personCurrentPosition = new LatLng(Double.parseDouble(Latitude), Double.parseDouble(Longitude));
+                        mMap.addMarker(new MarkerOptions().position(personCurrentPosition).title("Your current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(personCurrentPosition, 12));
+
                         police_station_title.setVisibility(View.VISIBLE);
                         police_station_count.setVisibility(View.VISIBLE);
                         police_station_fetch.setVisibility(View.INVISIBLE);
@@ -132,6 +144,11 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
                         police_station_count.setText(Integer.toString(i) + " " + getString(R.string.police_station));
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        police_station_title.setVisibility(View.VISIBLE);
+                        police_station_count.setVisibility(View.VISIBLE);
+                        police_station_fetch.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        police_station_count.setText("0 " + getString(R.string.police_station));
                     }
 
                 }
@@ -140,7 +157,12 @@ public class ShowPolice extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.i("############", "7");
+                police_station_title.setVisibility(View.VISIBLE);
+                police_station_count.setVisibility(View.VISIBLE);
+                police_station_fetch.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
+
+                police_station_count.setText("0 " + getString(R.string.police_station));
             }
         });
     }

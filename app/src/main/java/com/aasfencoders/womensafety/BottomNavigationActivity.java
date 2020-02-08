@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +51,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
 
-    private void checkConnection(){
+    private void checkConnection() {
         boolean state = CheckNetworkConnection.checkNetwork(BottomNavigationActivity.this);
         if (state) {
             fetchReceivedContacts();
@@ -100,14 +101,14 @@ public class BottomNavigationActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
         String firstInstall = sharedPreferences.getString(getString(R.string.firstInstall), "");
-        if(firstInstall.equals("")){
+        if (firstInstall.equals("")) {
             checkConnection();
         }
 
 
     }
 
-    private void fetchReceivedContacts(){
+    private void fetchReceivedContacts() {
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
         if (current_user_number.equals(R.string.error)) {
@@ -127,27 +128,27 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         ReceiveClass callClassObj = ds.getValue(ReceiveClass.class);
-                        if(callClassObj != null){
+                        if (callClassObj != null) {
                             String name = callClassObj.getName();
                             String number = callClassObj.getNumber();
 
-                            String nameOfContact  = null;
+                            String nameOfContact = null;
                             if (ContextCompat.checkSelfPermission(BottomNavigationActivity.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                                nameOfContact = getContactName(BottomNavigationActivity.this , number);
+                                nameOfContact = getContactName(BottomNavigationActivity.this, number);
 
-                                if(nameOfContact == null){
+                                if (nameOfContact == null) {
                                     String phone = number;
-                                    String code = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
-                                    String phonewithCode = phone.replace(code , "");
-                                    String nameOfContactWithoutCOde = getContactName(BottomNavigationActivity.this , phonewithCode);
+                                    String code = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
+                                    String phonewithCode = phone.replace(code, "");
+                                    String nameOfContactWithoutCOde = getContactName(BottomNavigationActivity.this, phonewithCode);
 
-                                    if(nameOfContactWithoutCOde != null){
+                                    if (nameOfContactWithoutCOde != null) {
                                         nameOfContact = nameOfContactWithoutCOde;
                                     }
                                 }
                             }
 
-                            if(nameOfContact == null){
+                            if (nameOfContact == null) {
                                 nameOfContact = name;
                             }
                             ContentValues values = new ContentValues();
@@ -159,7 +160,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
                         }
 
                     }
-                    sharedPreferences.edit().putString(getString(R.string.firstInstall) , getString(R.string.done)).apply();
+                    sharedPreferences.edit().putString(getString(R.string.firstInstall), getString(R.string.done)).apply();
                     pDialog.dismissWithAnimation();
                 }
 
@@ -181,11 +182,11 @@ public class BottomNavigationActivity extends AppCompatActivity {
             return null;
         }
         String contactName = null;
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
@@ -202,6 +203,29 @@ public class BottomNavigationActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences.edit().putString(getString(R.string.NAVITEM), getString(R.string.NAVITEM0)).apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+        new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.VERTICAL)
+                .setTopColorRes(R.color.red_btn_bg_color)
+                .setButtonsColorRes(R.color.colorPrimaryDark)
+                .setIcon(R.drawable.ic_arrow_back_black_24dp)
+                .setTitle(R.string.backMessage)
+                .setPositiveButton(R.string.ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BottomNavigationActivity.this.finishAndRemoveTask();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
+
     }
 
 }

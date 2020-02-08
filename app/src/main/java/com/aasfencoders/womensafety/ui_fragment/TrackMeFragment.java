@@ -47,6 +47,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -219,8 +220,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 float zoomLevel;
                 LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lng));
                 if(userLocation != null) {
-                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location"));
-                    if(flag==true)
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                    if(flag)
                     {
                         flag = false;
                         zoomLevel = 17;

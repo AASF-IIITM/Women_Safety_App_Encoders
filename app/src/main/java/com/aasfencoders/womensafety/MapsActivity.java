@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -142,8 +143,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
         if(userLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Updated Location"));
-            if(flag==true)
+            mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+            if(flag)
             {
                 flag = false;
                 zoomLevel = 17;
