@@ -246,6 +246,8 @@ public class ContactActivity extends AppCompatActivity {
                     if (item.contains(phoneNo))
                         flagCommon = true;
                 }
+
+
                 if (!flagCommon) {
                     String[] projection = {
                             DataContract.DataEntry._ID,
@@ -256,15 +258,39 @@ public class ContactActivity extends AppCompatActivity {
 
                     Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
                     if (!(cursor != null && cursor.getCount() > 0)) {
-                        if(phoneNo.charAt(0) == '+'){
-                            items.add(phoneNo);
-                        }else{
+
+                        String phonewithCode = null;
+                        if(phoneNo.charAt(0) != '+') {
                             String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
-                            items.add(isocode + phoneNo);
+                            phonewithCode = isocode + phoneNo;
+                            String selection2 = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                            String[] selectionArgs2 = new String[]{phonewithCode};
+
+                            Cursor cursor2 = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection2, selectionArgs2, null);
+                            if (!(cursor2 != null && cursor2.getCount() > 0)) {
+                                if(phoneNo.charAt(0) == '+'){
+                                    items.add(phoneNo);
+                                }else{
+                                    String isocode2 = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                                    items.add(isocode2 + phoneNo);
+                                }
+                            }
+                            if(cursor2 != null){
+                                cursor2.close();
+                            }
+                        }else{
+                            if(phoneNo.charAt(0) == '+'){
+                                items.add(phoneNo);
+                            }else{
+                                String isocode3 = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                                items.add(isocode3 + phoneNo);
+                            }
                         }
 
                     }
-                    cursor.close();
+                    if(cursor != null){
+                        cursor.close();
+                    }
                 }
 
             }
