@@ -129,15 +129,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.plus))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.shield))
                 .setContentIntent(notifyPendingIntent)
                 .setAutoCancel(false);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setSmallIcon(R.drawable.plus);
+            notificationBuilder.setSmallIcon(R.drawable.shield);
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
         } else {
-            notificationBuilder.setSmallIcon(R.drawable.plus);
+            notificationBuilder.setSmallIcon(R.drawable.shield);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN

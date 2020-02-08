@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -105,13 +106,21 @@ public class ExampleService extends Service {
         channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(notificationManager) : "";
         notificationBuilder = new NotificationCompat.Builder(getBaseContext(), channelId);
         notificationBuilder.setOngoing(true);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
         notificationBuilder.setPriority(PRIORITY_MAX);
         notificationBuilder.setOnlyAlertOnce(true);
         notificationBuilder.setContentTitle("Uploading Location...");
+        notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.shield));
+        notificationBuilder.setContentText("Cancel when you want to stop uploading location");
         notificationBuilder.setOnlyAlertOnce(true);
         notificationBuilder.addAction(R.drawable.ic_warning_pink_24dp, "Cancel Upload", cancelP);
         notificationBuilder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notificationBuilder.setSmallIcon(R.drawable.shield);
+            notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
+        } else {
+            notificationBuilder.setSmallIcon(R.drawable.shield);
+        }
 
         locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
 

@@ -375,6 +375,10 @@
 
     <string name="ok">Exit Application</string>
     <string name="cancel">Cancel</string>
+    <string name="info">Credits</string>
+    <string name="okay">Got it!</string>
+    <string name="infotitle">Creators of this App</string>
+    <string name="infomessage">2nd year students of IIIT Gwalior\nMade during the winters of 2019&#8211;20\n\n2018IMT-051 - Mehul Jain \n2018IMT-070 - Praveen Kumar Sahu\n2018IMT-093 - Sayantan Banerjee</string>
     <string name="backMessage">Are you sure you want to exit application?</string>
 
 </resources>

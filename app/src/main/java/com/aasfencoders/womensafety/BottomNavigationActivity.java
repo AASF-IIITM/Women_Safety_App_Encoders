@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -226,6 +227,39 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 })
                 .show();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigationtoolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.info:
+                showInfoDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showInfoDialog() {
+        new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.VERTICAL)
+                .setTopColorRes(R.color.red_btn_bg_color)
+                .setButtonsColorRes(R.color.colorPrimaryDark)
+                .setIcon(R.drawable.ic_face_white_72dp)
+                .setTitle(R.string.infotitle)
+                .setMessage(R.string.infomessage)
+                .setPositiveButton(R.string.okay, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
     }
 
 }
