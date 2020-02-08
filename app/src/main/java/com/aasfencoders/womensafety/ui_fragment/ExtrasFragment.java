@@ -52,8 +52,7 @@ public class ExtrasFragment extends Fragment {
     private MediaPlayer mediaPlayer;
     private PlayPauseButton mPlayPause;
 
-    private Spinner numberCodes;
-    private String isoCodeNumber;
+
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -141,33 +140,6 @@ public class ExtrasFragment extends Fragment {
         }
 
         String checked = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
-
-        isoCodeNumber = getString(R.string.defaultISOCodeNumber);
-
-
-        numberCodes = (Spinner) view.findViewById(R.id.number_codes2);
-        ArrayAdapter<String> numberISO = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.CountryCodes));
-        numberCodes.setAdapter(numberISO);
-
-        String pos = sharedPreferences.getString(getString(R.string.ISOPOSE), getString(R.string.NAVITEM0));
-
-        numberCodes.setSelection(Integer.parseInt(pos));
-
-        numberCodes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String[] splited = numberCodes.getSelectedItem().toString().split(" ");
-                isoCodeNumber = splited[0];
-                sharedPreferences.edit().putString(getString(R.string.ISONUMBER), isoCodeNumber).apply();
-                sharedPreferences.edit().putString(getString(R.string.ISOPOSE), Integer.toString(i)).apply();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-
-        });
 
         showPolice = view.findViewById(R.id.showPolice);
 

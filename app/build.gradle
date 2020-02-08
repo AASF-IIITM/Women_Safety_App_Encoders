@@ -51,6 +51,7 @@ dependencies {
     implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:3.0.0'
     //AndroidX
     implementation "androidx.cardview:cardview:1.0.0"
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.11.3'
 
 }
 apply plugin: 'com.google.gms.google-services'

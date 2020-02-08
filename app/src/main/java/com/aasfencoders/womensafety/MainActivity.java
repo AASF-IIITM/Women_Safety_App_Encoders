@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -33,6 +34,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
@@ -55,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void onSignedInInitialize(String username) {
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        try {
+            Phonenumber.PhoneNumber NumberProto = phoneUtil.parse(username, "IN");
+            int countrycode = NumberProto.getCountryCode();
+            sharedPreferences.edit().putString(getString(R.string.ISONUMBER), "+"+countrycode).apply();
+        } catch (NumberParseException e) {
+            System.err.println("NumberParseException was thrown: " + e.toString());
+        }
         Intent intent = new Intent(this, BottomNavigationActivity.class);
         intent.putExtra(getString(R.string.phone), username);
         startActivity(intent);

@@ -60,7 +60,6 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
         } else {
             progress.setVisibility(View.INVISIBLE);
             listView.setVisibility(View.VISIBLE);
-            view.setVisibility(View.VISIBLE);
             getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
             Toast.makeText(matchedConnection.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
         }
