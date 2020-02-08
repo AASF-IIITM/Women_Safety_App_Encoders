@@ -99,6 +99,10 @@ public class ExampleService extends Service {
 
         cursor.close();
 
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            sendSMS();
+        }
+
         Intent intentAction = new Intent(getBaseContext(), NotificationCancelReceiver.class);
         PendingIntent cancelP = PendingIntent.getBroadcast(getBaseContext(), 1, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -206,10 +210,19 @@ public class ExampleService extends Service {
             simCardList.add(subscriptionId);
         }
 
-        int smsToSendFrom = simCardList.get(0);
-        for (i = 0; i < phoneName.size(); i++) {
+        int smsToSendFrom;
+
+        String val = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
+        if(!val.equals(getString(R.string.SIMNO))){
             String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
-            SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null, null);
+            if(val.equals(getString(R.string.SIM1))){
+                smsToSendFrom = simCardList.get(0);
+            }else{
+                smsToSendFrom = simCardList.get(1);
+            }
+            for (i = 0; i < phoneName.size(); i++) {
+                SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null, null);
+            }
         }
 
     }
