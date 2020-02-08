@@ -239,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
                             onSignedInInitialize(mUserPhoneNumber);
                         }
 
-
                     }
                 })
                 .show();

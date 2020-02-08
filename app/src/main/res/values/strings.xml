@@ -65,6 +65,7 @@
     //receive list
     <string name="accept">accept</string>
     <string name="reject">reject</string>
+    <string name="accepted">accepted</string>
     <string name="rejected">rejected</string>
 
     //Received Connection Page

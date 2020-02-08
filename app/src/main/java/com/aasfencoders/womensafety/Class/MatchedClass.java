@@ -4,6 +4,7 @@ public class MatchedClass {
 
     private String name;
     private String number;
+    private String status;
 
     public MatchedClass(){
 
@@ -12,6 +13,7 @@ public class MatchedClass {
     public MatchedClass(String name , String number){
         this.name = name;
         this.number = number;
+        this.status = status;
     }
 
     public String getName() {
@@ -20,6 +22,10 @@ public class MatchedClass {
 
     public String getNumber() {
         return number;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
 }

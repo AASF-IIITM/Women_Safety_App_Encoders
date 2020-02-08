@@ -132,7 +132,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             Toast.makeText(matchedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
 
-            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matched));
+            DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -140,16 +140,27 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
 
-                        ContentValues values = new ContentValues();
-                        values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.matched));
-                        values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
+                        if(callClassObj != null){
 
-                        String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
-                        String[] selectionArgs = new String[]{callClassObj.getNumber()};
+                            if(callClassObj.getStatus().equals(getString(R.string.accepted)) || callClassObj.getStatus().equals(getString(R.string.rejected))){
+                                ContentValues values = new ContentValues();
 
-                        Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+                                if(callClassObj.getStatus().equals(getString(R.string.accepted))){
+                                    values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.matched));
+                                }else{
+                                    values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.rejected));
+                                }
 
-                        ds.getRef().removeValue();
+                                values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
+
+                                String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                                String[] selectionArgs = new String[]{callClassObj.getNumber()};
+
+                                Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+
+                                ds.getRef().removeValue();
+                            }
+                        }
 
 
                     }
