@@ -63,7 +63,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if (listItemView == null) {
             listItemView = LayoutInflater.from(mContext).inflate(R.layout.single_receive_contact_item, parent, false);
@@ -77,6 +77,8 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         currentCall = getItem(position);
         pos = position;
 
+        Log.i("********" , Integer.toString(pos));
+
         TextView name = listItemView.findViewById(R.id.person_receive_name);
         TextView number = listItemView.findViewById(R.id.person_receive_number);
         name.setText(currentCall.getName());
@@ -86,7 +88,13 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
             @Override
             public void onClick(View view) {
 
+                currentCall = getItem(position);
+                String name = currentCall.getName();
                 String phone = currentCall.getNumber();
+
+                Log.i("#######" , name);
+                Log.i("#######" , phone);
+
                 ContentValues values2 = new ContentValues();
                 values2.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
                 values2.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
@@ -99,7 +107,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 if (rowsAffected == 0) {
                     String nameOfContact = null;
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                        nameOfContact = getContactName(getContext(), currentCall.getNumber());
+                        nameOfContact = getContactName(getContext(), phone);
 
                         if (nameOfContact == null) {
                             String code = sharedPreferences.getString(mContext.getString(R.string.ISONUMBER), mContext.getString(R.string.defaultISOCodeNumber));
@@ -113,16 +121,16 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                     }
 
                     if (nameOfContact == null) {
-                        nameOfContact = currentCall.getName();
+                        nameOfContact = name;
                     }
                     ContentValues values = new ContentValues();
                     values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
-                    values.put(DataContract.DataEntry.COLUMN_PHONE, currentCall.getNumber());
+                    values.put(DataContract.DataEntry.COLUMN_PHONE, phone);
                     values.put(DataContract.DataEntry.COLUMN_STATUS, mContext.getString(R.string.zero));
                     values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
                     mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 }
-                callFunction(currentCall.getName(), currentCall.getNumber(), mContext.getString(R.string.accept));
+                callFunction(name, phone, mContext.getString(R.string.accept) , position);
 
             }
         });
@@ -130,7 +138,10 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callFunction(currentCall.getName(), currentCall.getNumber(), mContext.getString(R.string.reject));
+                currentCall = getItem(position);
+                String name = currentCall.getName();
+                String phone = currentCall.getNumber();
+                callFunction(name, phone, mContext.getString(R.string.reject) , position);
 
             }
         });
@@ -164,7 +175,9 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         status.setVisibility(View.INVISIBLE);
     }
 
-    private void hideButton(int i) {
+    private void hideButton(int i , int position) {
+        currentCall = getItem(position);
+
         accept.setVisibility(View.INVISIBLE);
         reject.setVisibility(View.INVISIBLE);
         status.setVisibility(View.VISIBLE);
@@ -178,11 +191,11 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 status.setBackgroundColor(Color.argb(255, 230, 0, 0));
                 break;
         }
-        callTimer();
+        callTimer(position);
     }
 
-    private void callTimer() {
-        new CountDownTimer(2000, 2000) {
+    private void callTimer(final int position) {
+        new CountDownTimer(500, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -190,17 +203,17 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
             @Override
             public void onFinish() {
-                deleteFromList();
+                deleteFromList(position);
             }
         }.start();
     }
 
-    private void deleteFromList() {
-        invitelist.remove(invitelist.get(pos));
+    private void deleteFromList(int position) {
+        invitelist.remove(invitelist.get(position));
         notifyDataSetChanged();
     }
 
-    private void callFunction(String source_name, String source_no, final String selection) {
+    private void callFunction(String source_name, String source_no, final String selection , final int position) {
 
         String target_no = sharedPreferences.getString(mContext.getString(R.string.userNumber), mContext.getString(R.string.error));
         String target_name = sharedPreferences.getString(mContext.getString(R.string.username), mContext.getString(R.string.error));
@@ -217,7 +230,14 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
             final SweetAlertDialog pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            pDialog.setTitleText("Updating...");
+            switch (selection) {
+                case "accept":
+                    pDialog.setTitleText("Accepting request...");
+                    break;
+                case "reject":
+                    pDialog.setTitleText("Rejecting request...");
+                    break;
+            }
             pDialog.setCancelable(false);
             pDialog.show();
 
@@ -232,14 +252,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                             if (result != null) {
                                 Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
                             }
-                            switch (selection) {
-                                case "accept":
-                                    hideButton(1);
-                                    break;
-                                case "reject":
-                                    hideButton(0);
-                                    break;
-                            }
+                            callTimer(position);
                             return result;
                         }
                     });

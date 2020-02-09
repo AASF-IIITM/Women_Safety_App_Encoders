@@ -107,7 +107,6 @@ public class receivedConnection extends AppCompatActivity {
                     }
 
                     if(receivedList.size() > 0){
-                        Collections.reverse(receivedList);
                         ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
                         listView.setAdapter(receiveAdapter);
                     }else{
