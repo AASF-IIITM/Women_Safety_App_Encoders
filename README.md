@@ -45,4 +45,4 @@ Also you can play police siren sound when you need it.
 * [Firebase Realtime_Database](https://firebase.google.com/docs/database/): Realtime Cloud database provided by Firebase to be used by various users simultaneously. We used it to store the profile of the users and also making the connections between different users taking place.
 * [Firebase Authentication](https://firebase.google.com/docs/auth/): Firebase Authentication provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to our app. We used Phone Provider to validate user Phone with OTP. 
 * [Google Maps Platform](https://cloud.google.com/maps-platform/): For the maps interface
-* [Retrofit](https://square.github.io/retrofit/"): A type-safe HTTP client for Android and Java
+* [Retrofit](https://square.github.io/retrofit/): A type-safe HTTP client for Android and Java
