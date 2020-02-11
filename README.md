@@ -15,7 +15,7 @@ Navigate to: /APK/WomenSafety.apk and install it in your android phones. <Recomm
 
 <img src="screenshots/Screenshot_20200208-223309.png" width="200" height ="400">
 
-<img src="screenshots/Screenshot_20200208-223833.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-224236.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-235239.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-224242.png" width="200" height ="400">
+<img src="screenshots/Screenshot_20200208-224236.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-223833.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-235239.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-224242.png" width="200" height ="400">
 
 * Track your friend when you received danger notification in your phone sent by your friend who is in danger. Also SMS is sent to the friend.
 

@@ -49,6 +49,7 @@ public class OnBoardingScreen extends AppCompatActivity {
             public void onRightOut() {
                 Intent intent = new Intent(OnBoardingScreen.this , MainActivity.class);
                 startActivity(intent);
+                OnBoardingScreen.this.finish();
             }
         });
     }
