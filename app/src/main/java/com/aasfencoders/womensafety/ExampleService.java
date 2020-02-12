@@ -68,6 +68,8 @@ public class ExampleService extends Service {
     Notification notification;
     String channelId;
 
+    private Boolean flag;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -82,9 +84,13 @@ public class ExampleService extends Service {
 
         Cursor cursor;
 
+        flag = true;
+
         phoneName = new ArrayList<String>();
         phoneNumber = new ArrayList<String>();
-        cursor = getBaseContext().getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, null, null, null);
+        String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
+        String[] selectionArgs = new String[]{getString(R.string.matched)};
+        cursor = getBaseContext().getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
         int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         int numberColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
 
@@ -98,10 +104,6 @@ public class ExampleService extends Service {
         }
 
         cursor.close();
-
-        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            sendSMS();
-        }
 
         Intent intentAction = new Intent(getBaseContext(), NotificationCancelReceiver.class);
         PendingIntent cancelP = PendingIntent.getBroadcast(getBaseContext(), 1, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -143,7 +145,7 @@ public class ExampleService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, final int flags, int startId) {
         notification = notificationBuilder.build();
         startForeground(ID_SERVICE, notification);
         locationListener = new LocationListener() {
@@ -151,6 +153,13 @@ public class ExampleService extends Service {
             public void onLocationChanged(final Location location) {
                 sendDataToFragment(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
                 sendLocationToMatchedContacts(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
+
+                if(flag){
+                    flag = false;
+                    if ( ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                        sendSMS();
+                    }
+                }
             }
 
             @Override

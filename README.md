@@ -1,6 +1,6 @@
 # Women_Safety_App_Encoders
 ## Description
-Recently in these times, we come across various cases where womem are being molested, harassed, and even raped. And for worst, this numbers are very high. So we build a women safety app for the protection of you and your well-wishers. This app will help you in tracking your loved ones who are in danger and also allows you to share your location when you are in danger. Also allows you to find nearby police station around you with just one tap. It also allows to play Police siren to scare away the intruders and also you can share suspicious activity photos with your friends.
+Recently in these times, we come across various cases where womem are being molested, harassed, and even raped. And for worst, these numbers are very high. So we build a women safety app for the protection of you and your well-wishers. This app will help you in tracking your loved ones who are in danger and also allows you to share your location when you are in danger. Also allows you to find nearby police station around you with just one tap. It also allows to play Police siren to scare away the intruders and also you can share suspicious activity photos with your friends.
 
   <img src="screenshots/Screenshot_20200208-224333.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-234847.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-234852.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-235016.png" width="200" height ="400">
 
