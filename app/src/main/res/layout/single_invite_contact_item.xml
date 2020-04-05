@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/person_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="7dp"
+    android:layout_marginTop="7dp"
+    android:orientation="horizontal"
+    android:padding="7dp">
+
+    <ImageView
+        android:id="@+id/invite_view_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_person_pin_black_24dp"
+        android:background="@color/cardview_dark_background"
+        android:layout_marginRight="6dp"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/person_invite_name"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="Person Name"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_margin="4dp"/>
+
+        <TextView
+            android:id="@+id/person_invite_number"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="Person Phone Number"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_margin="4dp"/>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/person_invite_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Person Status"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

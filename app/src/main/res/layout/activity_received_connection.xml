@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <!-- List View -->
+
+    <ListView
+        android:id="@+id/listOfReceivedConnections"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/empty_received_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/receivedImage"
+            android:src="@drawable/ic_empty" />
+
+        <TextView
+            android:id="@+id/empty_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:paddingTop="6dp"
+            android:text="@string/receivedEmptyListTitle"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="#133241"/>
+
+        <TextView
+            android:id="@+id/empty_subtitle_text"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            android:paddingTop="15dp"
+            android:text="@string/receivedEmptyListText"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#235877"/>
+    </LinearLayout>
+
+<!--     progress-->
+    <LinearLayout
+        android:id="@+id/progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/progress_subtitle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            android:paddingTop="15dp"
+            android:textSize="30sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="@string/loading"
+            android:textColor="@color/colorPrimary"/>
+    </LinearLayout>
+
+<!--     no internet-->
+    <LinearLayout
+        android:id="@+id/no_internet_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/inviteImage"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_wifi" />
+
+        <TextView
+            android:id="@+id/no_internet_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            android:paddingTop="15dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textSize="30sp"
+            android:text="@string/noInternet"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:id="@+id/no_internet_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            android:paddingTop="15dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textSize="20sp"
+            android:text="@string/noInternetMessage"
+            android:textColor="@color/colorPrimary"/>
+
+    </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_reload_received"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:padding="16dp"
+        android:src="@drawable/ic_refresh_white_24dp"
+        android:layout_margin="10dp"/>
+
+
+</RelativeLayout>

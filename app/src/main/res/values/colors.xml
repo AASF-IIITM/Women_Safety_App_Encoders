@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#465BA6</color>
+    <color name="colorPrimaryDark">#2F3D70</color>
+    <color name="colorAccent">#3a5ab3</color>
+
+    <color name="dialogColour">#E61858</color>
+
+    // seekbar color
+    <color name="color_greendark">#224D0D</color>
+    <color name="color_blue">#1B1ED8</color>
+    <color name="color_gray">#A0A1A7</color>
+    <color name="color_green">#377915</color>
+    <color name="color_red">#FF0000</color>
+    <color name="color_yellow">#FAEA07</color>
+    <color name="color_white">#FFFFFF</color>
+
+
+</resources>

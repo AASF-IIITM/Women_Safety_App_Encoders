@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:id="@+id/headingOther"
+        android:text="TRACK OTHER"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#3F058D" />
+
+    <ListView
+        android:id="@+id/listOfInvitedConnections"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/headingOther">
+    </ListView>
+
+    <!-- Empty view for the list -->
+    <LinearLayout
+        android:id="@+id/empty_connection_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/inviteImage"
+            android:src="@drawable/ic_calm" />
+
+        <TextView
+            android:id="@+id/empty_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-medium"
+            android:paddingTop="6dp"
+            android:text="@string/connectionHeading"
+            android:textSize="22sp"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="#133241"/>
+
+        <TextView
+            android:id="@+id/empty_subtitle_text"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            android:paddingTop="15dp"
+            android:textSize="16sp"
+            android:text="@string/connectionMessage"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#235877"/>
+    </LinearLayout>
+
+</RelativeLayout>

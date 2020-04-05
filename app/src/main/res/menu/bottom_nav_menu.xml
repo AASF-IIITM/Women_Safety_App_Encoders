@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/black"
+    app:bbn_badgeColor="#FFFF0000"
+    app:bbn_rippleColor="#33ffffff"
+    app:bbn_itemColorInactive="#DCD5D2D2"
+    >
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_pink_24dp"
+        android:color="#0F9214"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_trackMe"
+        android:icon="@drawable/ic_person_pin_circle_black_24dp"
+        android:color="#AD6400"
+        android:title="@string/title_trackMe" />
+
+    <item
+        android:id="@+id/navigation_trackOther"
+        android:icon="@drawable/ic_public_black_24dp"
+        android:color="@color/colorPrimary"
+        android:title="@string/title_trackOther" />
+
+    <item
+        android:id="@+id/navigation_extra"
+        android:icon="@drawable/ic_grade_pink_24dp"
+        android:color="#731383"
+        android:title="@string/title_extras" />
+
+</menu>

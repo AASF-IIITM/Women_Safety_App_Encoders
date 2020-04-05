@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">Women Safety</string>
+    <string name="package_name">com.aasfencoders.womensafety</string>
+
+    //main activity and its fragments related
+    <string name="loadingUser">Loading User &#8230;</string>
+    <string name="title_home">Home</string>
+    <string name="title_trackOther">Track Others</string>
+    <string name="title_trackMe">Track Me</string>
+    <string name="title_extras">Extras</string>
+    <string name="ANONYMOUS">ANONYMOUS</string>
+    <string name="phone">phone</string>
+    <string name="signIn">Signed in!</string>
+    <string name="signOut">Sign in canceled</string>
+
+    //Home Fragment string resource
+    <string name="inviteConnection">Invite New Connection</string>
+    <string name="receiveConnection">Show Received Connection</string>
+    <string name="showConnection">Show Connection</string>
+    <string name="homeDisplay">Welcome to Women Safety App</string>
+    <string name="selectContact">Select Contact</string>
+
+    //Invite Connection Page
+    <string name="inviteConnectionHeading">Invite Connection Page</string>
+    <string name="inviteDialogString">Fetching Connections those you have Invited &#8230;</string>
+    <string name="inviteConnectionEmptyListTitle">Sorry, No Connection are Invited</string>
+    <string name="inviteConnectionEmptyListText">Get Started By Adding a Connection by pressing on that plus button</string>
+
+    //contacts fetch
+    <string name="loadingContacts">Loading Contacts &#8230;</string>
+    <string name="noContactSelected">No Contact Selected</string>
+    <string name="noPhoneNumberPresent">No Phone Number Present</string>
+    <string name="confirm">Confirm Selection</string>
+
+    //initial form
+    <string name="firstform">FirstForm</string>
+    <string name="text_input_title">User Registration</string>
+    <string name="text_input_message">Enter Your Name</string>
+    <string name="text_input_error_message">Name shouldn\'t be blank</string>
+    <string name="upload">UPLOAD</string>
+    <string name="users">Users</string>
+    <string name="profile">Profile</string>
+
+    //in general
+    <string name="name">name</string>
+    <string name="number">number</string>
+    <string name="error">ERROR</string>
+    <string name="errormessage">Some error occcured</string>
+
+    //invite sent strings
+    <string name="status">status</string>
+    <string name="invited">invited</string>
+    <string name="sent">sent</string>
+    <string name="connecting_to_server">sent</string>
+    <string name="received">received</string>
+    <string name="username">username</string>
+    <string name="userNumber">Number</string>
+    <string name="invitation">invitation</string>
+
+    //contact list string
+    <string name="CID">CONT::</string>
+    <string name="contactDialogString">Creating Connection Link &#8230;</string>
+    <string name="permissionDenied">Permission Denied to Read Contacts. Please Grant it.</string>
+
+    //receive list
+    <string name="accept">accept</string>
+    <string name="reject">reject</string>
+    <string name="accepted">accepted</string>
+    <string name="rejected">rejected</string>
+
+    //Received Connection Page
+    <string name="receivedHeading">Received Connection Page</string>
+    <string name="receivedDialogString">Fetching if any Contacts sent you connection &#8230;</string>
+    <string name="receivedEmptyListTitle">Sorry, No Pending Received Connection</string>
+    <string name="receivedEmptyListText">Connections will show here once they send you an invitation.</string>
+
+    //Matched Connection Page
+    <string name="matched">matched</string>
+    <string name="matchedall">matchedall</string>
+    <string name="matchedDialogString">Fetching Matched Contacts &#8230;</string>
+    <string name="matchedConnectionHeading">Matched Connection Page</string>
+    <string name="matchedConnectionEmptyListTitle">Sorry, No Connection are Matched</string>
+    <string name="matchedConnectionEmptyListText">Get Started By Adding a Connection by navigating to the Invite New Connection Section</string>
+
+    <string name="zero">zero</string>
+    <string name="one">one</string>
+    <string name="two">two</string>
+    <string name="EMPTY">EMPTY</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="connectionHeading">You can rest now.\nNo connection is in danger.</string>
+    <string name="connectionMessage">Here only those connection will display who are in danger at the current moment. For past location of your matched contacts, refer to Show Connection section.</string>
+
+    //FCM
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="Phone">phone</string>
+    <string name="stamp">stamp</string>
+
+    //connectivity
+    <string name="noInternet">No Internet Connectivity</string>
+    <string name="reload">reload</string>
+    <string name="loading">Data Loading From Server</string>
+    <string name="noInternetMessage">Connect to Mobile Network/Wi-Fi and then try again</string>
+
+    //sms
+    <string name="sms_title">Select your preferred SIM</string>
+    <string name="country_title">Select your contacts default Country code</string>
+    <string name="sms_message">It will be used to sent automated SMS. Data rates will apply,</string>
+    <string name="SIM">SIM</string>
+    <string name="defaultISOCodeNumber">+91</string>
+    <string name="ISONUMBER">ISONUMBER</string>
+    <string name="SIM1">SIM 1</string>
+    <string name="SIM2">SIM 2</string>
+    <string name="SIMSET">SIMSET</string>
+    <string name="YES">YES</string>
+    <string name="NO">NO</string>
+    <string name="SIMNO">Don\'t send automated SMS alert</string>
+
+    <string name="ShowPolice">Get Location</string>
+    <string name="title_activity_show_police">Map</string>
+    <string name="results">results</string>
+    <string name="name3">name</string>
+    <string name="geometry">geometry</string>
+    <string name="location">location</string>
+
+    <string name="lat">lat</string>
+    <string name="lng">lng</string>
+    <string name="vicinity">vicinity</string>
+    <string name="noPreviousConnection">You haven\'t received any tracking info from this user.</string>
+
+    <string name="notiChannelId">reminder</string>
+    <string name="notiChannelName">ShaniPeeth Notification</string>
+
+    <string name="NAVITEM">NAVITEM</string>
+    <string name="NAVITEM0">0</string>
+    <string name="NAVITEM1">1</string>
+
+    <string name="OnBoarding">OnBoarding</string>
+    <string name="done">done</string>
+
+    <string name="ISOPOSE">ISOPOSE</string>
+    <string name="police_station">Police Station(s) found in the surrounding area!!</string>
+    <string name="police_station_title">NEARBY POLICE STATIONS</string>
+    <string name="police_station_fetch">Fetching Nearby Police Station</string>
+
+    <string name="noAddress">User\'s current location address can not be parsed!!</string>
+    <string name="updated_location">USER\'s CURRENT LOCATION</string>
+    <string name="saved_location">USER\'s LAST LOCATION</string>
+    <string name="parsed_location">Approximate location of the User</string>
+    <string name="siren_sound">Want to play the police siren sound?</string>
+    <string name="photo">Send photos of suspicious activity / location when GPS not working</string>
+
+    <string name="location_permission">Enable Location Permission to continue</string>
+    <string name="gps_permission">Enable GPS permission to continue</string>
+
+
+    <string name="showNearbyPolice">Want to see Police Stations that can be reached from your current location?</string>
+    <string name="clickButton">Click the button</string>
+    <string name="settings">SETTINGS</string>
+    <string name="share">SHARE</string>
+    <string name="policeSiren">Play Police Siren</string>
+    <string name="choosePhoto">Send Photos to Friends</string>
+    <string name="firstInstall">firstInstall</string>
+    <!--    Country Codes-->
+
+
+
+    <string name="ok">Exit Application</string>
+    <string name="cancel">Cancel</string>
+    <string name="info">Credits</string>
+    <string name="okay">Got it!</string>
+    <string name="infotitle">Creators of this App</string>
+    <string name="infomessage">2nd year students of IIIT Gwalior\nMade during the winters of 2019&#8211;20\n\n2018IMT-051 - Mehul Jain \n2018IMT-070 - Praveen Kumar Sahu\n2018IMT-093 - Sayantan Banerjee</string>
+    <string name="backMessage">Are you sure you want to exit application?</string>
+
+</resources>
