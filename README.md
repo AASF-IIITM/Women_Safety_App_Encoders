@@ -1,8 +1,12 @@
 # Women_Safety_App_Encoders
 ## Description
-Recently in these times, we come across various cases where womem are being molested, harassed, and even raped. And for worst, these numbers are very high. So we build a women safety app for the protection of you and your well-wishers. This app will help you in tracking your loved ones who are in danger and also allows you to share your location when you are in danger. Also allows you to find nearby police station around you with just one tap. It also allows to play Police siren to scare away the intruders and also you can share suspicious activity photos with your friends.
+Recently in these times, we come across various cases where women are being molested, harassed, and even raped. And for worst, these numbers are very high. So we build a women's safety app for the protection of you and your well-wishers. This app will help you in tracking your loved ones who are in danger and also allows you to share your location when you are in danger. Also allows you to find a nearby police station around you with just one tap. It also allows playing Police siren to scare away the intruders and also you can share suspicious activity photos with your friends.
 
   <img src="screenshots/Screenshot_20200208-224333.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-234847.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-234852.png" width="200" height ="400">  <img src="screenshots/Screenshot_20200208-235016.png" width="200" height ="400">
+
+## Demo Video
+
+* <a href="https://www.linkedin.com/posts/sayantan-banerjee-iiitgwalior_presentation-video-womensafety-activity-6744165353980477442-d-0S/"> **Video presentation post** </a>
 
 ## Usage
 For installation and usage of this application
@@ -38,7 +42,7 @@ Also you can play police siren sound when you need it.
 
 <img src="screenshots/Screenshot_20200208-223240.png" width="200" height ="400">   <img src="screenshots/Screenshot_20200208-223246.png" width="200" height ="400">
 
-## Acknowledgement
+## Technologies
 
 * [Firebase Cloud Function](https://firebase.google.com/docs/functions): Run backend code in response to events triggered by                                                                            Firebase features and HTTPS requests.
 * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/): A cross-platform messaging solution. We used it to share location data between the users.
@@ -46,3 +50,20 @@ Also you can play police siren sound when you need it.
 * [Firebase Authentication](https://firebase.google.com/docs/auth/): Firebase Authentication provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to our app. We used Phone Provider to validate user Phone with OTP. 
 * [Google Maps Platform](https://cloud.google.com/maps-platform/): For the maps interface
 * [Retrofit](https://square.github.io/retrofit/): A type-safe HTTP client for Android and Java
+
+## Built With
+
+* Android Studio
+* Java
+
+## Contributing
+
+All kinds of contribution :heart_eyes: are welcomed.
+- <a href="https://github.com/AASF-IIITM/Women_Safety_App_Encoders/pulls"> Make a Pull request </a>
+- <a href="https://github.com/AASF-IIITM/Women_Safety_App_Encoders/issues"> Open Issue </a>
+
+## Authors
+
+* <a href="https://www.linkedin.com/in/mehul-jain-06688710a/"> **Mehul Jain** </a> 
+* <a href="https://www.linkedin.com/in/praveen-kumar-sahu-3317a416a/"> **Praveen Kumar Sahu** </a>
+* <a href="https://www.linkedin.com/in/sayantan-banerjee-iiitgwalior/">  **Sayantan Banerjee** </a>
