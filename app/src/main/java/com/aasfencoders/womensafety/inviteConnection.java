@@ -16,30 +16,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.adapter.InviteAdapter;
-import com.aasfencoders.womensafety.adapter.MatchedCursorAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
-import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
 
 public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -123,7 +114,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
                 DataContract.DataEntry.COLUMN_STATUS_INVITATION};
 
         String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + "=?" + " OR " + DataContract.DataEntry.COLUMN_STATUS_INVITATION + "=?";
-        String[] selectionArgs = new String[]{getString(R.string.invited) , getString(R.string.rejected)};
+        String[] selectionArgs = new String[]{getString(R.string.invited), getString(R.string.rejected)};
 
         return new CursorLoader(this, DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, DataContract.DataEntry._ID + " DESC");
 
@@ -159,7 +150,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
 
-                    if(callClassObj.getStatus().equals(getString(R.string.rejected))){
+                    if (callClassObj.getStatus().equals(getString(R.string.rejected))) {
                         ContentValues values = new ContentValues();
                         values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.rejected));
                         values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));

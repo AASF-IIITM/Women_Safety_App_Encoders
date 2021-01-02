@@ -2,33 +2,20 @@ package com.aasfencoders.womensafety;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aasfencoders.womensafety.data.DataContract;
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,10 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-
-import static java.security.AccessController.doPrivileged;
-import static java.security.AccessController.getContext;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -75,13 +58,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent intent = getIntent();
         mCurrentDataUri = intent.getData();
-        int key = intent.getIntExtra("to_map",-1);
+        int key = intent.getIntExtra("to_map", -1);
         TextView fragment_title = findViewById(R.id.fragment_title);
         switch (key) {
-            case 0:fragment_title.setText(getString(R.string.updated_location));
-            break;
-            case 1:fragment_title.setText(getString(R.string.saved_location));
-            break;
+            case 0:
+                fragment_title.setText(getString(R.string.updated_location));
+                break;
+            case 1:
+                fragment_title.setText(getString(R.string.saved_location));
+                break;
         }
 
         nameView = findViewById(R.id.nameTrackOther);
@@ -142,15 +127,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
-        if(userLocation != null) {
+        if (userLocation != null) {
             mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-            if(flag)
-            {
+            if (flag) {
                 flag = false;
                 zoomLevel = 17;
-            }
-            else
-            {
+            } else {
                 zoomLevel = mMap.getCameraPosition().zoom;
             }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
@@ -165,8 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Address completeAddress = addressList.get(0);
                 address = completeAddress.getFeatureName() + "," + completeAddress.getLocality() + "," + completeAddress.getAdminArea() + "," + completeAddress.getPostalCode() + "," + completeAddress.getCountryName();
                 addresstext.setText(address);
-            }
-            else {
+            } else {
                 addresstext.setText(getString(R.string.noAddress));
             }
         } catch (IOException e) {

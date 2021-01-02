@@ -13,33 +13,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.MatchedClass;
-import com.aasfencoders.womensafety.Class.ReceiveClass;
 import com.aasfencoders.womensafety.adapter.MatchedCursorAdapter;
-import com.aasfencoders.womensafety.adapter.ReceiveAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
-import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class matchedConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -61,7 +51,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
             progress.setVisibility(View.INVISIBLE);
             listView.setVisibility(View.VISIBLE);
             getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
-            Toast.makeText(matchedConnection.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
+            Toast.makeText(matchedConnection.this, getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -110,12 +100,12 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                 String lat = cursor.getString(latColumnIndex);
                 cursor.close();
 
-                if(lat.equals(getString(R.string.EMPTY))){
-                     Toast.makeText(matchedConnection.this , getString(R.string.noPreviousConnection) , Toast.LENGTH_SHORT).show();
-                }else{
+                if (lat.equals(getString(R.string.EMPTY))) {
+                    Toast.makeText(matchedConnection.this, getString(R.string.noPreviousConnection), Toast.LENGTH_SHORT).show();
+                } else {
                     Intent intent = new Intent(matchedConnection.this, MapsActivity.class);
                     intent.setData(currentToDoUri);
-                    intent.putExtra("to_map",1);
+                    intent.putExtra("to_map", 1);
                     startActivity(intent);
                 }
             }
@@ -140,14 +130,14 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
 
-                        if(callClassObj != null){
+                        if (callClassObj != null) {
 
-                            if(callClassObj.getStatus().equals(getString(R.string.accepted)) || callClassObj.getStatus().equals(getString(R.string.rejected))){
+                            if (callClassObj.getStatus().equals(getString(R.string.accepted)) || callClassObj.getStatus().equals(getString(R.string.rejected))) {
                                 ContentValues values = new ContentValues();
 
-                                if(callClassObj.getStatus().equals(getString(R.string.accepted))){
+                                if (callClassObj.getStatus().equals(getString(R.string.accepted))) {
                                     values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.matched));
-                                }else{
+                                } else {
                                     values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.rejected));
                                 }
 

@@ -74,6 +74,5 @@ public class InviteAdapter extends CursorAdapter {
                 statusView.setBackgroundColor(Color.rgb(45,188,39));
                 break;
         }
-
     }
 }

@@ -22,12 +22,9 @@ import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.aasfencoders.womensafety.Class.DataModel;
@@ -35,9 +32,6 @@ import com.aasfencoders.womensafety.Class.RootModel;
 import com.aasfencoders.womensafety.api.ApiClient;
 import com.aasfencoders.womensafety.api.ApiInterface;
 import com.aasfencoders.womensafety.data.DataContract;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +41,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Callback;
 
 import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
-import static java.security.AccessController.getContext;
 
 public class ExampleService extends Service {
 
@@ -151,12 +144,12 @@ public class ExampleService extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-                sendDataToFragment(Double.toString(location.getLatitude()) , Double.toString(location.getLongitude()));
+                sendDataToFragment(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
                 sendLocationToMatchedContacts(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
 
-                if(flag){
+                if (flag) {
                     flag = false;
-                    if ( ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                         sendSMS();
                     }
                 }
@@ -185,11 +178,11 @@ public class ExampleService extends Service {
         return Service.START_NOT_STICKY;
     }
 
-    private void sendDataToFragment(String lat , String lng){
+    private void sendDataToFragment(String lat, String lng) {
         Intent sendLoc = new Intent();
         sendLoc.setAction("GET_LOCATION_CUR");
-        sendLoc.putExtra( "lat_DATA",lat);
-        sendLoc.putExtra( "lng_DATA",lng);
+        sendLoc.putExtra("lat_DATA", lat);
+        sendLoc.putExtra("lng_DATA", lng);
         sendBroadcast(sendLoc);
     }
 
@@ -222,11 +215,11 @@ public class ExampleService extends Service {
         int smsToSendFrom;
 
         String val = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
-        if(!val.equals(getString(R.string.SIMNO))){
+        if (!val.equals(getString(R.string.SIMNO))) {
             String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
-            if(val.equals(getString(R.string.SIM1))){
+            if (val.equals(getString(R.string.SIM1))) {
                 smsToSendFrom = simCardList.get(0);
-            }else{
+            } else {
                 smsToSendFrom = simCardList.get(1);
             }
             for (i = 0; i < phoneName.size(); i++) {

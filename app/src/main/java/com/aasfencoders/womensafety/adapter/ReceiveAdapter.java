@@ -24,11 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.Class.ReceiveClass;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.data.DataContract;
-import com.aasfencoders.womensafety.receivedConnection;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
@@ -37,7 +35,6 @@ import com.google.firebase.functions.HttpsCallableResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -77,7 +74,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         currentCall = getItem(position);
         pos = position;
 
-        Log.i("********" , Integer.toString(pos));
+        Log.i("********", Integer.toString(pos));
 
         TextView name = listItemView.findViewById(R.id.person_receive_name);
         TextView number = listItemView.findViewById(R.id.person_receive_number);
@@ -92,8 +89,8 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 String name = currentCall.getName();
                 String phone = currentCall.getNumber();
 
-                Log.i("#######" , name);
-                Log.i("#######" , phone);
+                Log.i("#######", name);
+                Log.i("#######", phone);
 
                 ContentValues values2 = new ContentValues();
                 values2.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
@@ -130,7 +127,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                     values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
                     mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 }
-                callFunction(name, phone, mContext.getString(R.string.accept) , position);
+                callFunction(name, phone, mContext.getString(R.string.accept), position);
 
             }
         });
@@ -141,7 +138,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 currentCall = getItem(position);
                 String name = currentCall.getName();
                 String phone = currentCall.getNumber();
-                callFunction(name, phone, mContext.getString(R.string.reject) , position);
+                callFunction(name, phone, mContext.getString(R.string.reject), position);
 
             }
         });
@@ -175,7 +172,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         status.setVisibility(View.INVISIBLE);
     }
 
-    private void hideButton(int i , int position) {
+    private void hideButton(int i, int position) {
         currentCall = getItem(position);
 
         accept.setVisibility(View.INVISIBLE);
@@ -213,7 +210,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         notifyDataSetChanged();
     }
 
-    private void callFunction(String source_name, String source_no, final String selection , final int position) {
+    private void callFunction(String source_name, String source_no, final String selection, final int position) {
 
         String target_no = sharedPreferences.getString(mContext.getString(R.string.userNumber), mContext.getString(R.string.error));
         String target_name = sharedPreferences.getString(mContext.getString(R.string.username), mContext.getString(R.string.error));

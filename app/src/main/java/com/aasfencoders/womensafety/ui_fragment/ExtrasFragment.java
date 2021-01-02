@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -19,11 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.aasfencoders.womensafety.MainActivity;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.ShowPolice;
 import com.aasfencoders.womensafety.capturePhoto;
@@ -40,8 +34,6 @@ import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.aasfencoders.womensafety.utilities.NetworkDialog;
 
 import jp.co.recruit_lifestyle.android.widget.PlayPauseButton;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class ExtrasFragment extends Fragment {
 
@@ -51,7 +43,6 @@ public class ExtrasFragment extends Fragment {
     private LocationManager locationManager;
     private MediaPlayer mediaPlayer;
     private PlayPauseButton mPlayPause;
-
 
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -133,7 +124,7 @@ public class ExtrasFragment extends Fragment {
             sharedPreferences = getContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         }
         ColorDrawable cd = new ColorDrawable(0XFF731383);
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             Window window = getActivity().getWindow();
             window.setStatusBarColor(Color.parseColor("#4e0d59"));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);

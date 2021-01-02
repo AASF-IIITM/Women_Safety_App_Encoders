@@ -7,28 +7,18 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.text.Html;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -64,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             Phonenumber.PhoneNumber NumberProto = phoneUtil.parse(username, "IN");
             int countrycode = NumberProto.getCountryCode();
-            sharedPreferences.edit().putString(getString(R.string.ISONUMBER), "+"+countrycode).apply();
+            sharedPreferences.edit().putString(getString(R.string.ISONUMBER), "+" + countrycode).apply();
         } catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
         }

@@ -15,6 +15,3 @@ public interface ApiInterface {
     @POST("fcm/send")
     Call<ResponseBody> sendLocation(@Body RootModel root);
 }
-
-
-

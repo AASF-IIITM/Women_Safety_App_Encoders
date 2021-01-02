@@ -15,7 +15,7 @@ public class SplashActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
-    public void function(){
+    public void function() {
         image.animate().alphaBy(1f).setDuration(1500);
         new CountDownTimer(1500, 1000) {
 
@@ -26,12 +26,12 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                String firstOnboarding = sharedPreferences.getString(getString(R.string.OnBoarding),"");
+                String firstOnboarding = sharedPreferences.getString(getString(R.string.OnBoarding), "");
                 Intent intent;
-                if(firstOnboarding.equals("")){
+                if (firstOnboarding.equals("")) {
                     intent = new Intent(SplashActivity.this, OnBoardingScreen.class);
-                    sharedPreferences.edit().putString(getString(R.string.OnBoarding) , getString(R.string.done)).apply();
-                }else{
+                    sharedPreferences.edit().putString(getString(R.string.OnBoarding), getString(R.string.done)).apply();
+                } else {
                     intent = new Intent(SplashActivity.this, MainActivity.class);
                 }
                 startActivity(intent);

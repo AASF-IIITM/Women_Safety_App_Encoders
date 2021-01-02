@@ -2,7 +2,6 @@ package com.aasfencoders.womensafety.ui_fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,20 +11,15 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.telephony.SmsManager;
-import android.telephony.SubscriptionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -33,14 +27,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.aasfencoders.womensafety.BottomNavigationActivity;
 import com.aasfencoders.womensafety.ExampleService;
 
-import com.aasfencoders.womensafety.NotificationCancelReceiver;
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.ServiceDetector;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
@@ -63,7 +54,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     private Switch gpsSwitch;
     public SharedPreferences sharedPreferences;
     private LocationReceiver receiver;
-    private LocationManager manager ;
+    private LocationManager manager;
     boolean flag;
 
     public TrackMeFragment() {
@@ -75,16 +66,16 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(getContext() != null){
+                if (getContext() != null) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         checkGPS();
                     } else {
                         gpsSwitch.setChecked(false);
-                        Toast.makeText(getContext(),getString(R.string.location_permission),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
-                Toast.makeText(getContext(),getString(R.string.location_permission),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.location_permission), Toast.LENGTH_SHORT).show();
                 gpsSwitch.setChecked(false);
             }
         }
@@ -93,14 +84,13 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void checkGPS() {
-        if(getContext() != null){
+        if (getContext() != null) {
             manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 gpsSwitch.setChecked(false);
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivityForResult(intent,1);
-            }
-            else {
+                startActivityForResult(intent, 1);
+            } else {
                 startService();
             }
         }
@@ -110,13 +100,12 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1) {
-            if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (requestCode == 1) {
+            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 gpsSwitch.setChecked(true);
                 startService();
-            }
-            else {
-                Toast.makeText(getContext(),getString(R.string.gps_permission),Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), getString(R.string.gps_permission), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -127,7 +116,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_trackme, container, false);
         gpsSwitch = view.findViewById(R.id.gpsSwitch);
         ColorDrawable cd = new ColorDrawable(0xFFAD6400);
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             Window window = getActivity().getWindow();
             window.setStatusBarColor(Color.parseColor("#804a00"));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
@@ -166,7 +155,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                                 }
                                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                   checkGPS();
+                                    checkGPS();
                                 }
                             }
 
@@ -210,7 +199,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     private void startService() {
         Intent serviceIntent = new Intent(getContext(), ExampleService.class);
-        if(getContext() != null){
+        if (getContext() != null) {
             ContextCompat.startForegroundService(getContext(), serviceIntent);
         }
     }
@@ -227,15 +216,12 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                 mMap.clear();
                 float zoomLevel;
                 LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lng));
-                if(userLocation != null) {
+                if (userLocation != null) {
                     mMap.addMarker(new MarkerOptions().position(userLocation).title("Your current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-                    if(flag)
-                    {
+                    if (flag) {
                         flag = false;
                         zoomLevel = 17;
-                    }
-                    else
-                    {
+                    } else {
                         zoomLevel = mMap.getCameraPosition().zoom;
                     }
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
@@ -248,7 +234,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStop() {
-        if(mapView != null){
+        if (mapView != null) {
             mapView.onPause();
             mapView.onStop();
             mapView.onDestroy();
@@ -259,7 +245,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroyView() {
-        if(mapView != null){
+        if (mapView != null) {
             mapView.onPause();
             mapView.onStop();
             mapView.onDestroy();

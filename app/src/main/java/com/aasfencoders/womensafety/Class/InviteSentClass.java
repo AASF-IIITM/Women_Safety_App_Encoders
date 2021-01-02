@@ -6,11 +6,7 @@ public class InviteSentClass {
     private String number;
     private String status;
 
-    public InviteSentClass(){
-
-    }
-
-    public InviteSentClass(String name , String number,  String status){
+    public InviteSentClass(String name, String number, String status) {
         this.name = name;
         this.number = number;
         this.status = status;
@@ -27,6 +23,4 @@ public class InviteSentClass {
     public String getStatus() {
         return status;
     }
-
-
 }

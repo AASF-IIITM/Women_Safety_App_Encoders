@@ -5,11 +5,7 @@ public class ContactNameClass {
     private String id;
     private String name;
 
-    public ContactNameClass(){
-
-    }
-
-    public ContactNameClass(String id, String name){
+    public ContactNameClass(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -21,5 +17,4 @@ public class ContactNameClass {
     public String getName() {
         return name;
     }
-
 }

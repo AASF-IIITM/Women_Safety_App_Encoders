@@ -12,10 +12,10 @@
         android:id="@+id/invite_view_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/ic_person_pin_black_24dp"
-        android:background="@color/cardview_dark_background"
+        android:layout_gravity="center"
         android:layout_marginRight="6dp"
-        android:layout_gravity="center"/>
+        android:background="@color/cardview_dark_background"
+        android:src="@drawable/ic_person_pin_black_24dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -26,31 +26,32 @@
             android:id="@+id/person_invite_name"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="Person Name"
-            android:maxLines="1"
+            android:layout_margin="4dp"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Person Name"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_margin="4dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/person_invite_number"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:text="Person Phone Number"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_margin="4dp"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/person_invite_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Person Status"
         android:textSize="16sp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:layout_gravity="center"/>
+        android:textStyle="bold" />
 
 </LinearLayout>

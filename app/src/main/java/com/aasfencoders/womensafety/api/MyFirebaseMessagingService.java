@@ -1,6 +1,5 @@
 package com.aasfencoders.womensafety.api;
 
-
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -50,11 +48,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String phone = data.get(getString(R.string.Phone));
         String stamp = data.get(getString(R.string.stamp));
 
-        storeInDatabase(Lat , Long , phone , stamp);
+        storeInDatabase(Lat, Long, phone, stamp);
 
     }
 
-    private void storeInDatabase(String Lat, String Long , String phone , String stamp){
+    private void storeInDatabase(String Lat, String Long, String phone, String stamp) {
 
         String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
         String[] selectionArgs = new String[]{phone};
@@ -66,7 +64,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
 
-        if(cursor != null && cursor.getCount() > 0){
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             int idColumnIndex = cursor.getColumnIndex(DataContract.DataEntry._ID);
             id = cursor.getString(idColumnIndex);
@@ -79,9 +77,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationIntent = new Intent(getApplicationContext(), updateBroadcastReceiver.class);
             notificationIntent.putExtra("phone", phone);
             broadcast = PendingIntent.getBroadcast(getApplicationContext(), Integer.parseInt(id), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+120*1000, broadcast);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 120 * 1000, broadcast);
 
-            if(status.equals(getString(R.string.zero))){
+            if (status.equals(getString(R.string.zero))) {
                 makeNotification(name);
             }
 
@@ -94,13 +92,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
         }
 
-        if(cursor != null){
+        if (cursor != null) {
             cursor.close();
         }
 
     }
 
-    private void makeNotification(String name){
+    private void makeNotification(String name) {
 
         final int requestCode = (getString(R.string.app_name) + " " + System.currentTimeMillis()).hashCode();
 
@@ -147,5 +145,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(Integer.parseInt(id), notificationBuilder.build());
     }
-
 }

@@ -4,29 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.aasfencoders.womensafety.Class.InviteSentClass;
 import com.aasfencoders.womensafety.Class.ReceiveClass;
-import com.aasfencoders.womensafety.adapter.InviteAdapter;
 import com.aasfencoders.womensafety.adapter.ReceiveAdapter;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
-import com.aasfencoders.womensafety.utilities.NetworkDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class receivedConnection extends AppCompatActivity {
@@ -35,7 +29,7 @@ public class receivedConnection extends AppCompatActivity {
     ListView listView;
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
-    
+
     private View no_network;
     private View progress;
 
@@ -43,7 +37,7 @@ public class receivedConnection extends AppCompatActivity {
 
     private ArrayList<ReceiveClass> receivedList;
 
-    private void checkConnection(){
+    private void checkConnection() {
         boolean state = CheckNetworkConnection.checkNetwork(receivedConnection.this);
         if (state) {
             fetchReceivedContacts();
@@ -69,7 +63,7 @@ public class receivedConnection extends AppCompatActivity {
 
         view = (View) findViewById(R.id.empty_received_view);
         listView = (ListView) findViewById(R.id.listOfReceivedConnections);
-        
+
         no_network = findViewById(R.id.no_internet_view);
 
         progress = findViewById(R.id.progress_view);
@@ -87,13 +81,13 @@ public class receivedConnection extends AppCompatActivity {
 
     }
 
-    private void fetchReceivedContacts(){
+    private void fetchReceivedContacts() {
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
         if (current_user_number.equals(R.string.error)) {
             Toast.makeText(receivedConnection.this, getString(R.string.errormessage), Toast.LENGTH_SHORT).show();
         } else {
-            
+
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.invitation)).child(current_user_number);
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
@@ -106,10 +100,10 @@ public class receivedConnection extends AppCompatActivity {
                         receivedList.add(callClassObj);
                     }
 
-                    if(receivedList.size() > 0){
+                    if (receivedList.size() > 0) {
                         ReceiveAdapter receiveAdapter = new ReceiveAdapter(receivedConnection.this, receivedList);
                         listView.setAdapter(receiveAdapter);
-                    }else{
+                    } else {
                         view.setVisibility(View.VISIBLE);
                     }
 

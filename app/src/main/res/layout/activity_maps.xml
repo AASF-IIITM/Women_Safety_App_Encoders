@@ -3,15 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <TextView
+        android:id="@+id/fragment_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
-        android:id="@+id/fragment_title"
         android:layout_gravity="center"
+        android:layout_margin="7dp"
         android:gravity="center"
-        android:textSize="20sp"/>
-    <LinearLayout android:id="@+id/person_linear_layout"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@+id/person_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
@@ -22,10 +25,10 @@
             android:id="@+id/connection_view_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_track_other"
-            android:background="@color/color_white"
+            android:layout_gravity="center"
             android:layout_marginRight="6dp"
-            android:layout_gravity="center"/>
+            android:background="@color/color_white"
+            android:src="@drawable/ic_track_other" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,75 +39,77 @@
                 android:id="@+id/nameTrackOther"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:text="Person Name"
-                android:maxLines="1"
+                android:layout_margin="4dp"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Person Name"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_margin="4dp"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/numberTrackOther"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:text="Person Phone Number"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_margin="4dp"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_gravity="center">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/stampDateTrackOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Date"
-                android:maxLines="1"
+                android:layout_marginBottom="2dp"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Date"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/stampTimeTrackOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:text="Time"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginTop="2dp"/>
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
             android:id="@+id/geocoder_track_other_title"
-            android:text="@string/parsed_location"
-            android:textSize="16dp"
-            android:layout_margin="4dp"/>
-        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:gravity="center"
+            android:text="@string/parsed_location"
+            android:textSize="16dp" />
+
+        <TextView
             android:id="@+id/geocoder_track_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/geocoder_track_other_title"
-            android:textSize="16sp"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:textSize="16sp" />
     </RelativeLayout>
 
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"

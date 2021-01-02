@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -26,17 +24,13 @@ import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.adapter.ContactAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.warkiz.widget.ColorCollector;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
-import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-
-import static java.security.AccessController.getContext;
 
 public class ContactActivity extends AppCompatActivity {
 
@@ -150,11 +142,10 @@ public class ContactActivity extends AppCompatActivity {
 
             if ((cur != null ? cur.getCount() : 0) > 0) {
 
-                for(int i=0;i<26;i++)
-                {
+                for (int i = 0; i < 26; i++) {
                     String id2 = getID(i);
                     String name = getName(i);
-                    contactList.add(new ContactNameClass(id2,name));
+                    contactList.add(new ContactNameClass(id2, name));
                 }
 
 
@@ -164,7 +155,7 @@ public class ContactActivity extends AppCompatActivity {
                     String name = cur.getString(cur.getColumnIndex(
                             ContactsContract.Contacts.DISPLAY_NAME));
 
-                    if(id!= null && name!= null){
+                    if (id != null && name != null) {
                         contactList.add(new ContactNameClass(id, name));
                     }
 
@@ -198,7 +189,7 @@ public class ContactActivity extends AppCompatActivity {
             super.onPostExecute(contactList);
             progressBar.setVisibility(View.GONE);
             loadingtextview.setVisibility(View.GONE);
-            ContactAdapter contactAdapter = new ContactAdapter(getBaseContext(), contactList , contactPosArray);
+            ContactAdapter contactAdapter = new ContactAdapter(getBaseContext(), contactList, contactPosArray);
             contactListView.setAdapter(contactAdapter);
             contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -214,8 +205,7 @@ public class ContactActivity extends AppCompatActivity {
     private void phone_number_display(String id, final String name) {
 
 
-        if(id.length()>6 && id.substring(0,4).equals("CONT"))
-        {
+        if (id.length() > 6 && id.substring(0, 4).equals("CONT")) {
             return;
         }
 
@@ -237,7 +227,7 @@ public class ContactActivity extends AppCompatActivity {
                 String phoneNo = pCur.getString(pCur.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                phoneNo = phoneNo.replaceAll("\\s","");
+                phoneNo = phoneNo.replaceAll("\\s", "");
 
 
                 boolean flagCommon = false;
@@ -260,35 +250,35 @@ public class ContactActivity extends AppCompatActivity {
                     if (!(cursor != null && cursor.getCount() > 0)) {
 
                         String phonewithCode = null;
-                        if(phoneNo.charAt(0) != '+') {
-                            String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                        if (phoneNo.charAt(0) != '+') {
+                            String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
                             phonewithCode = isocode + phoneNo;
                             String selection2 = DataContract.DataEntry.COLUMN_PHONE + " =? ";
                             String[] selectionArgs2 = new String[]{phonewithCode};
 
                             Cursor cursor2 = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection2, selectionArgs2, null);
                             if (!(cursor2 != null && cursor2.getCount() > 0)) {
-                                if(phoneNo.charAt(0) == '+'){
+                                if (phoneNo.charAt(0) == '+') {
                                     items.add(phoneNo);
-                                }else{
-                                    String isocode2 = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                                } else {
+                                    String isocode2 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
                                     items.add(isocode2 + phoneNo);
                                 }
                             }
-                            if(cursor2 != null){
+                            if (cursor2 != null) {
                                 cursor2.close();
                             }
-                        }else{
-                            if(phoneNo.charAt(0) == '+'){
+                        } else {
+                            if (phoneNo.charAt(0) == '+') {
                                 items.add(phoneNo);
-                            }else{
-                                String isocode3 = sharedPreferences.getString(getString(R.string.ISONUMBER) , getString(R.string.defaultISOCodeNumber));
+                            } else {
+                                String isocode3 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
                                 items.add(isocode3 + phoneNo);
                             }
                         }
 
                     }
-                    if(cursor != null){
+                    if (cursor != null) {
                         cursor.close();
                     }
                 }
@@ -311,7 +301,7 @@ public class ContactActivity extends AppCompatActivity {
                                 if (state) {
                                     updateDatabase(items, name);
                                 } else {
-                                    Toast.makeText(ContactActivity.this , getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ContactActivity.this, getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
                                 }
 
                             }
@@ -354,13 +344,13 @@ public class ContactActivity extends AppCompatActivity {
 
                 Map<String, Object> value2 = new HashMap<>();
                 value2.put(getString(R.string.name), current_user_name);
-                value2.put(getString(R.string.number),current_user_number);
+                value2.put(getString(R.string.number), current_user_number);
 
                 mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value2);
 
                 ContentValues values = new ContentValues();
                 values.put(DataContract.DataEntry.COLUMN_NAME, name);
-                values.put(DataContract.DataEntry.COLUMN_PHONE,sent_phone_number);
+                values.put(DataContract.DataEntry.COLUMN_PHONE, sent_phone_number);
                 values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
                 values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.invited));
 
@@ -373,27 +363,27 @@ public class ContactActivity extends AppCompatActivity {
     }
 
 
-
-    private void findPosContactGroup(ArrayList<ContactNameClass>Contact){
+    private void findPosContactGroup(ArrayList<ContactNameClass> Contact) {
         int i = -1;
-        int j=0;
+        int j = 0;
         contactPosArray = new int[27];
-        for(ContactNameClass contact : Contact) {
-            if(contact.getId().length()>5&&contact.getId().substring(0,4).equals("CONT")){
-                contactPosArray[++i]=j;
+        for (ContactNameClass contact : Contact) {
+            if (contact.getId().length() > 5 && contact.getId().substring(0, 4).equals("CONT")) {
+                contactPosArray[++i] = j;
             }
-            if(i==25)
+            if (i == 25)
                 break;
             j++;
         }
 
     }
 
-    private String getID(int no){
-        return getString(R.string.CID ) + Integer.toString(no+1);
+    private String getID(int no) {
+        return getString(R.string.CID) + Integer.toString(no + 1);
     }
-    private String getName(int no){
-        return Character.toString((char)(65+no));
+
+    private String getName(int no) {
+        return Character.toString((char) (65 + no));
     }
 
 }

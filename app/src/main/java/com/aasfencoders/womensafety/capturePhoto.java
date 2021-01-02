@@ -75,7 +75,7 @@ public class capturePhoto extends AppCompatActivity {
                     } else {
                         startCamera();
                     }
-                }else{
+                } else {
                     startCamera();
                 }
 
@@ -88,8 +88,8 @@ public class capturePhoto extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_TEXT, "Sharing this emergency photo through Women Safety App. Help me out.");
-                intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(capturePhoto.this,getPackageName(),new File(pictureImagePath)));
-                startActivity(Intent.createChooser(intent,"Share with..."));
+                intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(capturePhoto.this, getPackageName(), new File(pictureImagePath)));
+                startActivity(Intent.createChooser(intent, "Share with..."));
             }
         });
     }
@@ -108,7 +108,7 @@ public class capturePhoto extends AppCompatActivity {
         }
     }
 
-    private void startCamera(){
+    private void startCamera() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp + ".jpg";
         File storageDir = Environment.getExternalStoragePublicDirectory(

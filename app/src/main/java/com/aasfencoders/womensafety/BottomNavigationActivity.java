@@ -1,6 +1,5 @@
 package com.aasfencoders.womensafety;
 
-import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -14,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.Menu;
@@ -23,24 +21,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.aasfencoders.womensafety.Class.ReceiveClass;
-import com.aasfencoders.womensafety.adapter.ReceiveAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 import com.aasfencoders.womensafety.ui_fragment.ExtrasFragment;
 import com.aasfencoders.womensafety.ui_fragment.HomeFragment;
 import com.aasfencoders.womensafety.ui_fragment.TrackMeFragment;
 import com.aasfencoders.womensafety.ui_fragment.TrackOthersFragment;
 import com.aasfencoders.womensafety.utilities.CheckNetworkConnection;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;

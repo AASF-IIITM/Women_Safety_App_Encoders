@@ -1,7 +1,6 @@
 package com.aasfencoders.womensafety;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
@@ -47,7 +46,7 @@ public class OnBoardingScreen extends AppCompatActivity {
         onBoardingFragment.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
             @Override
             public void onRightOut() {
-                Intent intent = new Intent(OnBoardingScreen.this , MainActivity.class);
+                Intent intent = new Intent(OnBoardingScreen.this, MainActivity.class);
                 startActivity(intent);
                 OnBoardingScreen.this.finish();
             }

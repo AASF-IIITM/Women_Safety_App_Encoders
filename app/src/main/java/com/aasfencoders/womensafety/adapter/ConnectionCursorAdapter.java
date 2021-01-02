@@ -53,8 +53,5 @@ public class ConnectionCursorAdapter extends CursorAdapter {
         matched_phone.setText(number);
         matched_stamp_date.setText(date);
         matched_stamp_time.setText(time);
-
-
     }
-
 }

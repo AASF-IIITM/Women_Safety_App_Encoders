@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/splashImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/splashImage"
-        android:src="@drawable/mainpage"
         android:alpha="0.2"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/mainpage" />
 </LinearLayout>

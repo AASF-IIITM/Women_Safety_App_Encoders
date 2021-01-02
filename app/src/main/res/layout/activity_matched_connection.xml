@@ -1,32 +1,27 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp">
 
     <!-- List View -->
-
     <ListView
         android:id="@+id/listOfInvitedConnections"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+        android:layout_height="match_parent" />
 
     <!-- Empty view for the list -->
     <LinearLayout
         android:id="@+id/empty_matched_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_centerInParent="true"
         android:gravity="center"
-        android:layout_centerInParent="true">
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/inviteImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/inviteImage"
             android:src="@drawable/ic_empty" />
 
         <TextView
@@ -37,18 +32,18 @@
             android:paddingTop="6dp"
             android:text="@string/matchedConnectionEmptyListTitle"
             android:textAppearance="?android:textAppearanceMedium"
-            android:textColor="#133241"/>
+            android:textColor="#133241" />
 
         <TextView
             android:id="@+id/empty_subtitle_text"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:fontFamily="sans-serif"
             android:paddingTop="15dp"
             android:text="@string/matchedConnectionEmptyListText"
+            android:textAlignment="center"
             android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="#235877"/>
+            android:textColor="#235877" />
     </LinearLayout>
 
 
@@ -56,12 +51,12 @@
         android:id="@+id/fab_reload_matched"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="@color/colorPrimary"
         android:padding="16dp"
-        android:src="@drawable/ic_refresh_white_24dp"
-        android:layout_margin="10dp"/>
+        android:src="@drawable/ic_refresh_white_24dp" />
 
     <!--     progress-->
     <LinearLayout
@@ -72,25 +67,24 @@
         android:orientation="vertical">
 
         <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/progress_subtitle_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textAlignment="center"
             android:fontFamily="sans-serif"
-            android:paddingTop="15dp"
-            android:textSize="30sp"
             android:paddingStart="10dp"
+            android:paddingTop="15dp"
             android:paddingEnd="10dp"
             android:text="@string/loading"
-            android:textColor="@color/colorPrimary"/>
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="30sp" />
     </LinearLayout>
-
 
 </RelativeLayout>

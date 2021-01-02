@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import com.aasfencoders.womensafety.Class.ContactNameClass;
 import com.aasfencoders.womensafety.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -42,8 +41,6 @@ public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
             listItemView = LayoutInflater.from(mContext).inflate(R.layout.single_contactname_item, parent, false);
         }
         final ContactNameClass currentContact = getItem(position);
-
-
 
         TextView name = listItemView.findViewById(R.id.single_contactname_textview);
         name.setText(currentContact.getName());

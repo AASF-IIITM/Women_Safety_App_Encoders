@@ -5,11 +5,7 @@ public class ReceiveClass {
     private String name;
     private String number;
 
-    public ReceiveClass(){
-
-    }
-
-    public ReceiveClass(String name , String number){
+    public ReceiveClass(String name, String number) {
         this.name = name;
         this.number = number;
     }
@@ -21,5 +17,4 @@ public class ReceiveClass {
     public String getNumber() {
         return number;
     }
-
 }
