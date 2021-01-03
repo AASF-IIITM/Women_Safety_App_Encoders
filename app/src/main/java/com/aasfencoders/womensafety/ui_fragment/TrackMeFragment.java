@@ -45,9 +45,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Objects;
 
+// Track Me Fragment of the application, where we send location updates to others when we are in danger.
+// For that, we first check for the permission, the GPS enabled, after everything is alright,
+// we re-direct it to [ForegroundService.java], to upload location data in the background.
 public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
-
 
     private MapView mapView;
     private GoogleMap mMap;
@@ -61,6 +64,76 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         flag = true;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_trackme, container, false);
+        gpsSwitch = view.findViewById(R.id.gpsSwitch);
+        ColorDrawable cd = new ColorDrawable(0xFFAD6400);
+        if (getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.setStatusBarColor(Color.parseColor("#804a00"));
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
+        }
+
+        if (getContext() != null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        }
+
+        receiver = new LocationReceiver();
+        getContext().registerReceiver(receiver, new IntentFilter("GET_LOCATION_CUR"));
+
+        // To check if location update service is running or not
+        ServiceDetector serviceDetector = new ServiceDetector();
+        if (!serviceDetector.isServiceRunning(getContext(), ExampleService.class)) {
+            gpsSwitch.setChecked(false);
+        } else {
+            gpsSwitch.setChecked(true);
+        }
+
+        gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    // when switched is turned ON
+                    if (getContext() != null) {
+                        // first check network connection, if network detected, check for the permission.
+                        // If enabled, check for the GPS Connection.
+                        // Else, request for the location permission.
+                        boolean state = CheckNetworkConnection.checkNetwork(getContext());
+                        if (state) {
+                            manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            }
+                            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                checkGPS();
+                            }
+                        } else {
+                            // network dialog is showed up when their is no network connectivity
+                            NetworkDialog.showNetworkDialog(getContext());
+                            gpsSwitch.setChecked(false);
+                        }
+                    }
+                } else {
+                    // when SWITCH is turned off
+                    // close notification dialog
+                    Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                    Objects.requireNonNull(getContext()).sendBroadcast(it);
+                    // stop the background service, i.e, stop sending location data
+                    Intent serviceIntent = new Intent(getContext(), ExampleService.class);
+                    getContext().stopService(serviceIntent);
+                }
+            }
+        });
+
+        return view;
+    }
+
+    // Requesting for the permission to be enabled by the user before fetching location data
+    // Once granted, make them check GPS connection
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -83,6 +156,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    // We check the GPS connection, if enabled re-direct to start the Foreground Service.
+    // If not, start an intent and re-direct the user to settings asking them to open location settings.
     private void checkGPS() {
         if (getContext() != null) {
             manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
@@ -97,6 +172,9 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    // After getting back from the Location setting page, it is rechecked for the GPS state.
+    // If enabled, re-direct to start the Foreground Service.
+    // Else, show an error toast.
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
@@ -110,72 +188,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_trackme, container, false);
-        gpsSwitch = view.findViewById(R.id.gpsSwitch);
-        ColorDrawable cd = new ColorDrawable(0xFFAD6400);
-        if (getActivity() != null) {
-            Window window = getActivity().getWindow();
-            window.setStatusBarColor(Color.parseColor("#804a00"));
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
-        }
-
-        if (getContext() != null) {
-
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        }
-
-        receiver = new LocationReceiver();
-        getContext().registerReceiver(receiver, new IntentFilter("GET_LOCATION_CUR"));
-
-        ServiceDetector serviceDetector = new ServiceDetector();
-        if (!serviceDetector.isServiceRunning(getContext(), ExampleService.class)) {
-            gpsSwitch.setChecked(false);
-        } else {
-            gpsSwitch.setChecked(true);
-        }
-
-        gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked) {
-                    if (getContext() != null) {
-                        boolean state = CheckNetworkConnection.checkNetwork(getContext());
-                        if (state) {
-
-                            manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-                            if (Build.VERSION.SDK_INT < 23) {
-                                startService();
-                            } else {
-                                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                                }
-                                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                    checkGPS();
-                                }
-                            }
-
-                        } else {
-                            NetworkDialog.showNetworkDialog(getContext());
-                            gpsSwitch.setChecked(false);
-                        }
-                    }
-                } else {
-                    Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                    getContext().sendBroadcast(it);
-                    Intent serviceIntent = new Intent(getContext(), ExampleService.class);
-                    getContext().stopService(serviceIntent);
-                }
-            }
-        });
-
-        return view;
-    }
-
+    // called to set the map view on this attached fragment.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -189,14 +202,15 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    // Called when the map view is ready and then we initialize it with the current context.
     public void onMapReady(GoogleMap googleMap) {
         if (getContext() != null) {
             MapsInitializer.initialize(getContext());
         }
         mMap = googleMap;
-
     }
 
+    // start the foreground service to send the location data
     private void startService() {
         Intent serviceIntent = new Intent(getContext(), ExampleService.class);
         if (getContext() != null) {
@@ -204,9 +218,8 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
+    // Get the location data from the [ForegroundService.class], and use it to set the marker on the Map.
     class LocationReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
 

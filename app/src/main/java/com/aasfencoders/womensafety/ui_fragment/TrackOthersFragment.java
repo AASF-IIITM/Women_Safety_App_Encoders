@@ -27,6 +27,7 @@ import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.adapter.ConnectionCursorAdapter;
 import com.aasfencoders.womensafety.data.DataContract;
 
+// Track Other Fragment of the application, where we get the list of the contacts who are currently in danger.
 public class TrackOthersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private View view;
@@ -47,11 +48,14 @@ public class TrackOthersFragment extends Fragment implements LoaderManager.Loade
             ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
         }
 
+        // set the view and the adapter
         view = (View) root.findViewById(R.id.empty_connection_view);
         listView = (ListView) root.findViewById(R.id.listOfInvitedConnections);
         listView.setEmptyView(view);
         listView.setAdapter(mCursorAdapter);
 
+        // when we click on some connection from the Adapter List,
+        // we need to open [MapsActivity.java] with the selected contact URI.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -69,7 +73,7 @@ public class TrackOthersFragment extends Fragment implements LoaderManager.Loade
         return root;
     }
 
-
+    // Query the database to find some matched contacts whose STATUS = 1, i.e, they are currently in danger
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         String[] projection = {
@@ -88,11 +92,13 @@ public class TrackOthersFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
+    // Once the query is completed, we populate the adapter with the dangered connection details.
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
     }
 
+    // to reset the adapter
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);

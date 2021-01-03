@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+// Maps activity to display the received location data from the matched connections.
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
@@ -60,6 +61,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mCurrentDataUri = intent.getData();
         int key = intent.getIntExtra("to_map", -1);
         TextView fragment_title = findViewById(R.id.fragment_title);
+        // Two situation calls up this [MapsActivity.java]
+        // Key = 0 : Tracking user current location
+        // Key = 1 : Displaying last location sent by the user
         switch (key) {
             case 0:
                 fragment_title.setText(getString(R.string.updated_location));
@@ -69,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
         }
 
+        // initializing the view objects
         nameView = findViewById(R.id.nameTrackOther);
         numberView = findViewById(R.id.numberTrackOther);
         stampDate = findViewById(R.id.stampDateTrackOther);
@@ -84,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    // Query the database to find the user locations.
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         String[] projection = {
@@ -97,38 +103,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    // Whenever location data gets updated into the database, this function is called up.
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         mMap.clear();
         cursor.moveToFirst();
 
+        // Declare each column Index of that data cursor
         int nameColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         int numberColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
         int latColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LAT);
         int longColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_CURRENT_LONG);
         int stampColIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_STAMP);
 
+        // Get the Values present in those column
         String name = cursor.getString(nameColIndex);
         String number = cursor.getString(numberColIndex);
         String Lat = cursor.getString(latColIndex);
         String Long = cursor.getString(longColIndex);
         String stamp = cursor.getString(stampColIndex);
 
+        // format the timestamp data
         Date dateObject = new Date(java.lang.Long.parseLong(stamp));
         SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY, MMM, dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
         String date = dateFormat.format(dateObject);
         String time = timeFormat.format(dateObject);
 
+        // set the view with the data
         nameView.setText(name);
         numberView.setText(number);
         stampTime.setText(time);
         stampDate.setText(date);
 
-
+        // Now set the location marker on the fetched latitude and longitude with the correct zoom level
         LatLng userLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Long));
         if (userLocation != null) {
             mMap.addMarker(new MarkerOptions().position(userLocation).title(name + " Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+            // This flag is to set the zoom level to 17 the first time, for next time it takes its current zoom level
             if (flag) {
                 flag = false;
                 zoomLevel = 17;
@@ -138,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel));
         }
 
-
+        // Parse the latitude and longitude to get the approximate address of the user
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
             List<Address> addressList = geocoder.getFromLocation(Double.parseDouble(Lat), Double.parseDouble(Long), 1);
