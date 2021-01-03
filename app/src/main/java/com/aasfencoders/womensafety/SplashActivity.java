@@ -9,13 +9,17 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.widget.ImageView;
 
+// This activity is the Start Activity from which the execution flow begin.
 public class SplashActivity extends AppCompatActivity {
 
     ImageView image;
-
     SharedPreferences sharedPreferences;
 
-    public void function() {
+    // This function waits for 1.5 second, to finish the splash image animation. It is done through a CountdownTimer.
+    // After that, onFinish() is called.
+    // If this is first time of user, he is redirected to [OnBoardingScreen.java]
+    // Else, the user is re-directed to [MainActivity.java]
+    public void animationFunction() {
         image.animate().alphaBy(1f).setDuration(1500);
         new CountDownTimer(1500, 1000) {
 
@@ -26,9 +30,9 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                String firstOnboarding = sharedPreferences.getString(getString(R.string.OnBoarding), "");
+                String firstOnBoarding = sharedPreferences.getString(getString(R.string.OnBoarding), "");
                 Intent intent;
-                if (firstOnboarding.equals("")) {
+                if (firstOnBoarding.equals("")) {
                     intent = new Intent(SplashActivity.this, OnBoardingScreen.class);
                     sharedPreferences.edit().putString(getString(R.string.OnBoarding), getString(R.string.done)).apply();
                 } else {
@@ -47,6 +51,6 @@ public class SplashActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         image = (ImageView) findViewById(R.id.splashImage);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
-        function();
+        animationFunction();
     }
 }
