@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.aasfencoders.womensafety.R;
 
+// Showing Network Dialog when no connection detected.
 public class NetworkDialog {
     NetworkDialog(){
 

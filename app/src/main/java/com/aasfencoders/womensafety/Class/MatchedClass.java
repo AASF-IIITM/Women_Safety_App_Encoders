@@ -1,5 +1,12 @@
 package com.aasfencoders.womensafety.Class;
 
+/**
+ *  Matched connection class.
+ *
+ *  name : Name of the connection.
+ *  number : Number of the connection.
+ *  status : Status of the connection. (INVITED / REJECTED / MATCHED)
+ */
 public class MatchedClass {
 
     private String name;

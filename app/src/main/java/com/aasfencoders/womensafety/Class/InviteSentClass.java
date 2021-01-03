@@ -1,5 +1,12 @@
 package com.aasfencoders.womensafety.Class;
 
+/**
+ *  Invite Sent connection class when users invite others connection.
+ *
+ *  name : Name of the connection.
+ *  number : Number of the connection.
+ *  status : Status of the connection. (INVITED / REJECTED / MATCHED)
+ */
 public class InviteSentClass {
 
     private String name;

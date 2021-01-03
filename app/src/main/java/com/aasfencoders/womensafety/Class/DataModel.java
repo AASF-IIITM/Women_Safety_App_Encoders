@@ -1,5 +1,13 @@
 package com.aasfencoders.womensafety.Class;
 
+/**
+ *  Data Model class when sending location data to others
+ *
+ *  latitude : lat. of the current location data
+ *  longitude : long. of the current location data
+ *  phone : number of the connection
+ *  stamp : Timestamp at the moment of sending
+ */
 public class DataModel {
 
     private String latitude;

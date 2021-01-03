@@ -1,5 +1,11 @@
 package com.aasfencoders.womensafety.Class;
 
+/**
+ *  Base class of a Contact Name fetched from the Phone Contact Database.
+ *
+ *  id: Unique ID of the contact.
+ *  name : Name of the contact.
+ */
 public class ContactNameClass {
 
     private String id;

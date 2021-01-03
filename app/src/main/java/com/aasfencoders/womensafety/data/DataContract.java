@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+// Database URI and table names and column names are defined here
 public class DataContract {
 
     //adding URI

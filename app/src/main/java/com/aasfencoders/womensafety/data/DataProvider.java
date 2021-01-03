@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+// This class is responsible for holding the CRUD operation on the database
 public class DataProvider extends ContentProvider {
 
     private DataDbHelper mDbHelper;
@@ -28,6 +29,7 @@ public class DataProvider extends ContentProvider {
         return true;
     }
 
+    // query a data
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String order) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -69,6 +71,7 @@ public class DataProvider extends ContentProvider {
         }
     }
 
+    // Insert data
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final int match = sUriMatcher.match(uri);
@@ -89,6 +92,7 @@ public class DataProvider extends ContentProvider {
         }
     }
 
+    // Delete data
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -111,6 +115,8 @@ public class DataProvider extends ContentProvider {
         }
         return rowsDeleted;
     }
+
+    // Update data
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);

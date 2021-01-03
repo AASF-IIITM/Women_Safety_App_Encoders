@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+// Checking Network Connection of the device
 public class CheckNetworkConnection {
 
     CheckNetworkConnection(){

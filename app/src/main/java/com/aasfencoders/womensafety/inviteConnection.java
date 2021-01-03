@@ -32,30 +32,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+// This activity displays the connections we sent the Invite request.
+// Also we have a refresh button, to see if some contact had rejected our request.
 public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     View view;
     ListView listView;
     SharedPreferences sharedPreferences;
-
     DatabaseReference mFirebaseReference;
-
     private InviteAdapter mCursorAdapter;
 
-    private void contact() {
-        Intent intent = new Intent(inviteConnection.this, ContactActivity.class);
-        startActivity(intent);
-    }
-
-    private void checkContactPermission() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        } else {
-            contact();
-        }
-    }
-
+    // Permission result of READ_CONTACTS
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -90,6 +77,8 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
         listView.setAdapter(mCursorAdapter);
         listView.setEmptyView(view);
 
+        // Button to open contact activity.
+        // For that we need to first check if the permission are granted or not.
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,10 +89,28 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
 
         checkConnection();
 
+        // Setting up the loader for querying the local database.
         getSupportLoaderManager().initLoader(1, null, inviteConnection.this);
 
     }
 
+    // Open the [ContactActivity.class]
+    private void contact() {
+        Intent intent = new Intent(inviteConnection.this, ContactActivity.class);
+        startActivity(intent);
+    }
+
+    private void checkContactPermission() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
+        } else {
+            contact();
+        }
+    }
+
+    // to query Invited/Rejected contacts data from the local database.
+    // Used a Loader to do that.
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -123,7 +130,6 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
-
     }
 
     @Override
@@ -138,26 +144,22 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
         }
     }
 
+    // Function which reloads the data from Firebase to check if some contact rejected our request or not
     private void fetchRejectedContacts() {
-
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
-
         DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     InviteSentClass callClassObj = ds.getValue(InviteSentClass.class);
-
+                    // Reading the data, updating it into the local database and then deleting it from firebase.
                     if (callClassObj.getStatus().equals(getString(R.string.rejected))) {
                         ContentValues values = new ContentValues();
                         values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.rejected));
                         values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
-
                         String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
                         String[] selectionArgs = new String[]{callClassObj.getNumber()};
-
                         Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
                         ds.getRef().removeValue();
                     }
@@ -170,7 +172,5 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
             }
         };
         userNameRef.addListenerForSingleValueEvent(eventListener);
-
-
     }
 }

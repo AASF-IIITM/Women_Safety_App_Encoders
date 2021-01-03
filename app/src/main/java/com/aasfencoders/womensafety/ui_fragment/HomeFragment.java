@@ -20,11 +20,11 @@ import com.aasfencoders.womensafety.inviteConnection;
 import com.aasfencoders.womensafety.matchedConnection;
 import com.aasfencoders.womensafety.receivedConnection;
 
-public class HomeFragment extends Fragment {
+import java.util.Objects;
 
-    private Button inviteNewConnection;
-    private Button receivedConnectionButton;
-    private Button showConnection;
+// Home Fragment of the application, where we get the major three buttons,
+// i.e, Invite connection button, Receive Connection Button, Matched Connection Button.
+public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
@@ -34,14 +34,14 @@ public class HomeFragment extends Fragment {
 
 
         if(getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(cd);
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setBackgroundDrawable(cd);
             Window window = getActivity().getWindow();
             window.setStatusBarColor(Color.parseColor("#0a5c0c"));
         }
 
-        inviteNewConnection = view.findViewById(R.id.inviteConnection);
-        showConnection = view.findViewById(R.id.showConnection);
-        receivedConnectionButton = view.findViewById(R.id.receiveConnection);
+        Button inviteNewConnection = view.findViewById(R.id.inviteConnection);
+        Button showConnection = view.findViewById(R.id.showConnection);
+        Button receivedConnectionButton = view.findViewById(R.id.receiveConnection);
 
         // action triggered when the Invite New Connection button is pressed
         inviteNewConnection.setOnClickListener(new View.OnClickListener() {

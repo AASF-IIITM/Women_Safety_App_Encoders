@@ -1,5 +1,11 @@
 package com.aasfencoders.womensafety.Class;
 
+/**
+ *  Received connection class when others send connection.
+ *
+ *  name : Name of the connection.
+ *  number : Number of the connection.
+ */
 public class ReceiveClass {
 
     private String name;

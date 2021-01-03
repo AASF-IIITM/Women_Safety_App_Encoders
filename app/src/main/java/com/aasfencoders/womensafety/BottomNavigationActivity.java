@@ -37,20 +37,12 @@ import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
+// This activity is used as the background screen over which all the major fragments are placed,
+// i.e, Home Fragment, Track Me Fragment, Track Other Fragment, Extra Fragment
 public class BottomNavigationActivity extends AppCompatActivity {
-
-
     Fragment selectedFragment;
     private SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
-
-    private void checkConnection() {
-        boolean state = CheckNetworkConnection.checkNetwork(BottomNavigationActivity.this);
-        if (state) {
-            fetchReceivedContacts();
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +50,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bottom_navigation);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
+        // Setting up fragments of the bottom navigation menu.
         BottomNavigation bottomNavigation = (BottomNavigation) findViewById(R.id.nav_view);
         bottomNavigation.setMenuItemSelectionListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
@@ -89,18 +82,25 @@ public class BottomNavigationActivity extends AppCompatActivity {
             }
         });
 
-
         sharedPreferences = BottomNavigationActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
+        // Also after first time installation, it fetches for any pre-matched contacts previously.
         String firstInstall = sharedPreferences.getString(getString(R.string.firstInstall), "");
         if (firstInstall.equals("")) {
             checkConnection();
         }
-
-
     }
 
+    // connection is checked, and if yes, contacts are fetched.
+    private void checkConnection() {
+        boolean state = CheckNetworkConnection.checkNetwork(BottomNavigationActivity.this);
+        if (state) {
+            fetchReceivedContacts();
+        }
+    }
+
+    // contacts fetching are done through here.
     private void fetchReceivedContacts() {
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
@@ -114,11 +114,13 @@ public class BottomNavigationActivity extends AppCompatActivity {
             pDialog.setCancelable(false);
             pDialog.show();
 
+            // Data is checked from the reference [ Users -> NUMBER -> matchedall ]
             DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.matchedall));
             ValueEventListener eventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+                    // On data match, traverse through all the child, and then insert it into local database.
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         ReceiveClass callClassObj = ds.getValue(ReceiveClass.class);
                         if (callClassObj != null) {
@@ -126,17 +128,19 @@ public class BottomNavigationActivity extends AppCompatActivity {
                             String number = callClassObj.getNumber();
 
                             String nameOfContact = null;
+                            // Search for the local contact name in the smartphone if permission is enabled.
+                            // Check in the device twice, once with phone code and another time without phone code.
                             if (ContextCompat.checkSelfPermission(BottomNavigationActivity.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                                 nameOfContact = getContactName(BottomNavigationActivity.this, number);
 
                                 if (nameOfContact == null) {
                                     String phone = number;
                                     String code = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
-                                    String phonewithCode = phone.replace(code, "");
-                                    String nameOfContactWithoutCOde = getContactName(BottomNavigationActivity.this, phonewithCode);
+                                    String phoneWithCode = phone.replace(code, "");
+                                    String nameOfContactWithoutCode = getContactName(BottomNavigationActivity.this, phoneWithCode);
 
-                                    if (nameOfContactWithoutCOde != null) {
-                                        nameOfContact = nameOfContactWithoutCOde;
+                                    if (nameOfContactWithoutCode != null) {
+                                        nameOfContact = nameOfContactWithoutCode;
                                     }
                                 }
                             }
@@ -144,6 +148,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
                             if (nameOfContact == null) {
                                 nameOfContact = name;
                             }
+
+                            // insert the values into local database
                             ContentValues values = new ContentValues();
                             values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
                             values.put(DataContract.DataEntry.COLUMN_PHONE, number);
@@ -167,6 +173,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
         }
     }
 
+    // Contact name is searched for the fetched contact number if exist
     private String getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
@@ -179,7 +186,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if (cursor != null && !cursor.isClosed()) {
+        if (!cursor.isClosed()) {
             cursor.close();
         }
 
@@ -198,6 +205,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
         sharedPreferences.edit().putString(getString(R.string.NAVITEM), getString(R.string.NAVITEM0)).apply();
     }
 
+    // Exit Application confirmation Dialog box
     @Override
     public void onBackPressed() {
         new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.VERTICAL)
@@ -221,23 +229,25 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
     }
 
+    // Creating the top-right menu.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigationtoolbar_menu, menu);
         return true;
     }
 
+    // Item selection of the top-right menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.info:
-                showInfoDialog();
-                return true;
+        if (item.getItemId() == R.id.info) {
+            showInfoDialog();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // Showing the Info dialog, i.e, the credits of the application
     private void showInfoDialog() {
         new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.VERTICAL)
                 .setTopColorRes(R.color.red_btn_bg_color)
