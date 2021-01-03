@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,7 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+// Adapter to populate values in the receiveAdapter in [ReceivedConnection.java]
 public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
     private Context mContext;
@@ -47,17 +47,18 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
     private Button accept;
     private Button reject;
     private TextView status;
-    private ArrayList<ReceiveClass> invitelist;
+    private ArrayList<ReceiveClass> receivedList;
     private int pos;
 
-    public ReceiveAdapter(@NonNull Context context, ArrayList<ReceiveClass> inviteList) {
-        super(context, 0, inviteList);
+    public ReceiveAdapter(@NonNull Context context, ArrayList<ReceiveClass> receiveList) {
+        super(context, 0, receiveList);
         mContext = context;
         mFunctions = FirebaseFunctions.getInstance();
-        invitelist = inviteList;
+        receivedList = receiveList;
         sharedPreferences = mContext.getSharedPreferences(mContext.getString(R.string.package_name), Context.MODE_PRIVATE);
     }
 
+    //  bind views(children) to it
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -74,23 +75,18 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         currentCall = getItem(position);
         pos = position;
 
-        Log.i("********", Integer.toString(pos));
-
         TextView name = listItemView.findViewById(R.id.person_receive_name);
         TextView number = listItemView.findViewById(R.id.person_receive_number);
         name.setText(currentCall.getName());
         number.setText(currentCall.getNumber());
 
+        // button to accept the contact
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 currentCall = getItem(position);
                 String name = currentCall.getName();
                 String phone = currentCall.getNumber();
-
-                Log.i("#######", name);
-                Log.i("#######", phone);
 
                 ContentValues values2 = new ContentValues();
                 values2.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
@@ -99,8 +95,9 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
                 String[] selectionArgs = new String[]{phone};
 
+                // search for the contact saved name in the device,
+                // using the phone number once with country code and another time without the country code
                 int rowsAffected = mContext.getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values2, selection, selectionArgs);
-
                 if (rowsAffected == 0) {
                     String nameOfContact = null;
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -109,10 +106,10 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                         if (nameOfContact == null) {
                             String code = sharedPreferences.getString(mContext.getString(R.string.ISONUMBER), mContext.getString(R.string.defaultISOCodeNumber));
                             String phonewithCode = phone.replace(code, "");
-                            String nameOfContactWithoutCOde = getContactName(getContext(), phonewithCode);
+                            String nameOfContactWithoutCode = getContactName(getContext(), phonewithCode);
 
-                            if (nameOfContactWithoutCOde != null) {
-                                nameOfContact = nameOfContactWithoutCOde;
+                            if (nameOfContactWithoutCode != null) {
+                                nameOfContact = nameOfContactWithoutCode;
                             }
                         }
                     }
@@ -120,6 +117,8 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                     if (nameOfContact == null) {
                         nameOfContact = name;
                     }
+
+                    // insert the contact in the local database as matched contact
                     ContentValues values = new ContentValues();
                     values.put(DataContract.DataEntry.COLUMN_NAME, nameOfContact);
                     values.put(DataContract.DataEntry.COLUMN_PHONE, phone);
@@ -146,6 +145,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         return listItemView;
     }
 
+    // function to search for the contact name using the phone number
     private String getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
@@ -158,7 +158,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if (cursor != null && !cursor.isClosed()) {
+        if (!cursor.isClosed()) {
             cursor.close();
         }
 
@@ -172,25 +172,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         status.setVisibility(View.INVISIBLE);
     }
 
-    private void hideButton(int i, int position) {
-        currentCall = getItem(position);
-
-        accept.setVisibility(View.INVISIBLE);
-        reject.setVisibility(View.INVISIBLE);
-        status.setVisibility(View.VISIBLE);
-        switch (i) {
-            case 1:
-                status.setText("ACCEPTED!!");
-                status.setBackgroundColor(Color.argb(255, 0, 230, 0));
-                break;
-            case 0:
-                status.setText("REJECTED!!");
-                status.setBackgroundColor(Color.argb(255, 230, 0, 0));
-                break;
-        }
-        callTimer(position);
-    }
-
+    // after accepting/rejecting the contact, delete that contact information from the received connection list after 0.5 sec
     private void callTimer(final int position) {
         new CountDownTimer(500, 500) {
             @Override
@@ -205,11 +187,13 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
         }.start();
     }
 
+    // delea
     private void deleteFromList(int position) {
-        invitelist.remove(invitelist.get(position));
+        receivedList.remove(receivedList.get(position));
         notifyDataSetChanged();
     }
 
+    // called a backend cloud function with the parameters, which eventually sets the value in the Firebase database
     private void callFunction(String source_name, String source_no, final String selection, final int position) {
 
         String target_no = sharedPreferences.getString(mContext.getString(R.string.userNumber), mContext.getString(R.string.error));
@@ -225,6 +209,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
             data.put("source_name", source_name);
             data.put("target_name", target_name);
 
+            // dialog shown to user about acceptance/rejection
             final SweetAlertDialog pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             switch (selection) {
@@ -244,6 +229,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                     .continueWith(new Continuation<HttpsCallableResult, String>() {
                         @Override
                         public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                            // dialog dismissed and success Toast displayed
                             pDialog.dismissWithAnimation();
                             String result = (String) task.getResult().getData();
                             if (result != null) {
