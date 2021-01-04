@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import com.aasfencoders.womensafety.data.DataContract;
 
+// This class is called to update status of the contact back to zero, i.e, not in danger currently.
 public class updateBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

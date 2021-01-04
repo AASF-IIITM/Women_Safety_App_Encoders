@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
@@ -30,7 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.aasfencoders.womensafety.ExampleService;
+import com.aasfencoders.womensafety.ForegroundService;
 
 import com.aasfencoders.womensafety.R;
 import com.aasfencoders.womensafety.ServiceDetector;
@@ -85,7 +84,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
         // To check if location update service is running or not
         ServiceDetector serviceDetector = new ServiceDetector();
-        if (!serviceDetector.isServiceRunning(getContext(), ExampleService.class)) {
+        if (!serviceDetector.isServiceRunning(getContext(), ForegroundService.class)) {
             gpsSwitch.setChecked(false);
         } else {
             gpsSwitch.setChecked(true);
@@ -123,7 +122,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
                     Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                     Objects.requireNonNull(getContext()).sendBroadcast(it);
                     // stop the background service, i.e, stop sending location data
-                    Intent serviceIntent = new Intent(getContext(), ExampleService.class);
+                    Intent serviceIntent = new Intent(getContext(), ForegroundService.class);
                     getContext().stopService(serviceIntent);
                 }
             }
@@ -212,7 +211,7 @@ public class TrackMeFragment extends Fragment implements OnMapReadyCallback {
 
     // start the foreground service to send the location data
     private void startService() {
-        Intent serviceIntent = new Intent(getContext(), ExampleService.class);
+        Intent serviceIntent = new Intent(getContext(), ForegroundService.class);
         if (getContext() != null) {
             ContextCompat.startForegroundService(getContext(), serviceIntent);
         }

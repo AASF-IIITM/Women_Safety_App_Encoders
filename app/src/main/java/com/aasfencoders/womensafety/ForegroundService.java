@@ -39,10 +39,13 @@ import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
+import timber.log.Timber;
 
 import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
 
-public class ExampleService extends Service {
+// This Service is called from the [TrackMeFragment.java]
+// It is used to send location data to other matched connection.
+public class ForegroundService extends Service {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -61,24 +64,23 @@ public class ExampleService extends Service {
     Notification notification;
     String channelId;
 
-    private Boolean flag;
+    private Boolean flagFirstTimeSendSmsOption;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        flagFirstTimeSendSmsOption = true;
+
         sharedPreferences = getBaseContext().getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         userPhoneNumber = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
 
+        // fetching the matched contacts details from the local database
         String[] projection = {
                 DataContract.DataEntry._ID,
                 DataContract.DataEntry.COLUMN_NAME,
                 DataContract.DataEntry.COLUMN_PHONE};
-
         Cursor cursor;
-
-        flag = true;
-
         phoneName = new ArrayList<String>();
         phoneNumber = new ArrayList<String>();
         String selection = DataContract.DataEntry.COLUMN_STATUS_INVITATION + " =? ";
@@ -87,7 +89,8 @@ public class ExampleService extends Service {
         int nameColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_NAME);
         int numberColumnIndex = cursor.getColumnIndex(DataContract.DataEntry.COLUMN_PHONE);
 
-        if (cursor != null && cursor.getCount() > 0) {
+        // when matched connection details found, populate the array list with the information (names and numbers)
+        if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String name = cursor.getString(nameColumnIndex);
                 String number = cursor.getString(numberColumnIndex);
@@ -98,9 +101,11 @@ public class ExampleService extends Service {
 
         cursor.close();
 
+        // cancel the service and stop uploading the service when user press on cancel upload button on the notification
         Intent intentAction = new Intent(getBaseContext(), NotificationCancelReceiver.class);
         PendingIntent cancelP = PendingIntent.getBroadcast(getBaseContext(), 1, intentAction, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        // create the notification builder
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(notificationManager) : "";
         notificationBuilder = new NotificationCompat.Builder(getBaseContext(), channelId);
@@ -113,7 +118,6 @@ public class ExampleService extends Service {
         notificationBuilder.setOnlyAlertOnce(true);
         notificationBuilder.addAction(R.drawable.ic_warning_pink_24dp, "Cancel Upload", cancelP);
         notificationBuilder.setCategory(NotificationCompat.CATEGORY_SERVICE);
-
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setSmallIcon(R.drawable.shield);
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
@@ -126,6 +130,7 @@ public class ExampleService extends Service {
 
     }
 
+    // creating the channel for the notification
     @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel(NotificationManager notificationManager) {
         String channelId = "_ID1";
@@ -137,18 +142,21 @@ public class ExampleService extends Service {
         return channelId;
     }
 
+    // start of the service
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
         notification = notificationBuilder.build();
         startForeground(ID_SERVICE, notification);
+
+        // location listener to listen to location change of the user
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
                 sendDataToFragment(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
                 sendLocationToMatchedContacts(Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
 
-                if (flag) {
-                    flag = false;
+                if (flagFirstTimeSendSmsOption) {
+                    flagFirstTimeSendSmsOption = false;
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                         sendSMS();
                     }
@@ -171,6 +179,7 @@ public class ExampleService extends Service {
             }
         };
 
+        // enable this location listener when permission is found enabled
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
         }
@@ -178,6 +187,7 @@ public class ExampleService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+    // send location data to the [TrackMe.java] so that location marker gets populated their
     private void sendDataToFragment(String lat, String lng) {
         Intent sendLoc = new Intent();
         sendLoc.setAction("GET_LOCATION_CUR");
@@ -199,9 +209,11 @@ public class ExampleService extends Service {
         return null;
     }
 
+    // Send SMS to the matched contacts to notify them that the sender is currently in danger
     private void sendSMS() {
         int i;
 
+        // Declared the subscription manager and fetched the SIM card list of the device
         final ArrayList<Integer> simCardList = new ArrayList<>();
         SubscriptionManager subscriptionManager;
         subscriptionManager = SubscriptionManager.from(getApplicationContext());
@@ -215,13 +227,16 @@ public class ExampleService extends Service {
         int smsToSendFrom;
 
         String val = sharedPreferences.getString(getString(R.string.SIM), getString(R.string.SIMNO));
+        // If person didn't disable SMS sending option
         if (!val.equals(getString(R.string.SIMNO))) {
             String messageToSend = "I AM IN DANGER. Track me immediately in Women Safety App by connecting your phone to network connection";
+            // SIM option preferred fetched and set
             if (val.equals(getString(R.string.SIM1))) {
                 smsToSendFrom = simCardList.get(0);
             } else {
                 smsToSendFrom = simCardList.get(1);
             }
+            // loop through the connections array and send them auto-generated SMS
             for (i = 0; i < phoneName.size(); i++) {
                 SmsManager.getSmsManagerForSubscriptionId(smsToSendFrom).sendTextMessage(phoneNumber.get(i), null, messageToSend, null, null);
             }
@@ -229,27 +244,32 @@ public class ExampleService extends Service {
 
     }
 
+    // sending location data to the matched contacts.
+    // used a for loop to fo through all the contacts and send them the data through FCM
+    // used retrofit to call the endpoint and post the data
     private void sendLocationToMatchedContacts(String Lat, String Long) {
 
         int i;
 
         for (i = 0; i < phoneNumber.size(); i++) {
             int length = phoneNumber.get(i).length();
-            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
             Date dateObject = new Date();
             long date = dateObject.getTime();
+            // Declared the Root Model with the topic and the data to be sent
             RootModel rootModel = new RootModel("/topics/" + phoneNumber.get(i).substring(1, length), new DataModel(Lat, Long, userPhoneNumber, java.lang.Long.toString(date)));
+            // Declared the API service using the Retrofit Builder and then called the interface method
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
             retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendLocation(rootModel);
-
+            // call the service and send the data
             responseBodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
+                    Timber.i("LOCATION DATA SENT");
                 }
 
                 @Override
                 public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-
+                    Timber.i("LOCATION DATA FAILED TO SENT");
                 }
             });
         }

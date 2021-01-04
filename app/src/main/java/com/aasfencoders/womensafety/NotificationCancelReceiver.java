@@ -13,7 +13,7 @@ public class NotificationCancelReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         context.sendBroadcast(it);
-        Intent serviceIntent = new Intent(context, ExampleService.class);
+        Intent serviceIntent = new Intent(context, ForegroundService.class);
         context.stopService(serviceIntent);
         Intent i = new Intent(context, BottomNavigationActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

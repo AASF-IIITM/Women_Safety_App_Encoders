@@ -92,7 +92,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".ExampleService"
+            android:name=".ForegroundService"
             android:enabled="true"
             android:stopWithTask="false" />
 

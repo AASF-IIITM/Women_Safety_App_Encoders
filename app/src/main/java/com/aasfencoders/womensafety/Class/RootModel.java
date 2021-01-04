@@ -2,6 +2,7 @@ package com.aasfencoders.womensafety.Class;
 
 import com.google.gson.annotations.SerializedName;
 
+// The body of the data message sent through the Firebase Cloud Messaging (FCM)
 public class RootModel {
 
     @SerializedName("to") //  "to" changed to token
