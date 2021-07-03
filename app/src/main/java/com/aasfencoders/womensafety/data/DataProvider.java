@@ -9,6 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import java.util.Objects;
+
+import timber.log.Timber;
+
 // This class is responsible for holding the CRUD operation on the database
 public class DataProvider extends ContentProvider {
 
@@ -19,7 +23,10 @@ public class DataProvider extends ContentProvider {
     private static final int Data_ID = 101;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
+        // URI matcher related to the whole table operation
         sUriMatcher.addURI(DataContract.CONTENT_AUTHORITY,DataContract.PATH_Data,Data);
+
+        // URI matcher related to a single data operation
         sUriMatcher.addURI(DataContract.CONTENT_AUTHORITY,DataContract.PATH_Data + "/#",Data_ID);
     }
 
@@ -29,7 +36,7 @@ public class DataProvider extends ContentProvider {
         return true;
     }
 
-    // query a data
+    // Over-ridding the function which accounts for querying a database
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String order) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -38,10 +45,12 @@ public class DataProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
 
         switch(match){
+            // return the whole cursor based on the query
             case Data:
                 cursor = db.query(DataContract.DataEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,order);
                 break;
 
+            // return the cursor based on the query of the particular field
             case Data_ID:
                 selection = DataContract.DataEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
@@ -55,6 +64,7 @@ public class DataProvider extends ContentProvider {
         return cursor;
     }
 
+    // Over-ridding the function which accounts for returning the URI type
     @Override
     public String getType(Uri uri) {
 
@@ -71,7 +81,7 @@ public class DataProvider extends ContentProvider {
         }
     }
 
-    // Insert data
+    // Over-ridding the function which accounts for inserting a row into the database
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final int match = sUriMatcher.match(uri);
@@ -81,10 +91,10 @@ public class DataProvider extends ContentProvider {
                 long id = db.insert(DataContract.DataEntry.TABLE_NAME,null,values);
 
                 if(id == -1){
-                    Log.i("Error: "," Insertion failed");
+                    Timber.i(" Insertion failed");
                     return null;
                 }else{
-                    getContext().getContentResolver().notifyChange(uri,null);
+                    Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri,null);
                     return ContentUris.withAppendedId(uri,id);
                 }
             default:
@@ -92,7 +102,7 @@ public class DataProvider extends ContentProvider {
         }
     }
 
-    // Delete data
+    // Over-ridding the function which accounts for deletion of row/rows in database
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -116,7 +126,7 @@ public class DataProvider extends ContentProvider {
         return rowsDeleted;
     }
 
-    // Update data
+    // Over-ridding the function which accounts for updating a row into the database
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
@@ -139,7 +149,7 @@ public class DataProvider extends ContentProvider {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
         int rowsUpdated = database.update(DataContract.DataEntry.TABLE_NAME, values, selection, selectionArgs);
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
     }

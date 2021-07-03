@@ -4,7 +4,7 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-// Database URI and table names and column names are defined here
+// Database URI and table names and column names are defined here.
 public class DataContract {
 
     //adding URI
@@ -16,13 +16,13 @@ public class DataContract {
     public static final class DataEntry implements BaseColumns {
 
         /**
-         * The MIME type of the {@link #CONTENT_URI} for a list of Data_
+         * The MIME type of the for a list of Data_
          */
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Data;
 
         /**
-         * The MIME type of the {@link #CONTENT_URI} for a single Data_
+         * The MIME type of the  for a single Data_
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_Data;

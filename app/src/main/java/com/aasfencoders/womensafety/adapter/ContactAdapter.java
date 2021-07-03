@@ -26,9 +26,9 @@ import java.util.Random;
 public class ContactAdapter extends ArrayAdapter<ContactNameClass> {
 
     Context mContext;
-    private int[] contact;
+    private final int[] contact;
 
-    public ContactAdapter(@NonNull Context context, ArrayList<ContactNameClass> contactList, int arr[]) {
+    public ContactAdapter(@NonNull Context context, ArrayList<ContactNameClass> contactList, int[] arr) {
         super(context, 0, contactList);
         mContext = context;
         contact = arr;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-// Database table creation and updation
+// Database table creation and updation.
 public class DataDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Data.db";
@@ -31,6 +31,6 @@ public class DataDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        // left empty
     }
 }

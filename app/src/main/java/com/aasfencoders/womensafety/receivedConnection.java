@@ -42,9 +42,11 @@ public class receivedConnection extends AppCompatActivity {
         setContentView(R.layout.activity_received_connection);
         getSupportActionBar().setTitle(getString(R.string.receivedHeading));
 
+        // Initialize the Firebase Database Reference and the Shared Preference
         sharedPreferences = receivedConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
+        // Initializing the views and the adapters.
         view = (View) findViewById(R.id.empty_received_view);
         listView = (ListView) findViewById(R.id.listOfReceivedConnections);
         no_network = findViewById(R.id.no_internet_view);

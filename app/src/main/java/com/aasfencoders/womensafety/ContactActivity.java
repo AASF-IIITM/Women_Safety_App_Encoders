@@ -3,6 +3,7 @@ package com.aasfencoders.womensafety;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,15 +43,17 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+// This activity displays all the Contact details present in an user application.
+// User needs to choose a contact, to sent him invite connection.
 public class ContactActivity extends AppCompatActivity {
 
     private ListView contactListView;
     private ProgressBar progressBar;
-    private TextView loadingtextview;
+    private TextView loadingTextView;
 
     SharedPreferences sharedPreferences;
     private DatabaseReference mFirebaseReference;
-    int contactPosArray[];
+    int[] contactPosArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +61,10 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
         getSupportActionBar().setTitle(getString(R.string.selectContact));
 
+        // Seek- Bar customization
+
         IndicatorSeekBar seekBar = findViewById(R.id.seekbar);
         seekBar.setIndicatorTextFormat("${TICK_TEXT}");
-
         seekBar.customSectionTrackColor(new ColorCollector() {
             @Override
             public boolean collectSectionTrackColor(int[] colorIntArr) {
@@ -96,6 +100,8 @@ public class ContactActivity extends AppCompatActivity {
             }
         });
 
+        // Results displayed when dragging a seek bar.
+        // Contact Alphabetical location will change based on the seek-bar dragging.
         seekBar.setOnSeekChangeListener(new OnSeekChangeListener() {
             @Override
             public void onSeeking(SeekParams seekParams) {
@@ -114,20 +120,18 @@ public class ContactActivity extends AppCompatActivity {
             }
         });
 
+        // Initialize all the views.
         contactListView = findViewById(R.id.contactNameListView);
         progressBar = findViewById(R.id.progress);
-        loadingtextview = findViewById(R.id.progressTextViewContacts);
+        loadingTextView = findViewById(R.id.progressTextViewContacts);
         sharedPreferences = ContactActivity.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         progressBar.setVisibility(View.VISIBLE);
-        loadingtextview.setVisibility(View.VISIBLE);
+        loadingTextView.setVisibility(View.VISIBLE);
+
+        // Execute the background task for fetching all the contacts from the user phone database.
         FetchContactAsyncTask task = new FetchContactAsyncTask();
         task.execute();
-        getContactList();
-    }
-
-    private void getContactList() {
-
     }
 
     private class FetchContactAsyncTask extends AsyncTask<String, Integer, ArrayList<ContactNameClass>> {
@@ -136,12 +140,14 @@ public class ContactActivity extends AppCompatActivity {
 
             ArrayList<ContactNameClass> contactList = new ArrayList<ContactNameClass>();
 
-            ContentResolver cr = getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+            // Querying the contact database to get all the contact names
+            ContentResolver contentResolver = getContentResolver();
+            Cursor cur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
             if ((cur != null ? cur.getCount() : 0) > 0) {
 
+                // Inserting headers A - Z to the contactList
                 for (int i = 0; i < 26; i++) {
                     String id2 = getID(i);
                     String name = getName(i);
@@ -149,7 +155,8 @@ public class ContactActivity extends AppCompatActivity {
                 }
 
 
-                while (cur != null && cur.moveToNext()) {
+                // Inserting names from the cursor to the contactList
+                while (cur.moveToNext()) {
                     String id = cur.getString(
                             cur.getColumnIndex(ContactsContract.Contacts._ID));
                     String name = cur.getString(cur.getColumnIndex(
@@ -161,7 +168,7 @@ public class ContactActivity extends AppCompatActivity {
 
                 }
 
-
+                // Sorting it based on the names
                 Collections.sort(contactList, new Comparator<ContactNameClass>() {
                     @Override
                     public int compare(ContactNameClass obj1, ContactNameClass obj2) {
@@ -169,6 +176,7 @@ public class ContactActivity extends AppCompatActivity {
                     }
                 });
 
+                // Finding the position of the headers in the final list
                 findPosContactGroup(contactList);
 
             }
@@ -188,7 +196,9 @@ public class ContactActivity extends AppCompatActivity {
         protected void onPostExecute(final ArrayList<ContactNameClass> contactList) {
             super.onPostExecute(contactList);
             progressBar.setVisibility(View.GONE);
-            loadingtextview.setVisibility(View.GONE);
+            loadingTextView.setVisibility(View.GONE);
+
+            // After fetching the whole list, we update the adapter to display the list
             ContactAdapter contactAdapter = new ContactAdapter(getBaseContext(), contactList, contactPosArray);
             contactListView.setAdapter(contactAdapter);
             contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -205,88 +215,86 @@ public class ContactActivity extends AppCompatActivity {
     private void phone_number_display(String id, final String name) {
 
 
+        // If that's a header return out.
         if (id.length() > 6 && id.substring(0, 4).equals("CONT")) {
             return;
         }
 
         ArrayList<String> items = new ArrayList<>();
 
+        // Fetch the phone number based upon the Contact ID
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, ContactsContract.Contacts._ID + " = ?",
                 new String[]{id}, null);
+
         cur.moveToFirst();
+
+        // If the ID contains phone numbers, query it.
         if (cur.getInt(cur.getColumnIndex(
                 ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-            Cursor pCur = cr.query(
+
+            Cursor phoneCursor = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                     new String[]{id}, null);
-            while (pCur.moveToNext()) {
-                String phoneNo = pCur.getString(pCur.getColumnIndex(
+
+            while (phoneCursor.moveToNext()) {
+                String phoneNo = phoneCursor.getString(phoneCursor.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 phoneNo = phoneNo.replaceAll("\\s", "");
 
+                String[] projection = {
+                        DataContract.DataEntry._ID,
+                        DataContract.DataEntry.COLUMN_NAME,
+                        DataContract.DataEntry.COLUMN_PHONE};
+                String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                String[] selectionArgs = new String[]{phoneNo};
 
-                boolean flagCommon = false;
+                Cursor dataCursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
+                if (!(dataCursor != null && dataCursor.getCount() > 0)) {
 
-                for (String item : items) {
-                    if (item.contains(phoneNo))
-                        flagCommon = true;
-                }
+                    String phonewithCode = null;
+                    if (phoneNo.charAt(0) != '+') {
+                        String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
+                        phonewithCode = isocode + phoneNo;
+                        String selection2 = DataContract.DataEntry.COLUMN_PHONE + " =? ";
+                        String[] selectionArgs2 = new String[]{phonewithCode};
 
-
-                if (!flagCommon) {
-                    String[] projection = {
-                            DataContract.DataEntry._ID,
-                            DataContract.DataEntry.COLUMN_NAME,
-                            DataContract.DataEntry.COLUMN_PHONE};
-                    String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
-                    String[] selectionArgs = new String[]{phoneNo};
-
-                    Cursor cursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
-                    if (!(cursor != null && cursor.getCount() > 0)) {
-
-                        String phonewithCode = null;
-                        if (phoneNo.charAt(0) != '+') {
-                            String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
-                            phonewithCode = isocode + phoneNo;
-                            String selection2 = DataContract.DataEntry.COLUMN_PHONE + " =? ";
-                            String[] selectionArgs2 = new String[]{phonewithCode};
-
-                            Cursor cursor2 = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection2, selectionArgs2, null);
-                            if (!(cursor2 != null && cursor2.getCount() > 0)) {
-                                if (phoneNo.charAt(0) == '+') {
-                                    items.add(phoneNo);
-                                } else {
-                                    String isocode2 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
-                                    items.add(isocode2 + phoneNo);
-                                }
-                            }
-                            if (cursor2 != null) {
-                                cursor2.close();
-                            }
-                        } else {
+                        Cursor cursor2 = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection2, selectionArgs2, null);
+                        if (!(cursor2 != null && cursor2.getCount() > 0)) {
                             if (phoneNo.charAt(0) == '+') {
                                 items.add(phoneNo);
                             } else {
-                                String isocode3 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
-                                items.add(isocode3 + phoneNo);
+                                String isocode2 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
+                                items.add(isocode2 + phoneNo);
                             }
                         }
+                        if (cursor2 != null) {
+                            cursor2.close();
+                        }
+                    } else {
+                        if (phoneNo.charAt(0) == '+') {
+                            items.add(phoneNo);
+                        } else {
+                            String isocode3 = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
+                            items.add(isocode3 + phoneNo);
+                        }
+                    }
 
-                    }
-                    if (cursor != null) {
-                        cursor.close();
-                    }
+                }
+                if (dataCursor != null) {
+                    dataCursor.close();
                 }
 
+
             }
-            pCur.close();
+            phoneCursor.close();
 
 
+            // Finally after retrieving the list, we need to update it to the database.
             new LovelyChoiceDialog(this, R.style.TintTheme)
                     .setTopColorRes(R.color.dialogColour)
                     .setTitle(name)
@@ -299,6 +307,7 @@ public class ContactActivity extends AppCompatActivity {
                             } else {
                                 boolean state = CheckNetworkConnection.checkNetwork(ContactActivity.this);
                                 if (state) {
+                                    // Update to both the local database and global database.
                                     updateDatabase(items, name);
                                 } else {
                                     Toast.makeText(ContactActivity.this, getString(R.string.noInternetMessage), Toast.LENGTH_LONG).show();
@@ -330,24 +339,29 @@ public class ContactActivity extends AppCompatActivity {
             loadingDialog.setTitleText(getString(R.string.contactDialogString));
             loadingDialog.setCancelable(false);
 
+            // Iterating over all the contact numbers a person send request to.
             Iterator iterator = items.iterator();
             loadingDialog.show();
             while (iterator.hasNext()) {
+
+                // Reflecting to the firebase User -> Sent column
                 final String sent_phone_number = iterator.next().toString();
                 DatabaseReference rootRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));
                 String key = mFirebaseReference.push().getKey();
-                Map<String, Object> value = new HashMap<>();
-                value.put(getString(R.string.name), name);
-                value.put(getString(R.string.number), sent_phone_number);
-                value.put(getString(R.string.status), getString(R.string.invited));
-                rootRef.child(key).setValue(value);
+                Map<String, Object> sentContactValues = new HashMap<>();
+                sentContactValues.put(getString(R.string.name), name);
+                sentContactValues.put(getString(R.string.number), sent_phone_number);
+                sentContactValues.put(getString(R.string.status), getString(R.string.invited));
+                rootRef.child(key).setValue(sentContactValues);
 
-                Map<String, Object> value2 = new HashMap<>();
-                value2.put(getString(R.string.name), current_user_name);
-                value2.put(getString(R.string.number), current_user_number);
+                // Reflecting to the firebase Invitation column
+                Map<String, Object> invitationValues = new HashMap<>();
+                invitationValues.put(getString(R.string.name), current_user_name);
+                invitationValues.put(getString(R.string.number), current_user_number);
 
-                mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(value2);
+                mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(invitationValues);
 
+                // Now saving the invited contact to the local database.
                 ContentValues values = new ContentValues();
                 values.put(DataContract.DataEntry.COLUMN_NAME, name);
                 values.put(DataContract.DataEntry.COLUMN_PHONE, sent_phone_number);
@@ -363,6 +377,7 @@ public class ContactActivity extends AppCompatActivity {
     }
 
 
+    // Finding the position of the headers in the final list
     private void findPosContactGroup(ArrayList<ContactNameClass> Contact) {
         int i = -1;
         int j = 0;

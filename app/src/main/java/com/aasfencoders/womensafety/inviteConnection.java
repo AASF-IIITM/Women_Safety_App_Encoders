@@ -33,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 // This activity displays the connections we sent the Invite request.
-// Also we have a refresh button, to see if some contact had rejected our request.
+// Also we have a refresh button, to see if some startContactActivity had rejected our request.
 public class inviteConnection extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     View view;
@@ -42,42 +42,24 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
     DatabaseReference mFirebaseReference;
     private InviteAdapter mCursorAdapter;
 
-    // Permission result of READ_CONTACTS
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    contact();
-                } else {
-                    Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_connection);
         getSupportActionBar().setTitle(getString(R.string.inviteConnectionHeading));
 
+        // Initialize the Firebase Database Reference and the Shared Preference
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = inviteConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
 
+        // Initializing the views and the adapters.
         view = (View) findViewById(R.id.empty_invite_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
-
         mCursorAdapter = new InviteAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
         listView.setEmptyView(view);
 
-        // Button to open contact activity.
+        // Button to open startContactActivity activity.
         // For that we need to first check if the permission are granted or not.
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -94,23 +76,43 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
 
     }
 
+    private void checkContactPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
+        } else {
+            startContactActivity();
+        }
+    }
+
+    // Permission result of READ_CONTACTS
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    startContactActivity();
+                } else {
+                    Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.permissionDenied), Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
     // Open the [ContactActivity.class]
-    private void contact() {
+    private void startContactActivity() {
         Intent intent = new Intent(inviteConnection.this, ContactActivity.class);
         startActivity(intent);
     }
 
-    private void checkContactPermission() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        } else {
-            contact();
-        }
-    }
-
     // to query Invited/Rejected contacts data from the local database.
     // Used a Loader to do that.
+
+    // Initialization of the Loader
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -127,6 +129,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
 
     }
 
+    // The Adapter is fed with the new data when the data reloads.
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
@@ -144,7 +147,7 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
         }
     }
 
-    // Function which reloads the data from Firebase to check if some contact rejected our request or not
+    // Function which reloads the data from Firebase to check if some startContactActivity rejected our request or not
     private void fetchRejectedContacts() {
         String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
         DatabaseReference userNameRef = mFirebaseReference.child(getString(R.string.users)).child(current_user_number).child(getString(R.string.sent));

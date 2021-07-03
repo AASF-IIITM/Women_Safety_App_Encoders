@@ -50,19 +50,20 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
 
         getSupportActionBar().setTitle(getString(R.string.matchedConnectionHeading));
 
+        // Initialize the Firebase Database Reference and the Shared Preference
         sharedPreferences = matchedConnection.this.getSharedPreferences(getString(R.string.package_name), Context.MODE_PRIVATE);
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
+        // Initializing the views and the adapters.
         view = (View) findViewById(R.id.empty_matched_view);
         listView = (ListView) findViewById(R.id.listOfInvitedConnections);
         listView.setEmptyView(view);
-
+        progress = findViewById(R.id.progress_view);
+        progress.setVisibility(View.INVISIBLE);
         mCursorAdapter = new MatchedCursorAdapter(this, null);
         listView.setAdapter(mCursorAdapter);
 
-        progress = findViewById(R.id.progress_view);
-        progress.setVisibility(View.INVISIBLE);
-
+        // Initializing the loader
         getSupportLoaderManager().initLoader(1, null, matchedConnection.this);
 
         // Reload button to check if some contacts if they had accepted our request.
@@ -138,7 +139,9 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
                         if (callClassObj != null) {
+
                             // Reading the data, updating it into the local database and then deleting it from firebase.
+
                             if (callClassObj.getStatus().equals(getString(R.string.accepted)) || callClassObj.getStatus().equals(getString(R.string.rejected))) {
                                 ContentValues values = new ContentValues();
                                 if (callClassObj.getStatus().equals(getString(R.string.accepted))) {
