@@ -13,7 +13,9 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
-// This class is responsible for holding the CRUD operation on the database
+// This class is responsible for holding the CRUD operation on the database.
+// A content provider manages access to a central repository of data.
+// The Content Resolver directs the request to the content provider registered with the (unique) authority, based on the URI.
 public class DataProvider extends ContentProvider {
 
     private DataDbHelper mDbHelper;

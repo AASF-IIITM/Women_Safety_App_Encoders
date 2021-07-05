@@ -16,6 +16,7 @@ public class DataDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        // SQL create table command is executed here
         String SQL_CREATE_Data_TABLE =  "CREATE TABLE " + DataContract.DataEntry.TABLE_NAME + " ("
                 + DataContract.DataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + DataContract.DataEntry.COLUMN_NAME + " TEXT NOT NULL, "

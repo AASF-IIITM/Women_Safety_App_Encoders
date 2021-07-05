@@ -15,6 +15,8 @@ public class DataContract {
 
     public static final class DataEntry implements BaseColumns {
 
+        // A MIME (Multipurpose Internet Mail Extensions) type is just a standardized way to define that data type by giving it a unique name.
+
         /**
          * The MIME type of the for a list of Data_
          */

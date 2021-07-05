@@ -76,6 +76,8 @@ public class inviteConnection extends AppCompatActivity implements LoaderManager
 
     }
 
+    // Check if Contact Permission is granter or not.
+    // If not, request Contact Permission.
     private void checkContactPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);

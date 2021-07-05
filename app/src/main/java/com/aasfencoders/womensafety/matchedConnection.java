@@ -140,7 +140,7 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                         MatchedClass callClassObj = ds.getValue(MatchedClass.class);
                         if (callClassObj != null) {
 
-                            // Reading the data, updating it into the local database and then deleting it from firebase.
+                            // Reading the data, updating it into the local database.
 
                             if (callClassObj.getStatus().equals(getString(R.string.accepted)) || callClassObj.getStatus().equals(getString(R.string.rejected))) {
                                 ContentValues values = new ContentValues();
@@ -153,6 +153,8 @@ public class matchedConnection extends AppCompatActivity implements LoaderManage
                                 String selection = DataContract.DataEntry.COLUMN_PHONE + " =? ";
                                 String[] selectionArgs = new String[]{callClassObj.getNumber()};
                                 Integer rowsAffected = getContentResolver().update(DataContract.DataEntry.CONTENT_URI, values, selection, selectionArgs);
+
+                                // delete from the firebase
                                 ds.getRef().removeValue();
                             }
                         }

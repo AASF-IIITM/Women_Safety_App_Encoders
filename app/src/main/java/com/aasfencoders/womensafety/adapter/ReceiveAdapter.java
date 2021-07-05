@@ -41,7 +41,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
 
     private Context mContext;
-    private FirebaseFunctions mFunctions;
+    private FirebaseFunctions firebaseFunction;
     private ReceiveClass currentCall;
     private SharedPreferences sharedPreferences;
     private Button accept;
@@ -53,7 +53,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
     public ReceiveAdapter(@NonNull Context context, ArrayList<ReceiveClass> receiveList) {
         super(context, 0, receiveList);
         mContext = context;
-        mFunctions = FirebaseFunctions.getInstance();
+        firebaseFunction = FirebaseFunctions.getInstance();
         receivedList = receiveList;
         sharedPreferences = mContext.getSharedPreferences(mContext.getString(R.string.package_name), Context.MODE_PRIVATE);
     }
@@ -126,7 +126,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                     values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, mContext.getString(R.string.matched));
                     mContext.getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
                 }
-                callFunction(name, phone, mContext.getString(R.string.accept), position);
+                callFirebaseFunction(name, phone, mContext.getString(R.string.accept), position);
 
             }
         });
@@ -137,7 +137,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
                 currentCall = getItem(position);
                 String name = currentCall.getName();
                 String phone = currentCall.getNumber();
-                callFunction(name, phone, mContext.getString(R.string.reject), position);
+                callFirebaseFunction(name, phone, mContext.getString(R.string.reject), position);
 
             }
         });
@@ -194,7 +194,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
     }
 
     // called a backend cloud function with the parameters, which eventually sets the value in the Firebase database
-    private void callFunction(String source_name, String source_no, final String selection, final int position) {
+    private void callFirebaseFunction(String source_name, String source_no, final String selection, final int position) {
 
         String target_no = sharedPreferences.getString(mContext.getString(R.string.userNumber), mContext.getString(R.string.error));
         String target_name = sharedPreferences.getString(mContext.getString(R.string.username), mContext.getString(R.string.error));
@@ -223,7 +223,7 @@ public class ReceiveAdapter extends ArrayAdapter<ReceiveClass> {
             pDialog.setCancelable(false);
             pDialog.show();
 
-            mFunctions
+            firebaseFunction
                     .getHttpsCallable("sent_status")
                     .call(data)
                     .continueWith(new Continuation<HttpsCallableResult, String>() {

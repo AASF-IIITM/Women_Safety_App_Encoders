@@ -241,11 +241,14 @@ public class ContactActivity extends AppCompatActivity {
                     new String[]{id}, null);
 
             while (phoneCursor.moveToNext()) {
+
+                // Fetch the phone Numbers
                 String phoneNo = phoneCursor.getString(phoneCursor.getColumnIndex(
                         ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 phoneNo = phoneNo.replaceAll("\\s", "");
 
+                // Check if phone number already present in database or not
                 String[] projection = {
                         DataContract.DataEntry._ID,
                         DataContract.DataEntry.COLUMN_NAME,
@@ -256,6 +259,7 @@ public class ContactActivity extends AppCompatActivity {
                 Cursor dataCursor = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection, selectionArgs, null);
                 if (!(dataCursor != null && dataCursor.getCount() > 0)) {
 
+                    // If not present, check phone number with ISO code.
                     String phonewithCode = null;
                     if (phoneNo.charAt(0) != '+') {
                         String isocode = sharedPreferences.getString(getString(R.string.ISONUMBER), getString(R.string.defaultISOCodeNumber));
@@ -265,6 +269,8 @@ public class ContactActivity extends AppCompatActivity {
 
                         Cursor cursor2 = getContentResolver().query(DataContract.DataEntry.CONTENT_URI, projection, selection2, selectionArgs2, null);
                         if (!(cursor2 != null && cursor2.getCount() > 0)) {
+
+                            // Number not present already in database, make it add to the items for invitation.
                             if (phoneNo.charAt(0) == '+') {
                                 items.add(phoneNo);
                             } else {
@@ -276,6 +282,8 @@ public class ContactActivity extends AppCompatActivity {
                             cursor2.close();
                         }
                     } else {
+
+                        // Number not present already in database, make it add to the items for invitation.
                         if (phoneNo.charAt(0) == '+') {
                             items.add(phoneNo);
                         } else {
@@ -326,6 +334,8 @@ public class ContactActivity extends AppCompatActivity {
         }
     }
 
+    // Once we make the selection of the phone numbers need to be sent for invitation,
+    // update the firebase and local database.
     private void updateDatabase(List<String> items, String name) {
 
         final String current_user_number = sharedPreferences.getString(getString(R.string.userNumber), getString(R.string.error));
@@ -358,17 +368,16 @@ public class ContactActivity extends AppCompatActivity {
                 Map<String, Object> invitationValues = new HashMap<>();
                 invitationValues.put(getString(R.string.name), current_user_name);
                 invitationValues.put(getString(R.string.number), current_user_number);
-
                 mFirebaseReference.child(getString(R.string.invitation)).child(sent_phone_number).child(key).setValue(invitationValues);
 
                 // Now saving the invited contact to the local database.
-                ContentValues values = new ContentValues();
-                values.put(DataContract.DataEntry.COLUMN_NAME, name);
-                values.put(DataContract.DataEntry.COLUMN_PHONE, sent_phone_number);
-                values.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
-                values.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.invited));
+                ContentValues insertValues = new ContentValues();
+                insertValues.put(DataContract.DataEntry.COLUMN_NAME, name);
+                insertValues.put(DataContract.DataEntry.COLUMN_PHONE, sent_phone_number);
+                insertValues.put(DataContract.DataEntry.COLUMN_STATUS, getString(R.string.zero));
+                insertValues.put(DataContract.DataEntry.COLUMN_STATUS_INVITATION, getString(R.string.invited));
 
-                Uri uri = getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, values);
+                getContentResolver().insert(DataContract.DataEntry.CONTENT_URI, insertValues);
 
             }
             loadingDialog.dismissWithAnimation();
